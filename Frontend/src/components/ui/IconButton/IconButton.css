@@ -1,0 +1,73 @@
+.dt-icon-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-sm);
+  transition: all var(--transition-fast);
+  color: var(--text-secondary);
+  cursor: pointer;
+  border: 1px solid transparent;
+  flex-shrink: 0;
+}
+
+.dt-icon-button:hover {
+  color: var(--text-primary);
+}
+
+.dt-icon-button:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+/* Sizes */
+.dt-icon-button--sm {
+  width: 28px;
+  height: 28px;
+}
+
+.dt-icon-button--md {
+  width: 36px;
+  height: 36px;
+}
+
+.dt-icon-button--lg {
+  width: 44px;
+  height: 44px;
+}
+
+/* Variants */
+.dt-icon-button--ghost {
+  background-color: transparent;
+}
+
+.dt-icon-button--ghost:hover {
+  background-color: var(--surface-hover);
+}
+
+.dt-icon-button--outline {
+  background-color: transparent;
+  border-color: var(--border);
+}
+
+.dt-icon-button--outline:hover {
+  background-color: var(--surface-hover);
+  border-color: var(--text-muted);
+}
+
+.dt-icon-button--surface {
+  background-color: var(--surface-hover);
+}
+
+.dt-icon-button--surface:hover {
+  background-color: var(--border);
+}
+
+.dt-icon-button--primary {
+  background-color: var(--accent-primary);
+  color: #0F1417;
+}
+
+.dt-icon-button--primary:hover {
+  background-color: var(--accent-primary-hover);
+  color: #0F1417;
+}

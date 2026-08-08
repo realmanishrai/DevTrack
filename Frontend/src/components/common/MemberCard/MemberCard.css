@@ -1,0 +1,66 @@
+.dt-member-card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.dt-member-card__header {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.dt-member-card__info {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  overflow: hidden;
+}
+
+.dt-member-card__name {
+  font-size: var(--text-body);
+  font-weight: 600;
+  color: var(--text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.dt-member-card__stats {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  padding: var(--space-2) 0;
+  background-color: var(--bg-secondary);
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+}
+
+.dt-member-card__stat-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.dt-member-card__stat-label {
+  font-size: var(--text-tiny);
+  color: var(--text-muted);
+}
+
+.dt-member-card__stat-value {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.dt-member-card__stat-divider {
+  width: 1px;
+  height: 24px;
+  background-color: var(--border);
+}
+
+.dt-member-card__progress {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}

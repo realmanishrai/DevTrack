@@ -1,0 +1,37 @@
+.dt-room-code-display {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  flex-wrap: wrap;
+}
+
+.dt-room-code-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: 6px 14px;
+  background-color: var(--bg-secondary);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  font-family: monospace, monospace;
+}
+
+.dt-room-code-label {
+  font-size: var(--text-tiny);
+  font-weight: 600;
+  color: var(--text-muted);
+  letter-spacing: 0.5px;
+}
+
+.dt-room-code-value {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--accent-primary);
+  letter-spacing: 1px;
+}
+
+.dt-room-code-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}

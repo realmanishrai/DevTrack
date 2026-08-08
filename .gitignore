@@ -2,3 +2,4 @@ Backend/.venv/
 Backend/__pycache__/
 Backend/app/__pycache__/
 Backend/app/DevTrack.db
+Frontend/design-system.md
