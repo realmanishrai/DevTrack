@@ -7,6 +7,7 @@ function Navbar() {
 
       <nav className="site-nav" aria-label="Main navigation">
         <a href="#why-devtrack">Why DevTrack</a>
+        <a href="#how-it-works">How it Works</a>
         <a href="#features">Features</a>
         <a href="#statistics">Statistics</a>
       </nav>

@@ -1,213 +1,273 @@
-import Navbar from '../../components/layout/Navbar'
-import './landing-page.css'
+import { Link } from 'react-router-dom';
+import Button from '../../components/ui/Button/Button';
+import Card from '../../components/ui/Card/Card';
+import heroTeamImg from '../../assets/hero-team.png';
+import './LandingPage.css';
 
+
+const whyCards = [
+  {
+    icon: '📊',
+    title: 'Track Progress',
+    body: 'Visualise exactly where your project stands with real-time progress boards and milestone tracking.',
+  },
+  {
+    icon: '🤝',
+    title: 'Collaborate',
+    body: 'Invite teammates, share progress, leave feedback, and stay aligned across every sprint.',
+  },
+  {
+    icon: '🎯',
+    title: 'Stay Consistent',
+    body: 'Daily goals, streaks, and habit tracking keep every developer accountable and on track.',
+  },
+  {
+    icon: '🚀',
+    title: 'Grow Together',
+    body: 'Shared dashboards and analytics reveal team strengths and surface opportunities to improve.',
+  },
+];
+
+const features = [
+  {
+    icon: '📈',
+    title: 'Progress Tracking',
+    body: 'Track tasks, commits, and milestones in a single unified developer timeline.',
+  },
+  {
+    icon: '🏠',
+    title: 'Development Rooms',
+    body: 'Create focused rooms for each project or team — private spaces for collaboration.',
+  },
+  {
+    icon: '👥',
+    title: 'Team Collaboration',
+    body: 'Comment, review, and coordinate with teammates without leaving your workflow.',
+  },
+  {
+    icon: '⚡',
+    title: 'Activity Monitor',
+    body: 'A live activity feed gives leaders and members a pulse on all project actions.',
+  },
+  {
+    icon: '📉',
+    title: 'Statistics & Insights',
+    body: 'Beautiful charts and reports that show velocity, completion rates, and trends.',
+  },
+  {
+    icon: '🧑‍💻',
+    title: 'Developer Profiles',
+    body: 'Each developer builds a rich profile showcasing skills, contributions, and goals.',
+  },
+];
+
+const stats = [
+  { value: '10K+', label: 'Developers' },
+  { value: '500+', label: 'Development Rooms' },
+  { value: '25K+', label: 'Tasks Tracked' },
+  { value: '95%',  label: 'Active Teams' },
+];
+
+const howSteps = [
+  {
+    number: '01',
+    title: 'Create Your Profile',
+    desc: 'Sign up in seconds. Set your skills, goals, and timezone to personalise your DevTrack experience.',
+  },
+  {
+    number: '02',
+    title: 'Join or Create a Room',
+    desc: 'Start a new development room for your project or accept an invite from your team.',
+  },
+  {
+    number: '03',
+    title: 'Track & Collaborate',
+    desc: 'Log progress, monitor teammates, review activity, and hit your milestones together.',
+  },
+];
+
+/* ── Hero Image ──────────────────────────────────── */
+function HeroImage() {
+  return (
+    <div className="hero-img-wrap">
+      <img
+        src={heroTeamImg}
+        alt="Team of developers collaborating around a table with project dashboards"
+        className="hero-img"
+        loading="eager"
+        draggable="false"
+      />
+    </div>
+  );
+}
+
+/* ── LandingPage ─────────────────────────────────────────── */
 function LandingPage() {
   return (
-    <div className="landing-page" data-theme="dark">
-      <Navbar />
-
-      <main id="top">
-        <section className="hero-section" aria-labelledby="hero-title">
-          <div className="hero-copy">
-            <p className="eyebrow">Built for student teams and developers</p>
-
-            <h1 className="hero-title" id="hero-title">
+    <main>
+      {/* ── HERO ── */}
+      <section className="hero">
+        <div className="container hero-inner">
+          <div className="hero-content">
+            <h1 className="hero-headline">
               Turn GitHub activity into
-              <span> team momentum.</span>
+              <span className="hero-headline-accent"> team momentum.</span>
             </h1>
 
-            <p className="hero-description">
+            <p className="hero-subtext">
               DevTrack brings tasks, teammates, progress, and project activity
               into one focused workspace.
             </p>
 
             <div className="hero-actions">
-              <button className="button button--primary">
-                Create Room
-              </button>
-
-              <button className="button button--ghost">
-                Join Room
-              </button>
+              <Link to="/register">
+                <Button variant="primary" size="lg">Create Room</Button>
+              </Link>
+              <Link to="/login">
+                <Button variant="outline" size="lg">Join Room</Button>
+              </Link>
             </div>
 
-            <p className="hero-note">
-              Clear tasks. Visible progress. Better collaboration.
-            </p>
+            
           </div>
 
-          <div className="mascot-panel">
-            <div className="mascot-copy">
-              <p className="mascot-label">Your project home base</p>
-
-              <h2>Welcome to DevTrack.</h2>
-
-              <p>
-                Bring your team, tasks, and progress together—then focus on
-                what comes next.
-              </p>
-            </div>
-
-            <div className="mascot-scene" aria-hidden="true">
-              <span className="mascot-spark mascot-spark--one"></span>
-              <span className="mascot-spark mascot-spark--two"></span>
-              <span className="mascot-spark mascot-spark--three"></span>
-
-              <div className="mascot">
-                <span className="mascot-antenna"></span>
-
-                <div className="mascot-head">
-                  <span className="mascot-eye"></span>
-                  <span className="mascot-eye"></span>
-                  <span className="mascot-smile"></span>
-                </div>
-
-                <div className="mascot-body">
-                  <span className="mascot-badge">DT</span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-     
-              {/* Why DevTrack Section */}
-      <section className="why-section" id="why-devtrack">
-        <div className="why-container">
-          <div className="why-content">
-            <p className="section-tag">Why DevTrack</p>
-
-            <h2 className="section-title">
-              Everything your team needs,
-              <span> without the chaos.</span>
-            </h2>
-
-            <p className="section-description">
-              Stop juggling GitHub tabs, spreadsheets, and chat messages. DevTrack
-              keeps repositories, tasks, contributors, and project progress in one
-              streamlined workspace.
-            </p>
-
-            <div className="why-points">
-              <div className="why-point">
-                <span className="point-icon">✓</span>
-                <div>
-                  <h3>Centralized project tracking</h3>
-                  <p>
-                    View repositories, issues, pull requests, and team activity from
-                    a single dashboard.
-                  </p>
-                </div>
-              </div>
-
-              <div className="why-point">
-                <span className="point-icon">✓</span>
-                <div>
-                  <h3>Built for collaboration</h3>
-                  <p>
-                    Assign tasks, monitor progress, and keep every contributor aligned
-                    with the project goals.
-                  </p>
-                </div>
-              </div>
-
-              <div className="why-point">
-                <span className="point-icon">✓</span>
-                <div>
-                  <h3>Actionable insights</h3>
-                  <p>
-                    Understand contribution trends, sprint progress, and repository
-                    health at a glance.
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div className="why-preview" aria-hidden="true">
-            <div className="preview-window">
-              <div className="preview-header">
-                <div className="preview-dots">
-                  <span></span>
-                  <span></span>
-                  <span></span>
-                </div>
-                <p>Sprint Overview</p>
-              </div>
-
-              <div className="preview-body">
-                <div className="preview-card">
-                  <div className="card-top">
-                    <span className="card-badge">Repository</span>
-                    <span className="card-status active">Active</span>
-                  </div>
-
-                  <h4>GitTracker</h4>
-                  <p>Frontend Dashboard</p>
-
-                  <div className="progress-block">
-                    <div className="progress-info">
-                      <span>Sprint Progress</span>
-                      <strong>78%</strong>
-                    </div>
-                    <div className="progress-bar">
-                      <span style={{ width: "78%" }}></span>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="stats-grid">
-                  <div className="stat-item">
-                    <strong>24</strong>
-                    <span>Tasks</span>
-                  </div>
-                  <div className="stat-item">
-                    <strong>18</strong>
-                    <span>Merged PRs</span>
-                  </div>
-                  <div className="stat-item">
-                    <strong>7</strong>
-                    <span>Contributors</span>
-                  </div>
-                  <div className="stat-item">
-                    <strong>95%</strong>
-                    <span>On Track</span>
-                  </div>
-                </div>
-
-                <div className="activity-list">
-                  <div className="activity-item">
-                    <div className="activity-avatar">SM</div>
-                    <div>
-                      <strong>Landing page updated</strong>
-                      <p>2 minutes ago</p>
-                    </div>
-                  </div>
-
-                  <div className="activity-item">
-                    <div className="activity-avatar">AK</div>
-                    <div>
-                      <strong>Dashboard components merged</strong>
-                      <p>15 minutes ago</p>
-                    </div>
-                  </div>
-
-                  <div className="activity-item">
-                    <div className="activity-avatar">RP</div>
-                    <div>
-                      <strong>New issue assigned</strong>
-                      <p>32 minutes ago</p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
+          <div className="hero-visual">
+            <HeroImage />
           </div>
         </div>
       </section>
 
-      </main>
-    </div>
-  )
+      {/* ── WHY DEVTRACK ── */}
+      <section
+        id="why-devtrack"
+        className="why-section section"
+        aria-labelledby="why-title"
+      >
+        <div className="container">
+          <div className="section-header">
+            <span className="section-tag">Why DevTrack</span>
+            <h2 id="why-title" className="section-title">
+              Everything your team needs to ship faster
+            </h2>
+            <p className="section-subtitle">
+              One platform to replace scattered tools, status calls, and missed deadlines.
+            </p>
+          </div>
+
+          <div className="why-grid">
+            {whyCards.map(({ icon, title, body }) => (
+              <Card key={title}>
+                <div className="card-icon" aria-hidden="true">{icon}</div>
+                <h3 className="card-title">{title}</h3>
+                <p className="card-body">{body}</p>
+              </Card>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── FEATURES ── */}
+      <section
+        id="features"
+        className="features-section section"
+        aria-labelledby="features-title"
+      >
+        <div className="container">
+          <div className="section-header">
+            <span className="section-tag">Features</span>
+            <h2 id="features-title" className="section-title">
+              Powerful tools built for developers
+            </h2>
+            <p className="section-subtitle">
+              From solo hackers to enterprise teams — DevTrack scales with how you work.
+            </p>
+          </div>
+
+          <div className="features-grid">
+            {features.map(({ icon, title, body }) => (
+              <Card key={title}>
+                <div className="card-icon" aria-hidden="true">{icon}</div>
+                <h3 className="card-title">{title}</h3>
+                <p className="card-body">{body}</p>
+              </Card>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── STATISTICS ── */}
+      <section
+        id="statistics"
+        className="stats-section section"
+        aria-labelledby="stats-title"
+      >
+        <div className="container">
+          <div className="section-header">
+            <span className="section-tag">By the Numbers</span>
+            <h2 id="stats-title" className="section-title">
+              Developers trust DevTrack to deliver
+            </h2>
+          </div>
+
+          <div className="stats-grid">
+            {stats.map(({ value, label }) => (
+              <div key={label} className="stat-card">
+                <div className="stat-number">{value}</div>
+                <div className="stat-label">{label}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── HOW IT WORKS ── */}
+      <section
+        className="how-section section"
+        aria-labelledby="how-title"
+      >
+        <div className="container">
+          <div className="section-header">
+            <span className="section-tag">How It Works</span>
+            <h2 id="how-title" className="section-title">
+              Up and running in minutes
+            </h2>
+            <p className="section-subtitle">
+              No lengthy setup. No onboarding calls. Just sign up and start building together.
+            </p>
+          </div>
+
+          <div className="how-steps">
+            {howSteps.map(({ number, title, desc }) => (
+              <div key={number} className="how-step">
+                <div className="how-step-number" aria-hidden="true">{number}</div>
+                <h3 className="how-step-title">{title}</h3>
+                <p className="how-step-desc">{desc}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── FINAL CTA ── */}
+      <section className="cta-section section" aria-labelledby="cta-title">
+        <div className="container">
+          <div className="cta-inner">
+            <h2 id="cta-title" className="cta-title">
+              Ready to build better, together?
+            </h2>
+            <p className="cta-subtitle">
+              Join thousands of developers already using DevTrack to stay consistent,
+              collaborate efficiently, and ship with confidence.
+            </p>
+            <Link to="/register">
+              <Button variant="primary" size="lg">Get Started — It&apos;s Free</Button>
+            </Link>
+          </div>
+        </div>
+      </section>
+
+    </main>
+  );
 }
 
-export default LandingPage
+export default LandingPage;
