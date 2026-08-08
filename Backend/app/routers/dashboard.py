@@ -23,6 +23,7 @@ def delete_task(room_code: str, id: int, db: Session = Depends(get_db)):
   if room is None:
       raise HTTPException(status_code=404, detail="Room not found")
   db.query(Task).filter(Task.id == id).delete()
+  db.commit()
   return "Item deleted successfully"
 
 
@@ -34,6 +35,7 @@ def create_task(room_code: str, task: schema.CreateTask, db: Session = Depends(g
         raise HTTPException(status_code=404, detail="Room not found")
 
     new_task = models.Task(
+        room_id=room.id,
         title=task.title,
         description=task.description,
         status=task.status,
