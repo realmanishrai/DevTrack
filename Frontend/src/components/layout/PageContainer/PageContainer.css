@@ -13,6 +13,11 @@
   flex-direction: column;
   min-height: 100vh;
   transition: margin-left var(--transition-slow);
+  background-image: var(--doodle-pattern);
+  background-repeat: repeat;
+  background-size: 960px 960px;
+  background-attachment: fixed;
+  position: relative;
 }
 
 .dt-page-container--sidebar-collapsed .dt-page-main {
