@@ -1,0 +1,86 @@
+.dt-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  border-radius: var(--radius-full);
+  font-family: var(--font-family);
+  font-size: var(--text-tiny);
+  font-weight: var(--text-tiny-weight);
+  line-height: var(--text-tiny-lh);
+  white-space: nowrap;
+  user-select: none;
+}
+
+.dt-badge--sm {
+  padding: 2px 8px;
+  font-size: 11px;
+}
+
+.dt-badge--md {
+  padding: 4px 12px;
+}
+
+/* Status variants per design system 10% opacity rules */
+.dt-badge--success {
+  background-color: rgba(46, 204, 113, 0.15);
+  color: var(--success);
+  border: 1px solid rgba(46, 204, 113, 0.25);
+}
+
+.dt-badge--warning {
+  background-color: rgba(245, 185, 77, 0.15);
+  color: var(--warning);
+  border: 1px solid rgba(245, 185, 77, 0.25);
+}
+
+.dt-badge--danger {
+  background-color: rgba(239, 68, 68, 0.15);
+  color: var(--danger);
+  border: 1px solid rgba(239, 68, 68, 0.25);
+}
+
+.dt-badge--info {
+  background-color: rgba(59, 130, 246, 0.15);
+  color: var(--info);
+  border: 1px solid rgba(59, 130, 246, 0.25);
+}
+
+.dt-badge--primary {
+  background-color: rgba(46, 204, 113, 0.2);
+  color: var(--accent-primary);
+  border: 1px solid var(--accent-primary);
+}
+
+.dt-badge--secondary {
+  background-color: var(--surface-hover);
+  color: var(--text-secondary);
+  border: 1px solid var(--border);
+}
+
+/* Role Badges — Text-only without background box, pill or border */
+.dt-badge--leader {
+  background: none;
+  background-color: transparent;
+  border: none;
+  padding: 0;
+  color: var(--accent-primary);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.dt-badge--member {
+  background: none;
+  background-color: transparent;
+  border: none;
+  padding: 0;
+  color: var(--text-secondary);
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.dt-badge__icon {
+  display: flex;
+  align-items: center;
+}

@@ -1,0 +1,212 @@
+.dt-sidebar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: 260px;
+  background-color: var(--surface);
+  border-right: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  z-index: 100;
+  overflow: visible;
+  transition: width var(--transition-slow), transform var(--transition-slow), background-color var(--transition-normal);
+}
+
+.dt-sidebar--collapsed {
+  width: 72px;
+}
+
+/* Mobile overlay backdrop */
+.dt-sidebar-mobile-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(2px);
+  z-index: 99;
+  display: none;
+}
+
+/* Header */
+.dt-sidebar__header {
+  height: 70px;
+  padding: 0 var(--space-4);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--border);
+  gap: var(--space-2);
+  position: relative;
+}
+
+.dt-sidebar__logo-link {
+  display: inline-flex;
+  align-items: center;
+  text-decoration: none;
+  user-select: none;
+  cursor: pointer;
+}
+
+.dt-sidebar__logo-text {
+  font-size: var(--text-h3);
+  font-weight: 700;
+  color: var(--accent-primary);
+  letter-spacing: -0.5px;
+  line-height: 1;
+}
+
+.dt-sidebar__logo-icon {
+  font-size: 20px;
+  font-weight: 800;
+  color: var(--accent-primary);
+  line-height: 1;
+}
+
+/* Floating Collapse/Expand Toggle Centered on Right Border Line */
+.dt-sidebar__collapse-toggle {
+  position: absolute;
+  right: -14px;
+  top: 21px;
+  z-index: 105;
+  display: flex;
+}
+
+.dt-sidebar__collapse-toggle .dt-icon-button {
+  width: 28px;
+  height: 28px;
+  border-radius: var(--radius-full);
+  background-color: var(--surface);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-sm);
+  color: var(--text-secondary);
+  transition: all var(--transition-fast);
+}
+
+.dt-sidebar__collapse-toggle .dt-icon-button:hover {
+  background-color: var(--surface-hover);
+  color: var(--accent-primary);
+  border-color: var(--accent-primary);
+  box-shadow: var(--shadow-md);
+}
+
+.dt-sidebar__mobile-close {
+  display: none;
+}
+
+/* Navigation */
+.dt-sidebar__nav {
+  flex: 1;
+  padding: var(--space-4) var(--space-2);
+  overflow-y: auto;
+}
+
+.dt-sidebar__menu {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.dt-sidebar__menu-item {
+  width: 100%;
+}
+
+.dt-sidebar__link {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: 10px var(--space-3);
+  border-radius: var(--radius-md);
+  color: var(--text-secondary);
+  font-size: var(--text-small);
+  font-weight: 500;
+  position: relative;
+  transition: all var(--transition-fast);
+  cursor: pointer;
+  border: none;
+  background: transparent;
+  text-align: left;
+}
+
+.dt-sidebar--collapsed .dt-sidebar__link {
+  justify-content: center;
+  padding: 10px;
+}
+
+.dt-sidebar__link:hover {
+  background-color: var(--surface-hover);
+  color: var(--text-primary);
+}
+
+.dt-sidebar__link--active {
+  background-color: rgba(46, 204, 113, 0.12);
+  color: var(--accent-primary);
+  font-weight: 600;
+}
+
+.dt-sidebar__link--active:hover {
+  background-color: rgba(46, 204, 113, 0.18);
+  color: var(--accent-primary);
+}
+
+.dt-sidebar__link-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.dt-sidebar__link-label {
+  white-space: nowrap;
+}
+
+.dt-sidebar__active-indicator {
+  position: absolute;
+  right: 0;
+  top: 20%;
+  bottom: 20%;
+  width: 4px;
+  background-color: var(--accent-primary);
+  border-radius: var(--radius-full);
+}
+
+/* Pinned Bottom Section for Settings Link */
+.dt-sidebar__footer {
+  padding: 0 var(--space-2) var(--space-4);
+  margin-top: auto;
+}
+
+.dt-sidebar__divider {
+  height: 1px;
+  background-color: var(--border);
+  margin-bottom: var(--space-2);
+}
+
+/* Responsive Media Queries */
+@media (max-width: 992px) {
+  .dt-sidebar {
+    transform: translateX(-100%);
+    width: 260px !important;
+  }
+
+  .dt-sidebar--mobile-open {
+    transform: translateX(0);
+    box-shadow: var(--shadow-lg);
+  }
+
+  .dt-sidebar-mobile-overlay {
+    display: block;
+  }
+
+  .dt-sidebar__collapse-toggle {
+    display: none;
+  }
+
+  .dt-sidebar__mobile-close {
+    display: flex;
+  }
+}
