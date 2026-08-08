@@ -7,7 +7,7 @@ class Task(Base):
     __tablename__ = "tasks"
 
     id = Column(Integer, primary_key=True)
-    room_id = Column(String(6), ForeignKey("rooms.id"))
+    room_id = Column(Integer, ForeignKey("rooms.id"))
     title = Column(String(50))
     description = Column(String(200))
     status = Column(String(50))
