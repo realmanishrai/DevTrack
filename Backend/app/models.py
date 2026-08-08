@@ -1,6 +1,6 @@
 from sqlalchemy import Column, Integer, String, DateTime, ForeignKey
 from sqlalchemy.orm import relationship
-from app.database import Base
+from app.database import Base, engine
 from datetime import datetime, timezone
 
 class Task(Base):
@@ -115,3 +115,5 @@ class RoomMember(Base):
     joined_at= Column(DateTime, default=lambda: datetime.now(timezone.utc))
     user= relationship("User", back_populates="room_memberships")
     room= relationship("Room", back_populates="members")
+
+Base.metadata.create_all(bind=engine)

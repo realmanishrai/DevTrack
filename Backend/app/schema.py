@@ -1,6 +1,25 @@
 from pydantic import BaseModel
 from typing import Optional
 
+class CreateRoom(BaseModel):
+    room_name: str
+    description: str
+
+class GetTasks(BaseModel):
+    id: int
+    title: str
+    description: str
+    status: str
+    progress: int
+    priority: str
+    created_by: int
+    due_date: str
+    completed_at: str
+    created_at: str
+    updated_at: str
+
+    model_config = {'from_attributes': True}
+
 class CreateTask(BaseModel):
     title: str
     description:str
@@ -18,4 +37,3 @@ class UpdateTask(BaseModel):
     priority: Optional[str] = None
     due_date: Optional[str] = None
     completed_at: Optional[str] = None
-    
