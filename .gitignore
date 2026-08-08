@@ -3,3 +3,4 @@ Backend/__pycache__/
 Backend/app/__pycache__/
 Backend/DevTrack.db
 Backend/app/routers/__pycache__/
+Frontend/design-system.md

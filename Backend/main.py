@@ -3,7 +3,16 @@ from fastapi.middleware.cors import CORSMiddleware
 from app.routers.room import router as room_router
 from app.routers.dashboard import router as dashboard_router
 
+from app import models
+
+from app.database import engine
+
+from app.routers import login as login_router
+
 app = FastAPI()
+
+models.Base.metadata.create_all(bind=engine)
+
 
 app.add_middleware(
     CORSMiddleware,
@@ -13,5 +22,17 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+
 app.include_router(room_router)
-app.include_router(dashboard_router)
+
+
+app.include_router(dashboard_router,
+    prefix="/dashboard",
+    tags=["Dashboard"])
+
+
+app.include_router(
+    login_router.router,
+    prefix="/login",
+    tags=["Login"]
+)

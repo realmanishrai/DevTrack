@@ -1,122 +1,144 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
-import heroImg from './assets/hero.png'
-import './App.css'
+import React, { useState, useEffect } from 'react';
+import PageContainer from './components/layout/PageContainer/PageContainer';
+import Dashboard from './pages/Dashboard/Dashboard';
+import Card from './components/ui/Card/Card';
+import Button from './components/ui/Button/Button';
+import { mockDashboardData } from './utils/mockDashboardData';
+import { TasksIcon, MembersIcon, ActivityIcon, SettingsIcon } from './assets/icons';
 
-function App() {
-  const [count, setCount] = useState(0)
+export function App() {
+  const [theme, setTheme] = useState('dark');
+  const [activeRoute, setActiveRoute] = useState('dashboard');
+  const [dashboardData] = useState(mockDashboardData);
+  const [toastMessage, setToastMessage] = useState('');
+
+  // Sync data-theme attribute on document root
+  useEffect(() => {
+    document.documentElement.setAttribute('data-theme', theme);
+  }, [theme]);
+
+  const toggleTheme = () => {
+    setTheme((prev) => (prev === 'dark' ? 'light' : 'dark'));
+  };
+
+  const showToast = (msg) => {
+    setToastMessage(msg);
+    setTimeout(() => setToastMessage(''), 3000);
+  };
+
+  const handleNavigate = (routeId) => {
+    if (routeId === 'logout') {
+      showToast('Logged out of DevTrack');
+      return;
+    }
+    setActiveRoute(routeId);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const handleInviteClick = () => {
+    showToast(`Invite link generated for ${dashboardData.room.name} (${dashboardData.room.code})!`);
+  };
+
+  const getPageTitle = () => {
+    switch (activeRoute) {
+      case 'dashboard': return 'Room Overview';
+      case 'tasks': return 'Tasks Board';
+      case 'members': return 'Team Members';
+      case 'activity': return 'Activity Log';
+      case 'settings': return 'Room Settings';
+      default: return 'Dashboard';
+    }
+  };
+
+  const renderPlaceholderView = (title, icon, description) => (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
+      <Card style={{ textAlign: 'center', padding: '64px 24px' }}>
+        <div style={{
+          width: '64px',
+          height: '64px',
+          borderRadius: '50%',
+          backgroundColor: 'rgba(46, 204, 113, 0.12)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          margin: '0 auto 16px'
+        }}>
+          {icon}
+        </div>
+        <h2 style={{ fontSize: '24px', fontWeight: '700', marginBottom: '8px' }}>{title}</h2>
+        <p style={{ color: 'var(--text-secondary)', maxWidth: '480px', margin: '0 auto 24px' }}>
+          {description}
+        </p>
+        <Button variant="primary" onClick={() => setActiveRoute('dashboard')}>
+          Back to Dashboard
+        </Button>
+      </Card>
+    </div>
+  );
 
   return (
-    <>
-      <section id="center">
-        <div className="hero">
-          <img src={heroImg} className="base" width="170" height="179" alt="" />
-          <img src={reactLogo} className="framework" alt="React logo" />
-          <img src={viteLogo} className="vite" alt="Vite logo" />
+    <PageContainer
+      activeRoute={activeRoute}
+      onNavigate={handleNavigate}
+      pageTitle={getPageTitle()}
+      room={dashboardData.room}
+      currentUser={dashboardData.currentUser}
+      theme={theme}
+      onToggleTheme={toggleTheme}
+    >
+      {/* Toast Notification */}
+      {toastMessage && (
+        <div style={{
+          position: 'fixed',
+          bottom: '24px',
+          right: '24px',
+          padding: '14px 24px',
+          backgroundColor: 'var(--accent-primary)',
+          color: '#0F1417',
+          borderRadius: 'var(--radius-md)',
+          fontWeight: '600',
+          boxShadow: 'var(--shadow-lg)',
+          zIndex: 1000,
+          transition: 'all 0.3s ease'
+        }}>
+          {toastMessage}
         </div>
-        <div>
-          <h1>Get started</h1>
-          <p>
-            Edit <code>src/App.jsx</code> and save to test <code>HMR</code>
-          </p>
-        </div>
-        <button
-          type="button"
-          className="counter"
-          onClick={() => setCount((count) => count + 1)}
-        >
-          Count is {count}
-        </button>
-      </section>
+      )}
 
-      <div className="ticks"></div>
+      {/* Active Route Content */}
+      {activeRoute === 'dashboard' && (
+        <Dashboard
+          data={dashboardData}
+          onNavigate={handleNavigate}
+          onInviteClick={handleInviteClick}
+        />
+      )}
 
-      <section id="next-steps">
-        <div id="docs">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#documentation-icon"></use>
-          </svg>
-          <h2>Documentation</h2>
-          <p>Your questions, answered</p>
-          <ul>
-            <li>
-              <a href="https://vite.dev/" target="_blank">
-                <img className="logo" src={viteLogo} alt="" />
-                Explore Vite
-              </a>
-            </li>
-            <li>
-              <a href="https://react.dev/" target="_blank">
-                <img className="button-icon" src={reactLogo} alt="" />
-                Learn more
-              </a>
-            </li>
-          </ul>
-        </div>
-        <div id="social">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#social-icon"></use>
-          </svg>
-          <h2>Connect with us</h2>
-          <p>Join the Vite community</p>
-          <ul>
-            <li>
-              <a href="https://github.com/vitejs/vite" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#github-icon"></use>
-                </svg>
-                GitHub
-              </a>
-            </li>
-            <li>
-              <a href="https://chat.vite.dev/" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#discord-icon"></use>
-                </svg>
-                Discord
-              </a>
-            </li>
-            <li>
-              <a href="https://x.com/vite_js" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#x-icon"></use>
-                </svg>
-                X.com
-              </a>
-            </li>
-            <li>
-              <a href="https://bsky.app/profile/vite.dev" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#bluesky-icon"></use>
-                </svg>
-                Bluesky
-              </a>
-            </li>
-          </ul>
-        </div>
-      </section>
+      {activeRoute === 'tasks' && renderPlaceholderView(
+        'Tasks Management Page',
+        <TasksIcon size={32} color="var(--accent-primary)" />,
+        'The full Tasks view is ready to be linked with task filters, Kanban boards, and drag-and-drop orchestration.'
+      )}
 
-      <div className="ticks"></div>
-      <section id="spacer"></section>
-    </>
-  )
+      {activeRoute === 'members' && renderPlaceholderView(
+        'Team Members Roster',
+        <MembersIcon size={32} color="var(--accent-primary)" />,
+        'Manage room invitations, roles, permissions, and workload allocation across team members.'
+      )}
+
+      {activeRoute === 'activity' && renderPlaceholderView(
+        'Full Activity Log',
+        <ActivityIcon size={32} color="var(--accent-primary)" />,
+        'Comprehensive audit timeline for all room changes, commit links, and task transitions.'
+      )}
+
+      {activeRoute === 'settings' && renderPlaceholderView(
+        'Room Settings',
+        <SettingsIcon size={32} color="var(--accent-primary)" />,
+        'Configure room details, notification preferences, integration webhooks, and archive settings.'
+      )}
+    </PageContainer>
+  );
 }
 
-export default App
+export default App;
