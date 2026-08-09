@@ -1,5 +1,5 @@
 import React from 'react';
-import Card from '../../ui/Card/Card';
+import DtCard from '../../ui/DtCard/DtCard';
 import Avatar from '../../ui/Avatar/Avatar';
 import Badge from '../../ui/Badge/Badge';
 import ProgressBar from '../../ui/ProgressBar/ProgressBar';
@@ -22,7 +22,7 @@ export const MemberCard = ({
   const progressColor = getProgressColor(progressPercentage);
 
   return (
-    <Card className={`dt-member-card ${className}`} hoverable>
+    <DtCard className={`dt-member-card ${className}`} hoverable>
       <div className="dt-member-card__header">
         <Avatar src={avatar} name={name} size="md" status="online" />
         <div className="dt-member-card__info">
@@ -58,7 +58,7 @@ export const MemberCard = ({
           labelText="Task Completion"
         />
       </div>
-    </Card>
+    </DtCard>
   );
 };
 
