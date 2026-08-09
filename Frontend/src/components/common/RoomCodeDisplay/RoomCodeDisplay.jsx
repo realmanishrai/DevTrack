@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import Button from '../../ui/Button/Button';
+import DtButton from '../../ui/DtButton/DtButton';
 import { CopyIcon, CheckIcon, ShareIcon } from '../../../assets/icons';
 import './RoomCodeDisplay.css';
 
@@ -38,23 +38,23 @@ export const RoomCodeDisplay = ({
       </div>
 
       <div className="dt-room-code-actions">
-        <Button
+        <DtButton
           variant={copied ? 'secondary' : 'outline'}
           size="sm"
           icon={copied ? <CheckIcon size={16} /> : <CopyIcon size={16} />}
           onClick={handleCopyCode}
         >
           {copied ? 'Copied!' : 'Copy Code'}
-        </Button>
+        </DtButton>
 
-        <Button
+        <DtButton
           variant="outline"
           size="sm"
           icon={<ShareIcon size={16} />}
           onClick={onInviteClick || (() => alert(`Invite link for Room Code: ${code} copied to share!`))}
         >
           Share
-        </Button>
+        </DtButton>
       </div>
     </div>
   );
