@@ -1,40 +1,47 @@
-import React from 'react';
 import './Button.css';
 
-export const Button = ({
-  children,
-  variant = 'primary', // 'primary' | 'secondary' | 'outline' | 'ghost' | 'danger'
-  size = 'md', // 'sm' | 'md' | 'lg'
+function Button({
+  variant = 'primary',
+  size = 'md',
   icon = null,
-  iconPosition = 'left', // 'left' | 'right'
+  iconPosition = 'left',
   fullWidth = false,
-  className = '',
-  onClick,
   disabled = false,
   type = 'button',
-  ...props
-}) => {
-  const classNames = [
-    'dt-button',
-    `dt-button--${variant}`,
-    `dt-button--${size}`,
-    fullWidth ? 'dt-button--full' : '',
-    className
-  ].filter(Boolean).join(' ');
+  onClick,
+  children,
+  className = '',
+  ...rest
+}) {
+  const classes = [
+    'btn',
+    `btn-${variant}`,
+    size === 'sm' ? 'btn-sm' : size === 'lg' ? 'btn-lg' : '',
+    fullWidth ? 'btn-full' : '',
+    className,
+  ]
+    .filter(Boolean)
+    .join(' ');
 
   return (
     <button
-      type={type}
-      className={classNames}
-      onClick={onClick}
+      className={classes}
       disabled={disabled}
-      {...props}
+      type={type}
+      onClick={onClick}
+      {...rest}
     >
-      {icon && iconPosition === 'left' && <span className="dt-button__icon">{icon}</span>}
-      <span className="dt-button__label">{children}</span>
-      {icon && iconPosition === 'right' && <span className="dt-button__icon">{icon}</span>}
+      {icon && iconPosition === 'left' && (
+        <span className="btn__icon">{icon}</span>
+      )}
+
+      {children}
+
+      {icon && iconPosition === 'right' && (
+        <span className="btn__icon">{icon}</span>
+      )}
     </button>
   );
-};
+}
 
 export default Button;
