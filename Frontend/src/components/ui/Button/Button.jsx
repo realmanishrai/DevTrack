@@ -1,18 +1,10 @@
 import './Button.css';
 
-/**
- * Button
- * @param {string}   variant  - primary | secondary | outline | ghost | danger
- * @param {string}   size     - sm | md | lg
- * @param {boolean}  fullWidth
- * @param {boolean}  disabled
- * @param {string}   type     - button | submit | reset
- * @param {function} onClick
- * @param {ReactNode} children
- */
 function Button({
   variant = 'primary',
   size = 'md',
+  icon = null,
+  iconPosition = 'left',
   fullWidth = false,
   disabled = false,
   type = 'button',
@@ -39,7 +31,15 @@ function Button({
       onClick={onClick}
       {...rest}
     >
+      {icon && iconPosition === 'left' && (
+        <span className="btn__icon">{icon}</span>
+      )}
+
       {children}
+
+      {icon && iconPosition === 'right' && (
+        <span className="btn__icon">{icon}</span>
+      )}
     </button>
   );
 }

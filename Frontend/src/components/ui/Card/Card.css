@@ -1,6 +1,5 @@
-/* ============================================================
-   Card Component
-   ============================================================ */
+
+/* --- Landing page card --- */
 .card {
   background: var(--surface-card);
   border: 1px solid var(--border);
@@ -18,7 +17,7 @@
   transform: translateY(-3px);
 }
 
-/* Variants */
+/* --- Variants --- */
 .card-highlight {
   border-color: var(--accent-primary);
   background: linear-gradient(
@@ -31,11 +30,12 @@
 .card-flat {
   box-shadow: none;
 }
+
 .card-flat:hover {
   transform: none;
 }
 
-/* Card icon */
+/* --- Card icon --- */
 .card-icon {
   width: 48px;
   height: 48px;
@@ -61,4 +61,46 @@
   font-size: var(--text-body);
   color: var(--text-secondary);
   line-height: 1.65;
+}
+
+
+/* (dashboard)*/
+
+.dt-card {
+  background-color: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+  transition:
+    background-color var(--transition-normal),
+    border-color var(--transition-normal),
+    transform var(--transition-fast),
+    box-shadow var(--transition-fast);
+}
+
+.dt-card--padding-none {
+  padding: 0;
+}
+
+.dt-card--padding-compact {
+  padding: var(--space-3);
+}
+
+.dt-card--padding-normal {
+  padding: var(--space-5);
+}
+
+.dt-card--padding-spacious {
+  padding: var(--space-6);
+}
+
+.dt-card--hoverable:hover,
+.dt-card--clickable:hover {
+  background-color: var(--surface-hover);
+  box-shadow: var(--shadow-md);
+  border-color: rgba(46, 204, 113, 0.3);
+}
+
+.dt-card--clickable {
+  cursor: pointer;
 }

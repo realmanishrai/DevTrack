@@ -1,28 +1,54 @@
-
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Poppins:wght@400;500;600;700&family=Sora:wght@600;700&display=swap');
 @import './styles/theme.css';
 
-*, *::before, *::after {
+/*  Global Reset */
+
+*,
+*::before,
+*::after {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
 }
 
 html {
+  width: 100%;
+  min-height: 100vh;
   scroll-behavior: smooth;
   font-size: 16px;
 }
 
 body {
+  width: 100%;
+  min-height: 100vh;
   font-family: var(--font-family);
   font-size: var(--text-body);
   color: var(--text-primary);
   background-color: var(--bg-primary);
-  line-height: 1.6;
+  line-height: var(--text-body-lh);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  transition: background-color var(--transition-normal), color var(--transition-normal);
-  min-height: 100vh;
+  transition:
+    background-color var(--transition-normal),
+    color var(--transition-normal);
+}
+
+/*Form Elements*/
+
+button,
+input,
+select,
+textarea {
+  font-family: inherit;
+  font-size: inherit;
+  color: inherit;
+}
+
+button {
+  cursor: pointer;
+  border: none;
+  background: none;
+  outline: none;
 }
 
 img {
@@ -36,22 +62,24 @@ a {
   text-decoration: none;
 }
 
-button {
-  cursor: pointer;
-  font-family: inherit;
-  border: none;
-  background: none;
-}
-
-ul, ol {
+ul,
+ol {
   list-style: none;
 }
 
-h1, h2, h3, h4, h5, h6 {
+/*  Typography*/
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
   line-height: 1.2;
   font-weight: 700;
 }
 
+/* Layout Utilities */
 
 .container {
   width: 100%;
@@ -60,11 +88,11 @@ h1, h2, h3, h4, h5, h6 {
   padding: 0 var(--space-5);
 }
 
-
 .section {
   padding: var(--space-9) 0;
 }
 
+/* Accessibility */
 
 :focus-visible {
   outline: 2px solid var(--accent-primary);
@@ -72,17 +100,22 @@ h1, h2, h3, h4, h5, h6 {
   border-radius: var(--radius-sm);
 }
 
+/* Scrollbar */
 
 ::-webkit-scrollbar {
-  width: 6px;
+  width: 8px;
+  height: 8px;
 }
+
 ::-webkit-scrollbar-track {
-  background: var(--bg-primary);
+  background: var(--scrollbar-track);
 }
+
 ::-webkit-scrollbar-thumb {
-  background: var(--border);
+  background: var(--scrollbar-thumb);
   border-radius: var(--radius-full);
 }
+
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--accent-primary);
+  background: var(--text-muted);
 }

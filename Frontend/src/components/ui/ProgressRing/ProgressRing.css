@@ -1,0 +1,42 @@
+.dt-progress-ring-wrapper {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.dt-progress-ring-svg {
+  transform: rotate(-90deg);
+  overflow: visible;
+}
+
+.dt-progress-ring-bg {
+  fill: transparent;
+  stroke: var(--border);
+}
+
+.dt-progress-ring-fill {
+  fill: transparent;
+  stroke-linecap: round;
+  transition: stroke-dashoffset var(--transition-slow), stroke var(--transition-normal);
+}
+
+.dt-progress-ring-content {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.dt-progress-ring-percent {
+  font-size: var(--text-h2);
+  font-weight: var(--text-h2-weight);
+  color: var(--text-primary);
+  line-height: 1;
+}

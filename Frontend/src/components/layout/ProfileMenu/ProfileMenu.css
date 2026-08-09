@@ -1,0 +1,109 @@
+.dt-profile-menu-container {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+}
+
+.dt-profile-menu__trigger {
+  background: transparent;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  border-radius: var(--radius-full);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform var(--transition-fast);
+}
+
+.dt-profile-menu__trigger:hover {
+  transform: scale(1.05);
+}
+
+.dt-profile-menu__dropdown {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  width: 220px;
+  background-color: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-lg);
+  padding: var(--space-3);
+  z-index: 200;
+  animation: dtFadeInDown 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes dtFadeInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.dt-profile-menu__header {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: var(--space-2) var(--space-2);
+}
+
+.dt-profile-menu__name {
+  font-size: var(--text-small);
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.dt-profile-menu__role-wrapper {
+  display: flex;
+}
+
+.dt-profile-menu__divider {
+  height: 1px;
+  background-color: var(--border);
+  margin: var(--space-2) 0;
+}
+
+.dt-profile-menu__list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.dt-profile-menu__item {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: 10px var(--space-3);
+  border-radius: var(--radius-sm);
+  background: transparent;
+  border: none;
+  color: var(--text-secondary);
+  font-size: var(--text-small);
+  font-weight: 500;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  text-align: left;
+}
+
+.dt-profile-menu__item:hover {
+  background-color: var(--surface-hover);
+  color: var(--text-primary);
+}
+
+.dt-profile-menu__item--danger {
+  color: var(--danger);
+}
+
+.dt-profile-menu__item--danger:hover {
+  background-color: rgba(239, 68, 68, 0.12);
+  color: var(--danger);
+}
