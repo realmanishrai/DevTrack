@@ -137,35 +137,7 @@ function LandingPage() {
         </div>
       </section>
 
-      {/* ── WHY DEVTRACK ── */}
-      <section
-        id="why-devtrack"
-        className="why-section section"
-        aria-labelledby="why-title"
-      >
-        <div className="container">
-          <div className="section-header">
-            <span className="section-tag">Why DevTrack</span>
-            <h2 id="why-title" className="section-title">
-              Everything your team needs to ship faster
-            </h2>
-            <p className="section-subtitle">
-              One platform to replace scattered tools, status calls, and missed deadlines.
-            </p>
-          </div>
-
-          <div className="why-grid">
-            {whyCards.map(({ icon, title, body }) => (
-              <Card key={title}>
-                <div className="card-icon" aria-hidden="true">{icon}</div>
-                <h3 className="card-title">{title}</h3>
-                <p className="card-body">{body}</p>
-              </Card>
-            ))}
-          </div>
-        </div>
-      </section>
-
+    
       {/* ── FEATURES ── */}
       <section
         id="features"
@@ -203,7 +175,7 @@ function LandingPage() {
       >
         <div className="container">
           <div className="section-header">
-            <span className="section-tag">By the Numbers</span>
+            <span className="section-tag">Statistics</span>
             <h2 id="stats-title" className="section-title">
               Developers trust DevTrack to deliver
             </h2>
@@ -222,6 +194,7 @@ function LandingPage() {
 
       {/* ── HOW IT WORKS ── */}
       <section
+        id="how-it-works"
         className="how-section section"
         aria-labelledby="how-title"
       >
@@ -263,10 +236,49 @@ function LandingPage() {
               <Button variant="primary" size="lg">Get Started — It&apos;s Free</Button>
             </Link>
           </div>
-        </div>
-      </section>
+        </div>  
+        </section>
+        <footer className="site-footer">
+  <div className="footer-container">
+    <div className="footer-brand">
+      <h2>DevTrack</h2>
+      <p>Build together. Track progress. Ship faster.</p>
+    </div>
 
+    <div className="footer-links">
+      <div className="footer-column">
+        <h3>Product</h3>
+        <a href="#features">Features</a>
+        <a href="#statistics">Statistics</a>
+        <a href="#how-it-works">How It Works</a>
+      </div>
+
+      <div className="footer-column">
+        <h3>Company</h3>
+        <a href="#">About</a>
+        <a href="#">Contact</a>
+      </div>
+
+      <div className="footer-column">
+        <h3>Legal</h3>
+        <a href="#">Privacy</a>
+        <a href="#">Policy</a>
+      </div>
+    </div>
+  </div>
+
+  <div className="footer-bottom">
+    <p>© 2026 DevTrack. All rights reserved.</p>
+
+    <div className="footer-bottom-links">
+      <a href="#">Privacy Policy</a>
+      <a href="#">Terms of Service</a>
+    </div>
+  </div>
+</footer>
     </main>
+
+
   );
 }
 

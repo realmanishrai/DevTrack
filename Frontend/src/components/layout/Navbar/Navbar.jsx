@@ -34,14 +34,15 @@ function Navbar({ theme, onToggleTheme }) {
 
         {/* CENTER — Desktop nav links, widely spaced */}
         <div className="navbar-links" aria-label="Site sections">
-          <button className="navbar-link" onClick={() => scrollTo('why-devtrack')}>
-            Why DevTrack
-          </button>
+          
           <button className="navbar-link" onClick={() => scrollTo('features')}>
             Features
           </button>
           <button className="navbar-link" onClick={() => scrollTo('statistics')}>
             Statistics
+          </button>
+          <button className="navbar-link" onClick={() => scrollTo('how-it-works')}>
+            How It Works
           </button>
         </div>
 
@@ -74,8 +75,8 @@ function Navbar({ theme, onToggleTheme }) {
       {/* Mobile dropdown */}
       {menuOpen && (
         <div id="mobile-menu" className="navbar-mobile-menu" role="menu">
-          <button className="navbar-mobile-link" onClick={() => scrollTo('why-devtrack')}>
-            Why DevTrack
+          <button className="navbar-mobile-link" onClick={() => scrollTo('how-it-works')}>
+            How It Works
           </button>
           <button className="navbar-mobile-link" onClick={() => scrollTo('features')}>
             Features
