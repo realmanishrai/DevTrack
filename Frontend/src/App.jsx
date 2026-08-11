@@ -8,6 +8,7 @@ import Register from './pages/Register/Register';
 
 import PageContainer from './components/layout/PageContainer/PageContainer';
 import Dashboard from './pages/Dashboard/Dashboard';
+import Tasks from './pages/Tasks/Tasks';
 import DtCard from './components/ui/DtCard/DtCard';
 import DtButton from './components/ui/DtButton/DtButton';
 import { mockDashboardData } from './utils/mockDashboardData';
@@ -148,12 +149,14 @@ function DashboardLayout({ theme, onToggleTheme }) {
         />
       )}
 
-      {activeRoute === 'tasks' &&
-        renderPlaceholderView(
-          'Tasks Management Page',
-          <TasksIcon size={32} color="var(--accent-primary)" />,
-          'The full Tasks view is ready to be linked with task filters, Kanban boards, and drag-and-drop orchestration.'
-        )}
+      {activeRoute === 'tasks' && (
+        <Tasks
+          data={dashboardData}
+          onTaskCreate={(newTask) => showToast(`Task '${newTask.title}' created successfully!`)}
+          onTaskUpdate={(taskId, fields) => showToast('Task updated successfully!')}
+          onTaskDelete={(taskId) => showToast('Task deleted successfully!')}
+        />
+      )}
 
       {activeRoute === 'members' &&
         renderPlaceholderView(

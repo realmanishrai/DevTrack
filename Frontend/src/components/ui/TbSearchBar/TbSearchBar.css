@@ -1,0 +1,81 @@
+/* TbSearchBar Styles - Design System Token Driven */
+.tb-search-bar {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+  background-color: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  transition: border-color var(--transition-fast), box-shadow var(--transition-fast), background-color var(--transition-fast);
+}
+
+.tb-search-bar:hover {
+  border-color: var(--border-light, #34414f);
+}
+
+.tb-search-bar:focus-within {
+  border-color: var(--accent-primary);
+  box-shadow: 0 0 0 3px var(--accent-glow);
+}
+
+.tb-search-bar__icon {
+  position: absolute;
+  left: var(--space-3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+}
+
+.tb-search-bar__input {
+  width: 100%;
+  min-width: 0;
+  height: 40px;
+  padding: 0 var(--space-7) 0 var(--space-7);
+  background: transparent;
+  border: none;
+  outline: none;
+  font-family: var(--font-family);
+  font-size: var(--text-small);
+  font-weight: 400;
+  color: var(--text-primary);
+  letter-spacing: 0.1px;
+  box-sizing: border-box;
+}
+
+.tb-search-bar__input::placeholder {
+  color: var(--text-muted);
+}
+
+.tb-search-bar__input:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.tb-search-bar__clear-btn {
+  position: absolute;
+  right: var(--space-2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  padding: 0;
+  background-color: transparent;
+  border: none;
+  border-radius: var(--radius-full);
+  cursor: pointer;
+  transition: background-color var(--transition-fast), color var(--transition-fast);
+}
+
+.tb-search-bar__clear-btn:hover {
+  background-color: var(--surface-hover);
+}
+
+.tb-search-bar__clear-btn:focus-visible {
+  outline: 2px solid var(--accent-primary);
+}

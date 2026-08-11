@@ -10,6 +10,12 @@
   background-color: var(--surface-hover);
 }
 
+.dt-avatar--xs {
+  width: 24px;
+  height: 24px;
+  font-size: 10px;
+}
+
 .dt-avatar--sm {
   width: 32px;
   height: 32px;

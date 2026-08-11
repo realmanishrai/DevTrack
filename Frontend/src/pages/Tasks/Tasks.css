@@ -1,0 +1,173 @@
+/* Tasks Page Styles - Design System Token Driven */
+.dt-tasks-page {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+  width: 100%;
+  max-width: 1360px;
+  min-width: 0;
+  box-sizing: border-box;
+  margin: 0 auto;
+  padding-bottom: var(--space-8);
+  overflow-x: hidden;
+  animation: dtPageFadeIn var(--transition-normal) ease-out;
+}
+
+@keyframes dtPageFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Page Header */
+.dt-tasks-page__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  flex-wrap: wrap;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+}
+
+.dt-tasks-page__header-left {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  min-width: 0;
+  max-width: 100%;
+  box-sizing: border-box;
+  flex: 1 1 300px;
+}
+
+.dt-tasks-page__title-badge-row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  flex-wrap: wrap;
+  max-width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+}
+
+.dt-tasks-page__title {
+  font-family: var(--font-family);
+  font-size: var(--text-h2);
+  font-weight: var(--text-h2-weight);
+  color: var(--text-primary);
+  line-height: var(--text-h2-lh);
+  margin: 0;
+  letter-spacing: -0.5px;
+  word-break: break-word;
+}
+
+.dt-tasks-page__room-tag {
+  font-family: var(--font-family);
+  font-size: var(--text-tiny);
+  font-weight: 600;
+  color: var(--accent-primary);
+  background-color: var(--accent-subtle, rgba(46, 204, 113, 0.08));
+  border: 1px solid var(--accent-glow, rgba(46, 204, 113, 0.15));
+  padding: 3px var(--space-3);
+  border-radius: var(--radius-full);
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  box-sizing: border-box;
+}
+
+.dt-tasks-page__subtitle {
+  font-family: var(--font-family);
+  font-size: var(--text-body);
+  color: var(--text-secondary);
+  margin: 0;
+  word-break: break-word;
+  max-width: 100%;
+}
+
+.dt-tasks-page__header-right {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  box-sizing: border-box;
+  flex-shrink: 0;
+}
+
+/* Sections */
+.dt-tasks-page__section {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+/* Responsive Media Queries matching Dashboard */
+@media (max-width: 992px) {
+  .dt-tasks-page {
+    gap: var(--space-4);
+    padding-bottom: var(--space-6);
+  }
+
+  .dt-tasks-page__header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-3);
+  }
+
+  .dt-tasks-page__header-left {
+    width: 100%;
+    flex: 1 1 100%;
+  }
+
+  .dt-tasks-page__header-right {
+    width: 100%;
+    justify-content: flex-start;
+  }
+
+  .dt-tasks-page__title {
+    font-size: var(--text-h3);
+  }
+}
+
+@media (max-width: 600px) {
+  .dt-tasks-page {
+    gap: var(--space-3);
+  }
+
+  .dt-tasks-page__title-badge-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-1);
+  }
+
+  .dt-tasks-page__title {
+    font-size: 22px;
+  }
+
+  .dt-tasks-page__room-tag {
+    font-size: 11px;
+    padding: 2px var(--space-2);
+  }
+
+  .dt-tasks-page__subtitle {
+    font-size: var(--text-small);
+  }
+
+  .dt-tasks-page__header-right {
+    width: 100%;
+  }
+
+  .dt-tasks-page__header-right button {
+    width: 100%;
+    justify-content: center;
+  }
+}
