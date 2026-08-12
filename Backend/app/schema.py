@@ -37,3 +37,13 @@ class UpdateTask(BaseModel):
     priority: Optional[str] = None
     due_date: Optional[str] = None
     completed_at: Optional[str] = None
+
+class CreateUser(BaseModel):
+    firstname: str
+    lasttname: str
+    username: str
+    email: str
+    password: str
+
+class RefreshRequest(BaseModel):
+    refresh_token: str

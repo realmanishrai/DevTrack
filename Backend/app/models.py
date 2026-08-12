@@ -65,7 +65,7 @@ class ActivityLog(Base):
     __tablename__ = "activity_logs"
 
     id = Column(Integer, primary_key=True)
-    room_id = Column(String(6), ForeignKey("rooms.id"))
+    room_id = Column(Integer, ForeignKey("rooms.id"))
     user_id = Column(Integer, ForeignKey("users.id"))
     task_id = Column(Integer, ForeignKey("tasks.id"), nullable=True)
     action_type = Column(String(50))
@@ -79,6 +79,8 @@ class User(Base):
     __tablename__ = "users"
 
     id = Column(Integer, primary_key=True, index=True)
+    firstname = Column(String(50), nullable=False)
+    lasttname = Column(String(50), nullable=False)
     username = Column(String(50), unique=True, nullable=False)
     email = Column(String(255), unique=True, nullable=False)
     password_hash = Column(String, nullable=False)
@@ -115,5 +117,11 @@ class RoomMember(Base):
     joined_at= Column(DateTime, default=lambda: datetime.now(timezone.utc))
     user= relationship("User", back_populates="room_memberships")
     room= relationship("Room", back_populates="members")
+
+class JoinRequest(Base):
+    __tablename__="join_room"
+    id = Column(Integer, primary_key=True, index=True)
+    room_id = Column(Integer, ForeignKey("rooms.id"), nullable = False)
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
 
 Base.metadata.create_all(bind=engine)
