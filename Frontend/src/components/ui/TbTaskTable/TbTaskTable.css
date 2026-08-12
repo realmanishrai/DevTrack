@@ -1,0 +1,308 @@
+/* TbTaskTable Styles - Design System Token Driven */
+.tb-task-table-container {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+  overflow: hidden;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border);
+  background-color: var(--surface);
+  box-shadow: var(--shadow-sm);
+}
+
+.tb-task-table__scroll-wrap {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  box-sizing: border-box;
+  scrollbar-width: thin;
+  scrollbar-color: var(--scrollbar-thumb) var(--scrollbar-track);
+}
+
+.tb-task-table__scroll-wrap::-webkit-scrollbar {
+  height: 6px;
+}
+
+.tb-task-table__scroll-wrap::-webkit-scrollbar-track {
+  background: var(--scrollbar-track);
+}
+
+.tb-task-table__scroll-wrap::-webkit-scrollbar-thumb {
+  background: var(--scrollbar-thumb);
+  border-radius: var(--radius-full);
+}
+
+.tb-task-table {
+  width: 100%;
+  min-width: 800px;
+  border-collapse: collapse;
+  text-align: left;
+}
+
+.tb-task-table__thead {
+  display: table-header-group;
+}
+
+.tb-task-table__head-row {
+  background-color: var(--bg-secondary);
+  border-bottom: 1px solid var(--border);
+}
+
+.tb-task-table__th {
+  padding: var(--space-3) var(--space-4);
+  font-family: var(--font-family);
+  font-size: var(--text-tiny);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--text-muted);
+  white-space: nowrap;
+}
+
+.tb-task-table__th--title {
+  min-width: 260px;
+}
+
+.tb-task-table__th--assignee {
+  min-width: 150px;
+}
+
+.tb-task-table__th--priority {
+  min-width: 110px;
+}
+
+.tb-task-table__th--status {
+  min-width: 110px;
+}
+
+.tb-task-table__th--progress {
+  min-width: 140px;
+}
+
+.tb-task-table__th--due-date {
+  min-width: 130px;
+}
+
+.tb-task-table__th--actions {
+  width: 50px;
+}
+
+/* Empty State */
+.tb-task-table__empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: var(--space-8) var(--space-4);
+  box-sizing: border-box;
+}
+
+.tb-task-table__empty-icon-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 64px;
+  height: 64px;
+  border-radius: var(--radius-full);
+  background-color: rgba(46, 204, 113, 0.12);
+  margin-bottom: var(--space-4);
+}
+
+.tb-task-table__empty-title {
+  font-family: var(--font-family);
+  font-size: var(--text-h3);
+  font-weight: var(--text-h3-weight);
+  color: var(--text-primary);
+  margin-bottom: var(--space-2);
+}
+
+.tb-task-table__empty-desc {
+  font-family: var(--font-family);
+  font-size: var(--text-small);
+  color: var(--text-secondary);
+  max-width: 440px;
+  line-height: 1.6;
+  margin-bottom: var(--space-5);
+}
+
+.tb-task-table__empty-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+/* Pagination Bar */
+.tb-task-table__pagination {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-3) var(--space-4);
+  background-color: var(--bg-secondary);
+  border-top: 1px solid var(--border);
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+.tb-task-table__pagination-info {
+  font-family: var(--font-family);
+  font-size: var(--text-tiny);
+  color: var(--text-secondary);
+}
+
+.tb-task-table__pagination-bold {
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.tb-task-table__pagination-controls {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  flex-wrap: wrap;
+}
+
+.tb-task-table__page-size {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+  margin-right: var(--space-2);
+}
+
+.tb-task-table__page-size-label {
+  font-family: var(--font-family);
+  font-size: var(--text-tiny);
+  color: var(--text-muted);
+}
+
+.tb-task-table__size-dropdown {
+  width: 65px;
+}
+
+.tb-task-table__pagination-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  background-color: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  color: var(--text-primary);
+  cursor: pointer;
+  transition: background-color var(--transition-fast), border-color var(--transition-fast);
+}
+
+.tb-task-table__pagination-btn:hover:not(:disabled) {
+  background-color: var(--surface-hover);
+  border-color: var(--accent-primary);
+}
+
+.tb-task-table__pagination-btn:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+.tb-task-table__page-numbers {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.tb-task-table__page-num {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 30px;
+  height: 30px;
+  padding: 0 6px;
+  background-color: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  font-family: var(--font-family);
+  font-size: var(--text-tiny);
+  font-weight: 500;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.tb-task-table__page-num:hover {
+  background-color: var(--surface-hover);
+  color: var(--text-primary);
+}
+
+.tb-task-table__page-num--active {
+  background-color: var(--accent-primary);
+  border-color: var(--accent-primary);
+  color: var(--text-on-accent, #0F1417);
+  font-weight: 700;
+}
+
+.tb-task-table__desktop-pagination {
+  display: flex;
+  align-items: center;
+}
+
+.tb-task-table__mobile-pagination {
+  display: none;
+}
+
+/* ======================================================== */
+/* Responsive Breakpoint <= 768px (Mobile)                  */
+/* ======================================================== */
+@media (max-width: 768px) {
+  .tb-task-table__thead {
+    display: none !important;
+  }
+
+  .tb-task-table {
+    min-width: 100% !important;
+    width: 100% !important;
+  }
+
+  .tb-task-table__scroll-wrap {
+    overflow-x: hidden;
+  }
+
+  .tb-task-table__desktop-pagination {
+    display: none !important;
+  }
+
+  .tb-task-table__mobile-pagination {
+    display: inline-flex !important;
+    align-items: center;
+  }
+
+  .tb-task-table__mobile-page-indicator {
+    font-family: var(--font-family);
+    font-size: var(--text-small);
+    color: var(--text-secondary);
+    padding: 0 var(--space-4);
+    user-select: none;
+  }
+
+  .tb-task-table__pagination {
+    justify-content: center;
+    padding: var(--space-3) var(--space-4);
+  }
+
+  .tb-task-table__pagination-controls {
+    justify-content: center;
+    width: 100%;
+    gap: var(--space-3);
+  }
+
+  .tb-task-table__pagination-btn {
+    width: 36px;
+    height: 36px;
+  }
+}

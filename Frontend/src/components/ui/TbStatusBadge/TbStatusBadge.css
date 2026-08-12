@@ -1,0 +1,46 @@
+/* TbStatusBadge Styles - Design System Token Driven */
+.tb-status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  font-family: var(--font-family);
+  font-size: var(--text-tiny);
+  font-weight: var(--text-tiny-weight);
+  line-height: var(--text-tiny-lh);
+  letter-spacing: 0.2px;
+  white-space: nowrap;
+  user-select: none;
+}
+
+/* Size Variants */
+.tb-status-badge--sm {
+  font-size: 11px;
+}
+
+.tb-status-badge--md {
+  font-size: var(--text-tiny);
+}
+
+.tb-status-badge__icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.tb-status-badge__label {
+  display: inline-block;
+}
+
+/* Status Variants — text + icon only, no background box */
+.tb-status-badge--completed {
+  color: var(--success);
+}
+
+.tb-status-badge--in-progress {
+  color: var(--warning);
+}
+
+.tb-status-badge--not-started {
+  color: var(--danger);
+}
