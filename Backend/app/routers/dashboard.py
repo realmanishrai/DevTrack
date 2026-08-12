@@ -13,7 +13,24 @@ def get_tasks(room_code: str, db: Session = Depends(get_db)):
   room = db.query(Room).filter(Room.room_code == room_code).first()
   if room is None:
     raise HTTPException(status_code=404, detail="Room not found")
-  return db.query(Task).filter(Task.room_id == room.id).all()
+  tasks= db.query(Task).filter(Task.room_id == room.id).all()
+  return[
+     {
+        "id": task.id,
+        "title":task.title,
+        "description": task.description,
+        "status": task.status,
+        "progress": task.progress,
+        "priority": task.priority,
+        "created_by": task.created_by,
+        "due_date": task.due_date,
+        "completed_at": task.completed_at,
+        "created_at": task.created_at,
+        "updated_at": task.updated_at,
+        "assignee_ids": [assignee.user_id for assignee in task.assignees]
+     }
+     for task in tasks
+  ]
 
 
 
@@ -46,6 +63,23 @@ def create_task(room_code: str, task: schema.CreateTask, db: Session = Depends(g
     db.add(new_task)
     db.commit()
     db.refresh(new_task)
+
+    for user_id in task.assignee_ids:
+       member = db.query(models.RoomMember).filter(
+          models.RoomMember.user_id== user_id,
+          models.RoomMember.room_id== room.id
+       ).first()
+       if member is None:
+          raise HTTPException(
+             status_code=400,
+             detail=f"User{user_id} is not a member of this room"
+          )
+       assignee= models.TaskAssignee(
+          task_id= new_task.id,
+          user_id= user_id
+       )
+       db.add(assignee)
+       db.commit()
     return new_task
 
 
@@ -66,6 +100,39 @@ def update_task(room_code: str, task_id: int, task: schema.UpdateTask, db: Sessi
     existing_task.priority = task.priority
     existing_task.due_date = task.due_date
     existing_task.completed_at = task.completed_at
+
+    if task.assignee_ids is not None:
+       existing_assignees= db.query(models.TaskAssignee).filter(
+          models.TaskAssignee.task_id == existing_task.id
+       ).all()
+
+       old_assignee_ids= {assignee.user_id for assignee in existing_assignees}
+       new_assignee_ids= set(task.assignee_ids)
+
+       for user_id in new_assignee_ids:
+          member= db.query(models.RoomMember).filter(
+             models.RoomMember.room_id== room.id,
+             models.RoomMember.user_id== user_id
+          ).first()
+          if member is None:
+            raise HTTPException(
+               status_code=400,
+               detail= f"User {user_id} is not a member of this room"
+            )
+          for assignee in existing_assignees:
+             if assignee.user_id not in new_assignee_ids:
+                db.delete(assignee)
+          for user_id in new_assignee_ids:
+             if user_id not in old_assignee_ids:
+                assignee= models.TaskAssignee(
+                   task_id= existing_task.id,
+                   user_id= user_id
+                )
+                db.add(assignee)
+
+             
+
+
 
     db.commit()
     db.refresh(existing_task)
