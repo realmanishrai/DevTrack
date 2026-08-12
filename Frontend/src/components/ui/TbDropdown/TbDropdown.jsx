@@ -6,7 +6,7 @@ import './TbDropdown.css';
 export const TbDropdown = ({
   options = [],
   value,
-  onChange = () => {},
+  onChange = () => { },
   placeholder = 'Select option...',
   label = null,
   id = null,

@@ -15,12 +15,12 @@ export const TbTaskTable = ({
   tasks = [],
   members = [],
   currentUser = {},
-  onViewDetails = () => {},
-  onEditTask = () => {},
-  onDeleteTask = () => {},
-  onQuickStatusChange = () => {},
-  onAddTaskClick = () => {},
-  onResetFilters = () => {},
+  onViewDetails = () => { },
+  onEditTask = () => { },
+  onDeleteTask = () => { },
+  onQuickStatusChange = () => { },
+  onAddTaskClick = () => { },
+  onResetFilters = () => { },
   isFilterActive = false,
   className = ''
 }) => {
@@ -38,7 +38,7 @@ export const TbTaskTable = ({
   // Pagination calculations
   const totalItems = tasks.length;
   const totalPages = Math.max(1, Math.ceil(totalItems / pageSize));
-  
+
   // Safe page boundary
   const validCurrentPage = Math.min(currentPage, totalPages);
   const startIndex = (validCurrentPage - 1) * pageSize;
@@ -125,9 +125,13 @@ export const TbTaskTable = ({
           <div className="tb-task-table__pagination">
             {/* Desktop Pagination Counter */}
             <div className="tb-task-table__pagination-info tb-task-table__desktop-pagination">
-              Showing <span className="tb-task-table__pagination-bold">{startIndex + 1}</span>–
-              <span className="tb-task-table__pagination-bold">{endIndex}</span> of{' '}
-              <span className="tb-task-table__pagination-bold">{totalItems}</span> tasks
+              <span>
+                {'Showing '}
+                <span className="tb-task-table__pagination-bold">{startIndex + 1}–{endIndex}</span>
+                {' of '}
+                <span className="tb-task-table__pagination-bold">{totalItems}</span>
+                {' tasks'}
+              </span>
             </div>
 
             <div className="tb-task-table__pagination-controls">
@@ -164,7 +168,10 @@ export const TbTaskTable = ({
 
               {/* Mobile "Page X of Y" Label */}
               <span className="tb-task-table__mobile-page-indicator tb-task-table__mobile-pagination">
-                Page&nbsp;<span className="tb-task-table__pagination-bold">{validCurrentPage}</span>&nbsp;of&nbsp;<span className="tb-task-table__pagination-bold">{totalPages}</span>
+                {'Page '}
+                <span className="tb-task-table__pagination-bold">{validCurrentPage}</span>
+                {' of '}
+                <span className="tb-task-table__pagination-bold">{totalPages}</span>
               </span>
 
               {/* Desktop Page Numbers */}

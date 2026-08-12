@@ -62,7 +62,7 @@ export const TbTaskStats = ({
           <DtCard
             key={stat.id}
             className={`tb-task-stat-card tb-task-stat-card--${stat.type} ${isSelected ? 'tb-task-stat-card--selected' : ''}`}
-            hoverable
+            hoverable={false}
             onClick={() => onStatClick(stat.id)}
           >
             <div className="tb-task-stat-card__header">

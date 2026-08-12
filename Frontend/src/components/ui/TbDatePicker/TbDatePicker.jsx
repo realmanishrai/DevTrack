@@ -1,4 +1,5 @@
-import React, { useState, useRef, useEffect, useMemo, useCallback } from 'react';
+import React, { useState, useRef, useEffect, useMemo } from 'react';
+import TbPopover from '../TbPopover/TbPopover';
 import {
   CalendarIcon,
   ChevronLeftIcon,
@@ -9,7 +10,7 @@ import './TbDatePicker.css';
 
 export const TbDatePicker = ({
   value = '',
-  onChange = () => {},
+  onChange = () => { },
   placeholder = 'Select due date...',
   label = null,
   id = null,
@@ -18,9 +19,6 @@ export const TbDatePicker = ({
   className = ''
 }) => {
   const [isOpen, setIsOpen] = useState(false);
-  const [isFlipped, setIsFlipped] = useState(false);
-  const [isRightAligned, setIsRightAligned] = useState(false);
-  const datePickerRef = useRef(null);
   const triggerRef = useRef(null);
 
   // Parse initial selected date or default to current date view
@@ -50,69 +48,10 @@ export const TbDatePicker = ({
     }
   }, [parsedValueDate]);
 
-  // Smart Auto-Flip Positioning Calculation
-  const checkPositioning = useCallback(() => {
-    if (!triggerRef.current) return;
-    const rect = triggerRef.current.getBoundingClientRect();
-    const popupHeight = 330;
-    const popupWidth = 280;
-
-    // Check viewport space
-    const viewportHeight = window.innerHeight;
-    const viewportWidth = window.innerWidth;
-    const spaceBelow = viewportHeight - rect.bottom;
-    const spaceAbove = rect.top;
-
-    // Check closest scrollable parent (e.g. modal body)
-    let containerSpaceBelow = spaceBelow;
-    let parent = triggerRef.current.parentElement;
-    while (parent && parent !== document.body) {
-      const overflowY = window.getComputedStyle(parent).overflowY;
-      if (overflowY === 'auto' || overflowY === 'scroll') {
-        const parentRect = parent.getBoundingClientRect();
-        containerSpaceBelow = parentRect.bottom - rect.bottom;
-        break;
-      }
-      parent = parent.parentElement;
-    }
-
-    // Flip upward if space below is insufficient (< 330px) and space above is adequate
-    const shouldFlip = (spaceBelow < popupHeight || containerSpaceBelow < popupHeight) && spaceAbove >= 280;
-    setIsFlipped(shouldFlip);
-
-    // Right-align if extending past right edge
-    const shouldRightAlign = rect.left + popupWidth > viewportWidth - 16;
-    setIsRightAligned(shouldRightAlign);
-  }, []);
-
   const handleToggle = () => {
     if (disabled) return;
-    if (!isOpen) {
-      checkPositioning();
-      setIsOpen(true);
-    } else {
-      setIsOpen(false);
-    }
+    setIsOpen((prev) => !prev);
   };
-
-  // Close calendar on click outside
-  useEffect(() => {
-    const handleClickOutside = (e) => {
-      if (datePickerRef.current && !datePickerRef.current.contains(e.target)) {
-        setIsOpen(false);
-      }
-    };
-    if (isOpen) {
-      document.addEventListener('mousedown', handleClickOutside);
-      window.addEventListener('resize', checkPositioning);
-    }
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-      window.removeEventListener('resize', checkPositioning);
-    };
-  }, [isOpen, checkPositioning]);
-
-  // Handle ESC key
   useEffect(() => {
     const handleKeyDown = (e) => {
       if (e.key === 'Escape' && isOpen) {
@@ -241,14 +180,8 @@ export const TbDatePicker = ({
     );
   };
 
-  const popupClasses = [
-    'tb-date-picker__popup',
-    isFlipped ? 'tb-date-picker__popup--flipped' : '',
-    isRightAligned ? 'tb-date-picker__popup--right' : ''
-  ].filter(Boolean).join(' ');
-
   return (
-    <div className={`tb-date-picker ${className}`} ref={datePickerRef}>
+    <div className={`tb-date-picker ${className}`}>
       {label && (
         <label className="tb-date-picker__label" htmlFor={id}>
           {label}
@@ -288,9 +221,19 @@ export const TbDatePicker = ({
           )}
         </button>
 
-        {/* Custom Calendar Dropdown Panel */}
-        {isOpen && (
-          <div className={popupClasses} role="dialog" aria-label="Calendar date picker">
+        {/* Custom Calendar Dropdown Panel rendered via TbPopover Portal */}
+        <TbPopover
+          isOpen={isOpen}
+          onClose={() => setIsOpen(false)}
+          triggerRef={triggerRef}
+          align="start"
+          offset={4}
+          estimatedHeight={340}
+          zIndex={100001}
+          ariaRole="dialog"
+          ariaLabel="Calendar date picker"
+        >
+          <div className="tb-date-picker__popup" role="dialog" aria-label="Calendar date picker">
             {/* Header: Month / Year Navigation */}
             <div className="tb-date-picker__header">
               <button
@@ -375,7 +318,7 @@ export const TbDatePicker = ({
               )}
             </div>
           </div>
-        )}
+        </TbPopover>
       </div>
 
       {error && <span className="tb-date-picker__error-msg">{error}</span>}

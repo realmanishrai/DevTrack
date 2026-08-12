@@ -20,12 +20,37 @@
   max-width: 100%;
   min-width: 0;
   box-sizing: border-box;
-  transition: transform var(--transition-fast), box-shadow var(--transition-fast), border-color var(--transition-fast);
+  transition: border-color 150ms ease, background-color var(--transition-normal);
 }
 
+/* Ensure no hard shadow, glow, or movement on hover or selected */
+.tb-task-stat-card:hover,
+.tb-task-stat-card.dt-card--hoverable:hover,
+.tb-task-stat-card.dt-card--clickable:hover,
 .tb-task-stat-card--selected {
-  border-color: var(--accent-primary) !important;
-  box-shadow: 0 0 0 2px var(--accent-glow) !important;
+  box-shadow: var(--shadow-sm) !important;
+  transform: none !important;
+}
+
+/* Border color changes on hover and selected/active to match each card's icon color */
+.tb-task-stat-card--muted:hover,
+.tb-task-stat-card--muted.tb-task-stat-card--selected {
+  border-color: var(--text-secondary) !important;
+}
+
+.tb-task-stat-card--danger:hover,
+.tb-task-stat-card--danger.tb-task-stat-card--selected {
+  border-color: var(--danger) !important;
+}
+
+.tb-task-stat-card--warning:hover,
+.tb-task-stat-card--warning.tb-task-stat-card--selected {
+  border-color: var(--warning) !important;
+}
+
+.tb-task-stat-card--success:hover,
+.tb-task-stat-card--success.tb-task-stat-card--selected {
+  border-color: var(--success) !important;
 }
 
 .tb-task-stat-card__header {

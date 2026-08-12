@@ -136,7 +136,11 @@ export const TbFilterBar = ({
           />
 
           <div className="tb-filter-bar__counter">
-            Showing <span className="tb-filter-bar__counter-highlight">{filteredCount}</span> of {totalCount} tasks
+            {'Showing '}
+            <span className="tb-filter-bar__counter-highlight">{filteredCount}</span>
+            {' of '}
+            <span className="tb-filter-bar__counter-highlight">{totalCount}</span>
+            {' tasks'}
           </div>
         </div>
       </div>
