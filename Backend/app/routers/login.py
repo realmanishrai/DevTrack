@@ -165,18 +165,3 @@ def refresh(
         "access_token": new_access_token,
         "token_type": "bearer"
     }
-
-
-# ============================================================
-# PROTECTED ROUTE EXAMPLE
-# ============================================================
-
-@router.get("/me")
-def get_me(
-    current_user: User = Depends(get_current_user)
-):
-    return {
-        "id": current_user.id,
-        "username": current_user.username,
-        "email": current_user.email
-    }
