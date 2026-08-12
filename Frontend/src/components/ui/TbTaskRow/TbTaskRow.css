@@ -1,0 +1,402 @@
+/* TbTaskRow Styles - Design System Token Driven */
+.tb-task-row {
+  cursor: pointer;
+  transition: background-color var(--transition-fast);
+  border-bottom: 1px solid var(--border);
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+}
+
+.tb-task-row:hover {
+  background-color: var(--surface-hover);
+}
+
+.tb-task-row__cell {
+  padding: var(--space-3) var(--space-4);
+  vertical-align: middle;
+  font-family: var(--font-family);
+  font-size: var(--text-small);
+  color: var(--text-primary);
+}
+
+/* ======================================================== */
+/* 1. DESKTOP / TABLET CELL STYLES                          */
+/* ======================================================== */
+.tb-task-row__desktop-only {
+  display: table-cell;
+}
+
+.tb-task-row__mobile-only {
+  display: none;
+}
+
+.tb-task-row__cell--title {
+  min-width: 260px;
+  max-width: 380px;
+}
+
+.tb-task-row__title-group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.tb-task-row__header-line {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.tb-task-row__id {
+  font-family: var(--font-family);
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-muted);
+  background-color: var(--bg-primary);
+  padding: 1px 6px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+  letter-spacing: 0.5px;
+  flex-shrink: 0;
+  display: inline-flex;
+  align-self: flex-start;
+  width: auto;
+  max-width: fit-content;
+}
+
+.tb-task-row__title {
+  font-weight: 600;
+  color: var(--text-primary);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.tb-task-row__description {
+  font-size: var(--text-tiny);
+  color: var(--text-secondary);
+  line-height: 1.4;
+  margin: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Assignee Column */
+.tb-task-row__cell--assignee {
+  white-space: nowrap;
+  min-width: 150px;
+}
+
+.tb-task-row__assignee-wrapper {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.tb-task-row__assignee-name {
+  font-size: var(--text-small);
+  color: var(--text-secondary);
+}
+
+/* Badges */
+.tb-task-row__cell--priority,
+.tb-task-row__cell--status {
+  white-space: nowrap;
+  min-width: 110px;
+}
+
+/* Progress Column */
+.tb-task-row__cell--progress {
+  min-width: 140px;
+}
+
+.tb-task-row__progress-container {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.tb-task-row__progress-text {
+  font-size: var(--text-tiny);
+  font-weight: 600;
+  color: var(--text-secondary);
+  min-width: 32px;
+  text-align: right;
+}
+
+/* Due Date Column */
+.tb-task-row__cell--due-date {
+  white-space: nowrap;
+  min-width: 130px;
+}
+
+.tb-task-row__date-wrapper {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+}
+
+.tb-task-row__date-text {
+  font-size: var(--text-tiny);
+  color: var(--text-secondary);
+}
+
+/* Actions Column */
+.tb-task-row__cell--actions {
+  text-align: right;
+  width: 50px;
+  position: relative;
+}
+
+.tb-task-row__actions-container {
+  position: relative;
+  display: inline-block;
+}
+
+.tb-task-row__action-trigger {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  background: transparent;
+  border: none;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+  user-select: none;
+  transition: background-color var(--transition-fast), transform 0.12s ease-out;
+}
+
+.tb-task-row__action-trigger:hover {
+  background-color: var(--surface-hover);
+}
+
+.tb-task-row__action-trigger:active,
+.tb-task-row__action-trigger--active {
+  background-color: var(--surface-hover);
+  transform: scale(0.92);
+}
+
+/* Dropdown Menu */
+.tb-task-row__dropdown-menu {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  z-index: 500;
+  min-width: 170px;
+  padding: var(--space-1);
+  background-color: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-lg);
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  animation: tbDropdownFadeDown var(--transition-fast) cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.tb-task-row__dropdown-menu--flipped {
+  top: auto;
+  bottom: 100%;
+  margin-bottom: 4px;
+  animation: tbDropdownFadeUp var(--transition-fast) cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.tb-task-row__dropdown-item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  width: 100%;
+  padding: var(--space-2) var(--space-3);
+  background: transparent;
+  border: none;
+  border-radius: var(--radius-sm);
+  font-family: var(--font-family);
+  font-size: var(--text-tiny);
+  font-weight: 500;
+  color: var(--text-primary);
+  text-align: left;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition: background-color var(--transition-fast), color var(--transition-fast);
+}
+
+.tb-task-row__dropdown-item:hover {
+  background-color: var(--surface-hover);
+}
+
+.tb-task-row__dropdown-item--success:hover {
+  background-color: rgba(46, 204, 113, 0.12);
+  color: var(--success);
+}
+
+.tb-task-row__dropdown-item--warning:hover {
+  background-color: rgba(245, 185, 77, 0.12);
+  color: var(--warning);
+}
+
+.tb-task-row__dropdown-item--danger {
+  color: var(--danger);
+}
+
+.tb-task-row__dropdown-item--danger:hover {
+  background-color: rgba(239, 68, 68, 0.12);
+  color: var(--danger);
+}
+
+.tb-task-row__dropdown-divider {
+  height: 1px;
+  background-color: var(--border);
+  margin: var(--space-1) 0;
+}
+
+.tb-task-row__dropdown-section-title {
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--text-muted);
+  padding: 4px var(--space-3) 2px;
+}
+
+/* ======================================================== */
+/* 2. MOBILE CARD LAYOUT (Breakpoint <= 768px)              */
+/* ======================================================== */
+@media (max-width: 768px) {
+  .tb-task-row__desktop-only {
+    display: none !important;
+  }
+
+  .tb-task-row__mobile-only {
+    display: table-cell !important;
+    padding: 0 !important;
+  }
+
+  .tb-task-row {
+    border-bottom: 1px solid var(--border);
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .tb-task-row__mobile-card {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+    padding: var(--space-4);
+    box-sizing: border-box;
+    width: 100%;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .tb-task-row__mobile-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: var(--space-2);
+  }
+
+  .tb-task-row__mobile-title-block {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1);
+    min-width: 0;
+    flex: 1;
+  }
+
+  .tb-task-row__mobile-title {
+    font-family: var(--font-family);
+    font-size: var(--text-body);
+    font-weight: 600;
+    color: var(--text-primary);
+    line-height: 1.35;
+    margin: 0;
+    word-break: break-word;
+  }
+
+  .tb-task-row__mobile-desc {
+    font-family: var(--font-family);
+    font-size: var(--text-tiny);
+    color: var(--text-secondary);
+    line-height: 1.4;
+    margin: 0;
+    word-break: break-word;
+  }
+
+  .tb-task-row__mobile-fields {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+    padding-top: var(--space-3);
+    border-top: 1px dashed var(--border);
+  }
+
+  .tb-task-row__mobile-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-2);
+    min-height: 26px;
+  }
+
+  .tb-task-row__mobile-label {
+    font-family: var(--font-family);
+    font-size: var(--text-small);
+    font-weight: 500;
+    color: var(--text-muted);
+    flex-shrink: 0;
+  }
+
+  .tb-task-row__mobile-value {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    font-family: var(--font-family);
+    font-size: var(--text-small);
+    color: var(--text-primary);
+    font-weight: 500;
+  }
+
+  .tb-task-row__mobile-assignee {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+  }
+
+  .tb-task-row__mobile-assignee .dt-avatar {
+    width: 24px;
+    height: 24px;
+    min-width: 24px;
+    max-width: 24px;
+  }
+
+  .tb-task-row__mobile-assignee-name {
+    font-size: var(--text-small);
+    color: var(--text-primary);
+  }
+
+  .tb-task-row__mobile-progress {
+    gap: var(--space-2);
+    min-width: 130px;
+    justify-content: flex-end;
+  }
+
+  .tb-task-row__mobile-progress-bar {
+    width: 80px;
+  }
+
+  .tb-task-row__mobile-progress-text {
+    font-size: var(--text-tiny);
+    font-weight: 600;
+    color: var(--text-secondary);
+    min-width: 32px;
+    text-align: right;
+  }
+
+  .tb-task-row__mobile-date {
+    gap: var(--space-1);
+    font-size: var(--text-small);
+    color: var(--text-secondary);
+  }
+}

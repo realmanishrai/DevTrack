@@ -1,6 +1,6 @@
 import React from 'react';
-import Card from '../../components/ui/Card/Card';
-import Button from '../../components/ui/Button/Button';
+import DtCard from '../../components/ui/DtCard/DtCard';
+import DtButton from '../../components/ui/DtButton/DtButton';
 import ProgressRing from '../../components/ui/ProgressRing/ProgressRing';
 import ProgressBar from '../../components/ui/ProgressBar/ProgressBar';
 import StatCard from '../../components/ui/StatCard/StatCard';
@@ -66,7 +66,7 @@ export const Dashboard = ({
       {/* SECTION 1: Room Information Card & Section 2: Overall Progress */}
       <div className="dt-dashboard__top-grid">
         {/* Room Info Card */}
-        <Card className="dt-dashboard__room-card">
+        <DtCard className="dt-dashboard__room-card">
           <div className="dt-dashboard__room-header">
             <div className="dt-dashboard__room-title-group">
               <h2 className="dt-dashboard__room-name">{room.name}</h2>
@@ -79,10 +79,10 @@ export const Dashboard = ({
               onInviteClick={onInviteClick}
             />
           </div>
-        </Card>
+        </DtCard>
 
         {/* SECTION 2: Overall Project Progress */}
-        <Card className="dt-dashboard__progress-card">
+        <DtCard className="dt-dashboard__progress-card">
           <h3 className="dt-dashboard__section-title">Overall Progress</h3>
           
           <div className="dt-dashboard__progress-body">
@@ -122,7 +122,7 @@ export const Dashboard = ({
               </div>
             </div>
           </div>
-        </Card>
+        </DtCard>
       </div>
 
       {/* SECTION 4: Project Statistics (Stat Cards Row) */}
@@ -147,7 +147,7 @@ export const Dashboard = ({
       </div>
 
       {/* SECTION 7: Project Status Summary Strip */}
-      <Card className="dt-dashboard__summary-strip" padding="compact">
+      <DtCard className="dt-dashboard__summary-strip" padding="compact">
         <div className="dt-dashboard__summary-item">
           <TrendingUpIcon size={18} color="var(--accent-primary)" />
           <span className="dt-dashboard__summary-text">
@@ -168,7 +168,7 @@ export const Dashboard = ({
             Tasks Due Soon: <strong>{statusSummary.tasksDueSoonCount} Tasks</strong>
           </span>
         </div>
-      </Card>
+      </DtCard>
 
       {/* SECTION 6: Quick Actions Row */}
       <div className="dt-dashboard__section">
@@ -243,7 +243,7 @@ export const Dashboard = ({
         <div className="dt-dashboard__members-section">
           <div className="dt-dashboard__section-header">
             <h3 className="dt-dashboard__section-title">Team Members ({members.length})</h3>
-            <Button
+            <DtButton
               variant="ghost"
               size="sm"
               icon={<ArrowRightIcon size={16} />}
@@ -251,7 +251,7 @@ export const Dashboard = ({
               onClick={() => onNavigate('members')}
             >
               View All
-            </Button>
+            </DtButton>
           </div>
 
           <div className="dt-dashboard__members-grid">
@@ -262,10 +262,10 @@ export const Dashboard = ({
         </div>
 
         {/* SECTION 5: Recent Activity Preview */}
-        <Card className="dt-dashboard__activity-card">
+        <DtCard className="dt-dashboard__activity-card">
           <div className="dt-dashboard__section-header">
             <h3 className="dt-dashboard__section-title">Recent Activity</h3>
-            <Button
+            <DtButton
               variant="ghost"
               size="sm"
               icon={<ArrowRightIcon size={16} />}
@@ -273,7 +273,7 @@ export const Dashboard = ({
               onClick={() => onNavigate('activity')}
             >
               View All
-            </Button>
+            </DtButton>
           </div>
 
           <div className="dt-dashboard__activity-list">
@@ -281,7 +281,7 @@ export const Dashboard = ({
               <ActivityItem key={activity.id} activity={activity} />
             ))}
           </div>
-        </Card>
+        </DtCard>
       </div>
     </div>
   );

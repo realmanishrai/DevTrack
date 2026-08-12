@@ -1,5 +1,5 @@
 import React from 'react';
-import Card from '../Card/Card';
+import DtCard from '../DtCard/DtCard';
 import './StatCard.css';
 
 export const StatCard = ({
@@ -12,7 +12,7 @@ export const StatCard = ({
   className = ''
 }) => {
   return (
-    <Card className={`dt-stat-card dt-stat-card--${type} ${className}`} hoverable>
+    <DtCard className={`dt-stat-card dt-stat-card--${type} ${className}`} hoverable>
       <div className="dt-stat-card__header">
         <span className="dt-stat-card__title">{title}</span>
         {icon && <div className={`dt-stat-card__icon-box dt-stat-card__icon-box--${type}`}>{icon}</div>}
@@ -26,7 +26,7 @@ export const StatCard = ({
           </div>
         )}
       </div>
-    </Card>
+    </DtCard>
   );
 };
 

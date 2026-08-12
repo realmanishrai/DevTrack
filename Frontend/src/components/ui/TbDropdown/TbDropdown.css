@@ -1,0 +1,274 @@
+/* TbDropdown Styles - Design System Token Driven */
+.tb-dropdown {
+  position: relative;
+  display: inline-flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  box-sizing: border-box;
+  min-width: 0;
+  max-width: 100%;
+}
+
+.tb-dropdown--full {
+  width: 100%;
+}
+
+.tb-dropdown__label {
+  font-family: var(--font-family);
+  font-size: var(--text-small);
+  font-weight: 500;
+  color: var(--text-primary);
+}
+
+.tb-dropdown__control-wrapper {
+  position: relative;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* Trigger Button */
+.tb-dropdown__trigger {
+  width: 100%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+  background-color: var(--bg-primary);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  font-family: var(--font-family);
+  font-size: var(--text-small);
+  color: var(--text-primary);
+  cursor: pointer;
+  outline: none;
+  text-align: left;
+  user-select: none;
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+  transition: border-color var(--transition-fast), box-shadow var(--transition-fast), background-color var(--transition-fast);
+}
+
+.tb-dropdown--md .tb-dropdown__trigger {
+  height: 38px;
+  padding: 0 var(--space-3);
+}
+
+.tb-dropdown--sm .tb-dropdown__trigger {
+  height: 32px;
+  padding: 0 var(--space-2);
+  font-size: var(--text-tiny);
+}
+
+.tb-dropdown__trigger:hover:not(:disabled) {
+  border-color: var(--border-light, #34414f);
+  background-color: var(--surface-hover);
+}
+
+.tb-dropdown__trigger:focus-visible,
+.tb-dropdown--open .tb-dropdown__trigger {
+  border-color: var(--accent-primary);
+  box-shadow: 0 0 0 2px var(--accent-glow);
+}
+
+.tb-dropdown--disabled .tb-dropdown__trigger {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.tb-dropdown__trigger-content {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  flex: 1;
+  min-width: 0;
+}
+
+.tb-dropdown__icon {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.tb-dropdown__prefix {
+  font-size: var(--text-tiny);
+  font-weight: 500;
+  color: var(--text-muted);
+  flex-shrink: 0;
+}
+
+.tb-dropdown__selected-text {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-weight: 500;
+  color: var(--text-primary);
+}
+
+.tb-dropdown__placeholder {
+  color: var(--text-muted);
+  font-weight: 400;
+}
+
+.tb-dropdown__chevron {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: transform var(--transition-fast);
+}
+
+.tb-dropdown__chevron--rotated {
+  transform: rotate(180deg);
+}
+
+/* ======================================================== */
+/* Portal-Based Floating Menu Panel                         */
+/* ======================================================== */
+.tb-dropdown__menu {
+  position: fixed;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  background-color: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-lg);
+  z-index: 99999;
+  padding: var(--space-1);
+  box-sizing: border-box;
+  scrollbar-width: thin;
+  scrollbar-color: var(--scrollbar-thumb) var(--scrollbar-track);
+  animation: tbDropdownFadeDown var(--transition-fast) cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.tb-dropdown__menu::-webkit-scrollbar {
+  width: 4px;
+}
+
+.tb-dropdown__menu::-webkit-scrollbar-track {
+  background: var(--scrollbar-track);
+}
+
+.tb-dropdown__menu::-webkit-scrollbar-thumb {
+  background: var(--scrollbar-thumb);
+  border-radius: var(--radius-full);
+}
+
+/* Flipped Upward Menu */
+.tb-dropdown__menu--flipped {
+  animation: tbDropdownFadeUp var(--transition-fast) cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes tbDropdownFadeDown {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes tbDropdownFadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.tb-dropdown__list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.tb-dropdown__option {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-sm);
+  font-family: var(--font-family);
+  font-size: var(--text-small);
+  color: var(--text-secondary);
+  cursor: pointer;
+  user-select: none;
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+  transition: background-color var(--transition-fast), color var(--transition-fast);
+}
+
+.tb-dropdown--sm .tb-dropdown__option {
+  padding: var(--space-1) var(--space-2);
+  font-size: var(--text-tiny);
+}
+
+.tb-dropdown__option:hover,
+.tb-dropdown__option--highlighted {
+  background-color: var(--surface-hover);
+  color: var(--text-primary);
+}
+
+.tb-dropdown__option--selected {
+  background-color: var(--accent-subtle, rgba(46, 204, 113, 0.08));
+  color: var(--accent-primary);
+  font-weight: 600;
+}
+
+.tb-dropdown__option--selected.tb-dropdown__option--highlighted {
+  background-color: var(--accent-subtle, rgba(46, 204, 113, 0.15));
+}
+
+.tb-dropdown__option--disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.tb-dropdown__option-content {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  min-width: 0;
+}
+
+.tb-dropdown__option-icon {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.tb-dropdown__option-label {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.tb-dropdown__option-badge {
+  font-size: var(--text-tiny);
+  padding: 1px 6px;
+  border-radius: var(--radius-full);
+  background-color: var(--bg-primary);
+  border: 1px solid var(--border);
+  color: var(--text-muted);
+}
+
+.tb-dropdown__checkmark {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}

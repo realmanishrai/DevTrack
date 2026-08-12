@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, useLocation, useNavigate } from 'react-router-dom';
 
 import Navbar from './components/layout/Navbar/Navbar';
 import LandingPage from './pages/LandingPage/LandingPage';
@@ -8,8 +8,9 @@ import Register from './pages/Register/Register';
 
 import PageContainer from './components/layout/PageContainer/PageContainer';
 import Dashboard from './pages/Dashboard/Dashboard';
-import Card from './components/ui/Card/Card';
-import Button from './components/ui/Button/Button';
+import Tasks from './pages/Tasks/Tasks';
+import DtCard from './components/ui/DtCard/DtCard';
+import DtButton from './components/ui/DtButton/DtButton';
 import { mockDashboardData } from './utils/mockDashboardData';
 import {
   TasksIcon,
@@ -20,11 +21,11 @@ import {
 
 import './index.css';
 
-
-function DashboardLayout() {
+function DashboardLayout({ theme, onToggleTheme }) {
   const [activeRoute, setActiveRoute] = useState('dashboard');
   const [dashboardData] = useState(mockDashboardData);
   const [toastMessage, setToastMessage] = useState('');
+  const navigate = useNavigate();
 
   const showToast = (msg) => {
     setToastMessage(msg);
@@ -34,6 +35,11 @@ function DashboardLayout() {
   const handleNavigate = (routeId) => {
     if (routeId === 'logout') {
       showToast('Logged out of DevTrack');
+      return;
+    }
+
+    if (routeId === 'landing') {
+      navigate('/');
       return;
     }
 
@@ -47,9 +53,20 @@ function DashboardLayout() {
     );
   };
 
+  const getPageTitle = () => {
+    switch (activeRoute) {
+      case 'dashboard': return 'Room Overview';
+      case 'tasks': return 'Tasks Board';
+      case 'members': return 'Team Members';
+      case 'activity': return 'Activity Log';
+      case 'settings': return 'Room Settings';
+      default: return 'Dashboard';
+    }
+  };
+
   const renderPlaceholderView = (title, icon, description) => (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
-      <Card style={{ textAlign: 'center', padding: '64px 24px' }}>
+      <DtCard style={{ textAlign: 'center', padding: '64px 24px' }}>
         <div
           style={{
             width: '64px',
@@ -85,18 +102,26 @@ function DashboardLayout() {
           {description}
         </p>
 
-        <Button
+        <DtButton
           variant="primary"
           onClick={() => setActiveRoute('dashboard')}
         >
           Back to Dashboard
-        </Button>
-      </Card>
+        </DtButton>
+      </DtCard>
     </div>
   );
 
   return (
-    <PageContainer>
+    <PageContainer
+      activeRoute={activeRoute}
+      onNavigate={handleNavigate}
+      pageTitle={getPageTitle()}
+      room={dashboardData.room}
+      currentUser={dashboardData.currentUser}
+      theme={theme}
+      onToggleTheme={onToggleTheme}
+    >
       {toastMessage && (
         <div
           style={{
@@ -124,12 +149,14 @@ function DashboardLayout() {
         />
       )}
 
-      {activeRoute === 'tasks' &&
-        renderPlaceholderView(
-          'Tasks Management Page',
-          <TasksIcon size={32} color="var(--accent-primary)" />,
-          'The full Tasks view is ready to be linked with task filters, Kanban boards, and drag-and-drop orchestration.'
-        )}
+      {activeRoute === 'tasks' && (
+        <Tasks
+          data={dashboardData}
+          onTaskCreate={(newTask) => showToast(`Task '${newTask.title}' created successfully!`)}
+          onTaskUpdate={(taskId, fields) => showToast('Task updated successfully!')}
+          onTaskDelete={(taskId) => showToast('Task deleted successfully!')}
+        />
+      )}
 
       {activeRoute === 'members' &&
         renderPlaceholderView(
@@ -155,26 +182,34 @@ function DashboardLayout() {
   );
 }
 
-
-function Layout() {
+function Layout({ theme, onToggleTheme }) {
   const { pathname } = useLocation();
 
   const showNavbar = pathname === '/';
 
   return (
     <>
-      {showNavbar && <Navbar />}
+      {showNavbar && <Navbar theme={theme} onToggleTheme={onToggleTheme} />}
 
       <Routes>
         <Route path="/" element={<LandingPage />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
-        <Route path="/dashboard" element={<DashboardLayout />} />
+        <Route
+          path="/dashboard"
+          element={
+            <DashboardLayout
+              theme={theme}
+              onToggleTheme={onToggleTheme}
+            />
+          }
+        />
+        {/* Fallback to Landing page for unknown paths */}
+        <Route path="*" element={<LandingPage />} />
       </Routes>
     </>
   );
 }
-
 
 function App() {
   const [theme, setTheme] = useState(() => {
@@ -187,6 +222,10 @@ function App() {
       : 'light';
   });
 
+  const toggleTheme = () => {
+    setTheme((prev) => (prev === 'dark' ? 'light' : 'dark'));
+  };
+
   useEffect(() => {
     document.documentElement.setAttribute('data-theme', theme);
     localStorage.setItem('devtrack-theme', theme);
@@ -194,8 +233,9 @@ function App() {
 
   return (
     <BrowserRouter>
-      <Layout />
+      <Layout theme={theme} onToggleTheme={toggleTheme} />
     </BrowserRouter>
   );
 }
+
 export default App;

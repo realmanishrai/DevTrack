@@ -17,6 +17,7 @@ class GetTasks(BaseModel):
     completed_at: str
     created_at: str
     updated_at: str
+    assignee_ids: list[int]= []
 
     model_config = {'from_attributes': True}
 
@@ -27,6 +28,7 @@ class CreateTask(BaseModel):
     progress: int
     priority: str
     due_date: str
+    assignee_ids: list[int] = []
     
 
 class UpdateTask(BaseModel):
@@ -37,6 +39,7 @@ class UpdateTask(BaseModel):
     priority: Optional[str] = None
     due_date: Optional[str] = None
     completed_at: Optional[str] = None
+    assignee_ids: Optional[list[int]] = None
 
 class CreateUser(BaseModel):
     firstname: str
