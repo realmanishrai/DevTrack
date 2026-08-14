@@ -99,12 +99,8 @@
   background-color: var(--surface);
 }
 
-/* Calendar Popup Panel (Default: Opens Downward) */
+/* Calendar Popup Panel (Portalled via TbPopover) */
 .tb-date-picker__popup {
-  position: absolute;
-  top: calc(100% + 4px);
-  left: 0;
-  z-index: 350;
   width: 280px;
   max-width: calc(100vw - 32px);
   padding: var(--space-3);
@@ -116,41 +112,6 @@
   flex-direction: column;
   gap: var(--space-2);
   box-sizing: border-box;
-  animation: tbDatePickerFadeDown var(--transition-fast) cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-/* Smart Auto-Flip Panel (Opens Upward) */
-.tb-date-picker__popup--flipped {
-  top: auto;
-  bottom: calc(100% + 4px);
-  animation: tbDatePickerFadeUp var(--transition-fast) cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-.tb-date-picker__popup--right {
-  left: auto;
-  right: 0;
-}
-
-@keyframes tbDatePickerFadeDown {
-  from {
-    opacity: 0;
-    transform: translateY(-4px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-@keyframes tbDatePickerFadeUp {
-  from {
-    opacity: 0;
-    transform: translateY(4px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
 }
 
 /* Header */

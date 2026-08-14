@@ -1,8 +1,9 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef } from 'react';
 import Avatar from '../Avatar/Avatar';
 import ProgressBar from '../ProgressBar/ProgressBar';
 import TbStatusBadge from '../TbStatusBadge/TbStatusBadge';
 import TbPriorityBadge from '../TbPriorityBadge/TbPriorityBadge';
+import TbPopover from '../TbPopover/TbPopover';
 import {
   MoreVerticalIcon,
   EyeIcon,
@@ -18,16 +19,16 @@ export const TbTaskRow = ({
   task,
   assignee,
   currentUser = {},
-  onViewDetails = () => {},
-  onEditTask = () => {},
-  onDeleteTask = () => {},
-  onQuickStatusChange = () => {},
+  onViewDetails = () => { },
+  onEditTask = () => { },
+  onDeleteTask = () => { },
+  onQuickStatusChange = () => { },
   className = ''
 }) => {
   const [menuOpen, setMenuOpen] = useState(false);
-  const [menuFlipped, setMenuFlipped] = useState(false);
-  const menuRef = useRef(null);
-  const mobileMenuRef = useRef(null);
+  const [activeTriggerRef, setActiveTriggerRef] = useState(null);
+  const desktopTriggerRef = useRef(null);
+  const mobileTriggerRef = useRef(null);
 
   const isLeader = currentUser?.role === 'leader';
   const isAssignee = currentUser?.id === task.assigneeId;
@@ -49,47 +50,22 @@ export const TbTaskRow = ({
     }
   };
 
-  // Smart Auto-Flip for Actions Menu
-  const toggleMenu = (e, ref) => {
+  // Toggle actions menu for a specific trigger ref
+  const toggleMenu = (e, triggerRef) => {
     e.stopPropagation();
-    if (!menuOpen) {
-      const triggerEl = ref?.current || e.currentTarget;
-      if (triggerEl) {
-        const rect = triggerEl.getBoundingClientRect();
-        const spaceBelow = window.innerHeight - rect.bottom;
-        const spaceAbove = rect.top;
-        const shouldFlip = spaceBelow < 220 && spaceAbove >= 180;
-        setMenuFlipped(shouldFlip);
-      }
-      setMenuOpen(true);
-    } else {
+    if (menuOpen) {
       setMenuOpen(false);
+    } else {
+      setActiveTriggerRef(triggerRef);
+      setMenuOpen(true);
     }
   };
 
-  // Close dropdown on click outside
-  useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (
-        (menuRef.current && !menuRef.current.contains(event.target)) &&
-        (mobileMenuRef.current && !mobileMenuRef.current.contains(event.target))
-      ) {
-        setMenuOpen(false);
-      }
-    };
-    if (menuOpen) {
-      document.addEventListener('mousedown', handleClickOutside);
-    }
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
-  }, [menuOpen]);
-
   const handleRowClick = (e) => {
-    // If clicked on action button or menu, don't trigger row click
+    // If clicked on action button or popover, don't trigger row click
     if (
-      (menuRef.current && menuRef.current.contains(e.target)) ||
-      (mobileMenuRef.current && mobileMenuRef.current.contains(e.target))
+      desktopTriggerRef.current?.contains(e.target) ||
+      mobileTriggerRef.current?.contains(e.target)
     ) {
       return;
     }
@@ -98,98 +74,110 @@ export const TbTaskRow = ({
 
   // Shared Action Menu Component
   const renderActionMenu = () => {
-    const menuClasses = [
-      'tb-task-row__dropdown-menu',
-      menuFlipped ? 'tb-task-row__dropdown-menu--flipped' : ''
-    ].filter(Boolean).join(' ');
-
     return (
-      <div className={menuClasses} onClick={(e) => e.stopPropagation()}>
-        {/* Common: View Details */}
-        <button
-          type="button"
-          className="tb-task-row__dropdown-item"
-          onClick={(e) => {
-            e.stopPropagation();
-            setMenuOpen(false);
-            onViewDetails(task);
-          }}
-        >
-          <EyeIcon size={15} color="var(--text-secondary)" />
-          <span>View Details</span>
-        </button>
-
-        {/* Leader-only: Edit Task */}
-        {isLeader && (
+      <TbPopover
+        isOpen={menuOpen}
+        onClose={() => setMenuOpen(false)}
+        triggerRef={activeTriggerRef || desktopTriggerRef}
+        align="end"
+        offset={4}
+        estimatedHeight={220}
+        zIndex={99999}
+        ariaRole="menu"
+        ariaLabel="Task actions"
+      >
+        <div className="tb-task-row__dropdown-menu" role="menu">
+          {/* Common: View Details */}
           <button
             type="button"
             className="tb-task-row__dropdown-item"
+            role="menuitem"
             onClick={(e) => {
               e.stopPropagation();
               setMenuOpen(false);
-              onEditTask(task);
+              onViewDetails(task);
             }}
           >
-            <EditIcon size={15} color="var(--text-secondary)" />
-            <span>Edit Task</span>
+            <EyeIcon size={15} color="var(--text-secondary)" />
+            <span>View Details</span>
           </button>
-        )}
 
-        {/* Quick Status / Progress Toggle (Leader or Assigned Member) */}
-        {(isLeader || isAssignee) && (
-          <>
-            <div className="tb-task-row__dropdown-divider" />
-            <div className="tb-task-row__dropdown-section-title">Quick Status</div>
-            {task.status !== 'completed' && (
-              <button
-                type="button"
-                className="tb-task-row__dropdown-item tb-task-row__dropdown-item--success"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  setMenuOpen(false);
-                  onQuickStatusChange(task.id, 'completed', 100);
-                }}
-              >
-                <CheckCircleIcon size={15} color="var(--success)" />
-                <span>Mark Completed</span>
-              </button>
-            )}
-            {task.status !== 'in_progress' && (
-              <button
-                type="button"
-                className="tb-task-row__dropdown-item tb-task-row__dropdown-item--warning"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  setMenuOpen(false);
-                  onQuickStatusChange(task.id, 'in_progress', task.progress === 0 ? 50 : task.progress);
-                }}
-              >
-                <ClockIcon size={15} color="var(--warning)" />
-                <span>Set In Progress</span>
-              </button>
-            )}
-          </>
-        )}
-
-        {/* Leader-only: Delete Task */}
-        {isLeader && (
-          <>
-            <div className="tb-task-row__dropdown-divider" />
+          {/* Leader-only: Edit Task */}
+          {isLeader && (
             <button
               type="button"
-              className="tb-task-row__dropdown-item tb-task-row__dropdown-item--danger"
+              className="tb-task-row__dropdown-item"
+              role="menuitem"
               onClick={(e) => {
                 e.stopPropagation();
                 setMenuOpen(false);
-                onDeleteTask(task.id);
+                onEditTask(task);
               }}
             >
-              <TrashIcon size={15} color="var(--danger)" />
-              <span>Delete Task</span>
+              <EditIcon size={15} color="var(--text-secondary)" />
+              <span>Edit Task</span>
             </button>
-          </>
-        )}
-      </div>
+          )}
+
+          {/* Quick Status / Progress Toggle (Leader or Assigned Member) */}
+          {(isLeader || isAssignee) && (
+            <>
+              <div className="tb-task-row__dropdown-divider" />
+              <div className="tb-task-row__dropdown-section-title">Quick Status</div>
+              {task.status !== 'completed' && (
+                <button
+                  type="button"
+                  className="tb-task-row__dropdown-item tb-task-row__dropdown-item--success"
+                  role="menuitem"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setMenuOpen(false);
+                    onQuickStatusChange(task.id, 'completed', 100);
+                  }}
+                >
+                  <CheckCircleIcon size={15} color="var(--success)" />
+                  <span>Mark Completed</span>
+                </button>
+              )}
+              {task.status !== 'in_progress' && (
+                <button
+                  type="button"
+                  className="tb-task-row__dropdown-item tb-task-row__dropdown-item--warning"
+                  role="menuitem"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setMenuOpen(false);
+                    onQuickStatusChange(task.id, 'in_progress', task.progress === 0 ? 50 : task.progress);
+                  }}
+                >
+                  <ClockIcon size={15} color="var(--warning)" />
+                  <span>Set In Progress</span>
+                </button>
+              )}
+            </>
+          )}
+
+          {/* Leader-only: Delete Task */}
+          {isLeader && (
+            <>
+              <div className="tb-task-row__dropdown-divider" />
+              <button
+                type="button"
+                className="tb-task-row__dropdown-item tb-task-row__dropdown-item--danger"
+                role="menuitem"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setMenuOpen(false);
+                  onDeleteTask(task.id);
+                }}
+              >
+                <TrashIcon size={15} color="var(--danger)" />
+                <span>Delete Task</span>
+              </button>
+            </>
+          )}
+        </div>
+      </TbPopover>
     );
   };
 
@@ -253,19 +241,20 @@ export const TbTaskRow = ({
         className="tb-task-row__cell tb-task-row__cell--actions tb-task-row__desktop-only"
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="tb-task-row__actions-container" ref={menuRef}>
+        <div className="tb-task-row__actions-container">
           <button
+            ref={desktopTriggerRef}
             type="button"
-            className={`tb-task-row__action-trigger ${menuOpen ? 'tb-task-row__action-trigger--active' : ''}`}
-            onClick={(e) => toggleMenu(e, menuRef)}
+            className={`tb-task-row__action-trigger ${menuOpen && activeTriggerRef === desktopTriggerRef ? 'tb-task-row__action-trigger--active' : ''}`}
+            onClick={(e) => toggleMenu(e, desktopTriggerRef)}
             title="Task actions"
             aria-label="Task actions menu"
-            aria-expanded={menuOpen}
+            aria-expanded={menuOpen && activeTriggerRef === desktopTriggerRef}
           >
             <MoreVerticalIcon size={18} color="var(--text-secondary)" />
           </button>
 
-          {menuOpen && renderActionMenu()}
+          {renderActionMenu()}
         </div>
       </td>
 
@@ -284,21 +273,19 @@ export const TbTaskRow = ({
             {/* Mobile Actions Menu Trigger */}
             <div
               className="tb-task-row__actions-container"
-              ref={mobileMenuRef}
               onClick={(e) => e.stopPropagation()}
             >
               <button
+                ref={mobileTriggerRef}
                 type="button"
-                className={`tb-task-row__action-trigger ${menuOpen ? 'tb-task-row__action-trigger--active' : ''}`}
-                onClick={(e) => toggleMenu(e, mobileMenuRef)}
+                className={`tb-task-row__action-trigger ${menuOpen && activeTriggerRef === mobileTriggerRef ? 'tb-task-row__action-trigger--active' : ''}`}
+                onClick={(e) => toggleMenu(e, mobileTriggerRef)}
                 title="Task actions"
                 aria-label="Task actions menu"
-                aria-expanded={menuOpen}
+                aria-expanded={menuOpen && activeTriggerRef === mobileTriggerRef}
               >
                 <MoreVerticalIcon size={18} color="var(--text-secondary)" />
               </button>
-
-              {menuOpen && renderActionMenu()}
             </div>
           </div>
 

@@ -16,13 +16,13 @@ import './TbTaskDetailModal.css';
 
 export const TbTaskDetailModal = ({
   isOpen = false,
-  onClose = () => {},
+  onClose = () => { },
   task = null,
   assignee = null,
   currentUser = {},
-  onEdit = () => {},
-  onDelete = () => {},
-  onUpdateTask = () => {}
+  onEdit = () => { },
+  onDelete = () => { },
+  onUpdateTask = () => { }
 }) => {
   const [currentProgress, setCurrentProgress] = useState(task?.progress || 0);
 
@@ -111,21 +111,21 @@ export const TbTaskDetailModal = ({
         <div className="tb-detail-modal__header">
           <div className="tb-detail-modal__header-left">
             <span className="tb-detail-modal__id">{task.id}</span>
-            <div className="tb-detail-modal__badges">
-              <TbPriorityBadge priority={task.priority} size="md" />
-              <TbStatusBadge status={task.status} size="md" />
-            </div>
+            <TbPriorityBadge priority={task.priority} size="md" />
           </div>
 
-          <button
-            type="button"
-            className="tb-detail-modal__close-btn"
-            onClick={onClose}
-            title="Close modal"
-            aria-label="Close modal"
-          >
-            <CloseIcon size={20} color="var(--text-secondary)" />
-          </button>
+          <div className="tb-detail-modal__header-right">
+            <TbStatusBadge status={task.status} size="md" />
+            <button
+              type="button"
+              className="tb-detail-modal__close-btn"
+              onClick={onClose}
+              title="Close modal"
+              aria-label="Close modal"
+            >
+              <CloseIcon size={20} color="var(--text-secondary)" />
+            </button>
+          </div>
         </div>
 
         {/* Modal Scrollable Body */}

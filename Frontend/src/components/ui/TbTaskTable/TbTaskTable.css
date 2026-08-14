@@ -155,6 +155,7 @@
   font-family: var(--font-family);
   font-size: var(--text-tiny);
   color: var(--text-secondary);
+  display: block;
 }
 
 .tb-task-table__pagination-bold {
@@ -250,6 +251,10 @@
 .tb-task-table__desktop-pagination {
   display: flex;
   align-items: center;
+}
+
+.tb-task-table__pagination-info.tb-task-table__desktop-pagination {
+  display: block;
 }
 
 .tb-task-table__mobile-pagination {
