@@ -5,6 +5,8 @@ from sqlalchemy.orm import Session
 from app.database import get_db
 from app.models import Task, Room
 from app import models, schema
+from datetime import datetime
+from app.auth import get_current_user
 
 router = APIRouter()
 
@@ -35,18 +37,47 @@ def get_tasks(room_code: str, db: Session = Depends(get_db)):
 
 
 @router.delete("/{room_code}/tasks/{id}")
-def delete_task(room_code: str, id: int, db: Session = Depends(get_db)):
+def delete_task(room_code: str, 
+                id: int, 
+                db: Session = Depends(get_db),
+                current_user= Depends(get_current_user)
+                ):
   room = db.query(Room).filter(Room.room_code == room_code).first()
   if room is None:
       raise HTTPException(status_code=404, detail="Room not found")
-  db.query(Task).filter(Task.id == id).delete()
+
+  task = db.query(Task).filter(Task.id == id).first()
+  if task is None:
+     raise HTTPException(
+        status_code=404,
+        detail= "Task not found",
+     )
+  task_title= task.title
+
+  db.delete(task)
+  db.commit()
+
+  activity = models.ActivityLog(
+     room_id= room.id,
+     user_id=current_user.id,
+     task_id= None,
+     action_type= "deleted",
+     description=f"Task '{task_title}' was deleted",
+     created_at= datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+  )
+
+  db.add(activity)
   db.commit()
   return "Item deleted successfully"
 
 
 
 @router.post("/{room_code}/tasks")
-def create_task(room_code: str, task: schema.CreateTask, db: Session = Depends(get_db)):
+def create_task(room_code: str, 
+                task: schema.CreateTask, 
+                db: Session = Depends(get_db),
+                current_user= Depends(get_current_user)
+                ):
     room = db.query(models.Room).filter(models.Room.room_code == room_code).first()
     if room is None:
         raise HTTPException(status_code=404, detail="Room not found")
@@ -63,6 +94,17 @@ def create_task(room_code: str, task: schema.CreateTask, db: Session = Depends(g
     db.add(new_task)
     db.commit()
     db.refresh(new_task)
+
+    activity= models.ActivityLog(
+       room_id= room.id,
+       user_id= current_user.id,
+       task_id= new_task.id,
+       action_type="created",
+       description=f"Task'{new_task.title}' was created",
+       created_at= datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    )
+    db.add(activity)
+    db.commit()
 
     for user_id in task.assignee_ids:
        member = db.query(models.RoomMember).filter(
@@ -84,7 +126,12 @@ def create_task(room_code: str, task: schema.CreateTask, db: Session = Depends(g
 
 
 @router.put("/{room_code}/tasks/{task_id}")
-def update_task(room_code: str, task_id: int, task: schema.UpdateTask, db: Session = Depends(get_db)):
+def update_task(room_code: str, 
+                task_id: int, 
+                task: schema.UpdateTask, 
+                db: Session = Depends(get_db),
+                current_user= Depends(get_current_user)
+                ):
     room = db.query(models.Room).filter(models.Room.room_code == room_code).first()
     if room is None:
         raise HTTPException(status_code=404, detail="Room not found")
@@ -100,6 +147,16 @@ def update_task(room_code: str, task_id: int, task: schema.UpdateTask, db: Sessi
     existing_task.priority = task.priority
     existing_task.due_date = task.due_date
     existing_task.completed_at = task.completed_at
+
+    activity= models.ActivityLog(
+       room_id= room.id,
+         user_id= current_user.id,
+         task_id= existing_task.id,
+         action_type="updated",
+         description=f"Task '{existing_task.title}' was updated",
+         created_at= datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    )
+    db.add(activity)
 
     if task.assignee_ids is not None:
        existing_assignees= db.query(models.TaskAssignee).filter(
@@ -129,11 +186,7 @@ def update_task(room_code: str, task_id: int, task: schema.UpdateTask, db: Sessi
                    user_id= user_id
                 )
                 db.add(assignee)
-
+                db.commit()
+                db.refresh(existing_task)
+                return existing_task
              
-
-
-
-    db.commit()
-    db.refresh(existing_task)
-    return existing_task

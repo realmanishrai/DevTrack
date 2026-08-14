@@ -50,3 +50,15 @@ class CreateUser(BaseModel):
 
 class RefreshRequest(BaseModel):
     refresh_token: str
+
+class ActivityLogResponse(BaseModel):
+    id:int
+    room_id: int
+    user_id: int
+    task_id: Optional[int]= None
+    action_type: str
+    description: str
+    created_at: str
+
+    model_config= {"from_attributes":True}
+    
