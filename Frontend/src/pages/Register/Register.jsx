@@ -1,7 +1,8 @@
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import Input from '../../components/ui/Input/Input';
 import Button from '../../components/ui/Button/Button';
+import { registerLpUser } from '../../loginAuth/lpAuthApi';
 import './Register.css';
 
 const onboardingSteps = [
@@ -23,44 +24,112 @@ const onboardingSteps = [
 ];
 
 function Register() {
+  const navigate = useNavigate();
+
   const [form, setForm] = useState({
     firstName: '',
     lastName: '',
+    username: '',
     email: '',
     password: '',
     confirmPassword: '',
   });
+
   const [terms, setTerms] = useState(false);
   const [errors, setErrors] = useState({});
+  const [registerError, setRegisterError] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleChange = (field) => (e) => {
-    setForm((prev) => ({ ...prev, [field]: e.target.value }));
-    if (errors[field]) setErrors((prev) => ({ ...prev, [field]: '' }));
+    setForm((prev) => ({
+      ...prev,
+      [field]: e.target.value,
+    }));
+
+    if (errors[field]) {
+      setErrors((prev) => ({
+        ...prev,
+        [field]: '',
+      }));
+    }
+
+    if (registerError) {
+      setRegisterError('');
+    }
   };
 
   const validate = () => {
     const errs = {};
-    if (!form.firstName.trim())   errs.firstName = 'First name is required.';
-    if (!form.lastName.trim())    errs.lastName  = 'Last name is required.';
-    if (!form.email.trim())       errs.email     = 'Email is required.';
-    else if (!/\S+@\S+\.\S+/.test(form.email)) errs.email = 'Enter a valid email.';
-    if (!form.password)           errs.password  = 'Password is required.';
-    else if (form.password.length < 8) errs.password = 'Password must be at least 8 characters.';
-    if (!form.confirmPassword)    errs.confirmPassword = 'Please confirm your password.';
-    else if (form.password !== form.confirmPassword)
+
+    if (!form.firstName.trim()) {
+      errs.firstName = 'First name is required.';
+    }
+
+    if (!form.lastName.trim()) {
+      errs.lastName = 'Last name is required.';
+    }
+
+    if (!form.username.trim()) {
+      errs.username = 'Username is required.';
+    }
+
+    if (!form.email.trim()) {
+      errs.email = 'Email is required.';
+    } else if (!/\S+@\S+\.\S+/.test(form.email)) {
+      errs.email = 'Enter a valid email.';
+    }
+
+    if (!form.password) {
+      errs.password = 'Password is required.';
+    } else if (form.password.length < 8) {
+      errs.password = 'Password must be at least 8 characters.';
+    }
+
+    if (!form.confirmPassword) {
+      errs.confirmPassword = 'Please confirm your password.';
+    } else if (form.password !== form.confirmPassword) {
       errs.confirmPassword = 'Passwords do not match.';
-    if (!terms)                   errs.terms     = 'You must accept the terms to continue.';
+    }
+
+    if (!terms) {
+      errs.terms = 'You must accept the terms to continue.';
+    }
+
     return errs;
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+
+    setRegisterError('');
+
     const errs = validate();
+
     if (Object.keys(errs).length) {
       setErrors(errs);
       return;
     }
-    alert('Register prototype: no backend connected.');
+
+    setErrors({});
+    setIsLoading(true);
+
+    try {
+      await registerLpUser({
+        firstname: form.firstName.trim(),
+        lasttname: form.lastName.trim(),
+        username: form.username.trim(),
+        email: form.email.trim(),
+        password: form.password,
+      });
+
+      navigate('/login');
+    } catch (error) {
+      setRegisterError(
+        error?.message || 'Registration failed. Please try again.'
+      );
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -114,6 +183,7 @@ function Register() {
                 error={errors.firstName}
                 autoComplete="given-name"
               />
+
               <Input
                 id="register-last-name"
                 label="Last Name"
@@ -125,6 +195,17 @@ function Register() {
                 autoComplete="family-name"
               />
             </div>
+
+            <Input
+              id="register-username"
+              label="Username"
+              type="text"
+              placeholder="Enter your username"
+              value={form.username}
+              onChange={handleChange('username')}
+              error={errors.username}
+              autoComplete="username"
+            />
 
             <Input
               id="register-email"
@@ -145,7 +226,6 @@ function Register() {
               value={form.password}
               onChange={handleChange('password')}
               error={errors.password}
-              
               autoComplete="new-password"
             />
 
@@ -157,7 +237,6 @@ function Register() {
               value={form.confirmPassword}
               onChange={handleChange('confirmPassword')}
               error={errors.confirmPassword}
-              
               autoComplete="new-password"
             />
 
@@ -169,23 +248,47 @@ function Register() {
                 checked={terms}
                 onChange={() => {
                   setTerms((v) => !v);
-                  if (errors.terms) setErrors((p) => ({ ...p, terms: '' }));
+
+                  if (errors.terms) {
+                    setErrors((prev) => ({
+                      ...prev,
+                      terms: '',
+                    }));
+                  }
                 }}
               />
-              <label htmlFor="register-terms" className="register-terms-label">
+
+              <label
+                htmlFor="register-terms"
+                className="register-terms-label"
+              >
                 I agree to the{' '}
-                <a href="#" className="register-terms-link" onClick={(e) => e.preventDefault()}>
+                <a
+                  href="#"
+                  className="register-terms-link"
+                  onClick={(e) => e.preventDefault()}
+                >
                   Terms of Service
                 </a>{' '}
                 and{' '}
-                <a href="#" className="register-terms-link" onClick={(e) => e.preventDefault()}>
+                <a
+                  href="#"
+                  className="register-terms-link"
+                  onClick={(e) => e.preventDefault()}
+                >
                   Privacy Policy
                 </a>
                 .
+
                 {errors.terms && (
                   <span
                     role="alert"
-                    style={{ display: 'block', color: 'var(--danger)', fontSize: 'var(--text-tiny)', marginTop: '4px' }}
+                    style={{
+                      display: 'block',
+                      color: 'var(--danger)',
+                      fontSize: 'var(--text-tiny)',
+                      marginTop: '4px',
+                    }}
                   >
                     {errors.terms}
                   </span>
@@ -193,8 +296,20 @@ function Register() {
               </label>
             </div>
 
-            <Button type="submit" variant="primary" size="lg" fullWidth>
-              Create Account
+            {registerError && (
+              <p className="register-error-message" role="alert">
+                {registerError}
+              </p>
+            )}
+
+            <Button
+              type="submit"
+              variant="primary"
+              size="lg"
+              fullWidth
+              disabled={isLoading}
+            >
+              {isLoading ? 'Creating account...' : 'Create Account'}
             </Button>
           </form>
 
