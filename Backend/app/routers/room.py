@@ -40,4 +40,5 @@ def delete_room(room_code: str, current_user: User = Depends(get_current_user), 
   if room_member is None or room_member.role != "admin":
     raise HTTPException(status_code=403, detail="Unauthorized Access")
   db.query(Room).filter(Room.room_code == room_code).delete()
+  db.commit()
   return {"Success":"Room Deleted Successfully"}
