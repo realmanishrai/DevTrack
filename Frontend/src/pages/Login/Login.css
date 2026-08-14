@@ -83,6 +83,13 @@
   font-size: var(--text-small);
 }
 
+.login-feature-bullet {
+  flex-shrink: 0;
+  font-size: 20px;
+  line-height: 1;
+  margin-right: 10px;
+}
+
 .login-feature-icon {
   width: 32px;
   height: 32px;
