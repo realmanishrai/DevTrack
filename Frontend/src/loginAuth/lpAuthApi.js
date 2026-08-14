@@ -1,6 +1,6 @@
 import { saveLpAuthTokens, updateLpAccessToken, getLpRefreshToken } from './lpAuthStorage';
 
-const LP_API_BASE_URL = import.meta.env.VITE_API_URL;
+const LP_API_BASE_URL = 'http://localhost:8000';
 
 export const registerLpUser = async ({
   firstname,
