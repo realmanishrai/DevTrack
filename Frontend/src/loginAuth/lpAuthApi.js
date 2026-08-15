@@ -4,7 +4,7 @@ const LP_API_BASE_URL = 'http://localhost:8000';
 
 export const registerLpUser = async ({
   firstname,
-  lasttname,
+  lastname,
   username,
   email,
   password,
@@ -16,7 +16,7 @@ export const registerLpUser = async ({
     },
     body: JSON.stringify({
       firstname,
-      lasttname,
+      lastname,
       username,
       email,
       password,

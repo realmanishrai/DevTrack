@@ -116,7 +116,7 @@ function Register() {
     try {
       await registerLpUser({
         firstname: form.firstName.trim(),
-        lasttname: form.lastName.trim(),
+        lastname: form.lastName.trim(),
         username: form.username.trim(),
         email: form.email.trim(),
         password: form.password,
