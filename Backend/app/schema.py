@@ -51,9 +51,6 @@ class CreateUser(BaseModel):
     email: str
     password: str
 
-class RefreshRequest(BaseModel):
-    refresh_token: str
-
 class ActivityLogResponse(BaseModel):
     id:int
     room_id: int
