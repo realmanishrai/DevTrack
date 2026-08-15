@@ -46,7 +46,7 @@ class UpdateTask(BaseModel):
 
 class CreateUser(BaseModel):
     firstname: str
-    lasttname: str
+    lastname: str
     username: str
     email: str
     password: str
@@ -64,4 +64,19 @@ class ActivityLogResponse(BaseModel):
     created_at: datetime
 
     model_config= {"from_attributes":True}
-    
+
+class ReturnUser(BaseModel):
+    id: int
+    firstname: str
+    lastname: str
+    username: str
+    email: str
+
+    model_config = {"from_attributes": True}
+
+class UpdateUser(BaseModel):
+    firstname: Optional[str] = None
+    lastname: Optional[str] = None
+    username: Optional[str] = None
+
+    model_config = {"from_attributes": True}
