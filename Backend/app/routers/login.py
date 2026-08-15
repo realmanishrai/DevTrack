@@ -47,7 +47,7 @@ def register(
     # Create user
     newDBuser = User(
         firstname=new_user.firstname,
-        lasttname=new_user.lasttname,
+        lastname=new_user.lastname,
         username=new_user.username,
         email=new_user.email,
         password_hash=hashed_password

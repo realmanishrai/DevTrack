@@ -36,7 +36,7 @@ def get_pending_requests(room_code: str, db: Session = Depends(get_db), current_
       "user_id": user.id,
       "username": user.username,
       "firstname": user.firstname,
-      "lastname": user.lasttname,
+      "lastname": user.lastname,
       "email": user.email,
     }
     for request, user in pending
