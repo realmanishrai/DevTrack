@@ -1,5 +1,6 @@
 from pydantic import BaseModel
 from typing import Optional
+from datetime import date, datetime
 
 class CreateRoom(BaseModel):
     room_name: str
@@ -13,10 +14,9 @@ class GetTasks(BaseModel):
     progress: int
     priority: str
     created_by: int
-    due_date: str
-    completed_at: str
-    created_at: str
-    updated_at: str
+    due_date: date
+    created_at: datetime
+    updated_at: datetime
     assignee_ids: list[int]= []
 
     model_config = {'from_attributes': True}
@@ -27,8 +27,10 @@ class CreateTask(BaseModel):
     status: str
     progress: int
     priority: str
-    due_date: str
+    due_date: date
     assignee_ids: list[int] = []
+
+    model_config = {'from_attributes': True}
     
 
 class UpdateTask(BaseModel):
@@ -37,9 +39,10 @@ class UpdateTask(BaseModel):
     status: Optional[str] = None
     progress: Optional[int] = None
     priority: Optional[str] = None
-    due_date: Optional[str] = None
-    completed_at: Optional[str] = None
+    due_date: Optional[date] = None
     assignee_ids: Optional[list[int]] = None
+
+    model_config = {'from_attributes': True}
 
 class CreateUser(BaseModel):
     firstname: str
@@ -58,7 +61,7 @@ class ActivityLogResponse(BaseModel):
     task_id: Optional[int]= None
     action_type: str
     description: str
-    created_at: str
+    created_at: datetime
 
     model_config= {"from_attributes":True}
     

@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from app.database import get_db
 from app.models import User, Room, JoinRequest, RoomMember
-from app.auth import get_current_user
+from app.auth import get_current_user, ensure_room_member, ensure_room_admin
 
 router = APIRouter()
 
@@ -17,17 +17,18 @@ def join_room(room_code: str, current_user: User = Depends(get_current_user) ,
     raise HTTPException(status_code=409, detail="Request Already Sent")
   existing_membership = db.query(RoomMember).filter(RoomMember.user_id == current_user.id, RoomMember.room_id == room.id).first()
   if existing_membership:
-    raise HTTPException(status_code=409, detail="User already a room member")
+    raise HTTPException(status_code=409, detail="User is already a member")
   new_request = JoinRequest(room_id=room.id, user_id=current_user.id)
   db.add(new_request)
   db.commit()
   return {"message": "Join request sent"}
 
 @router.get("/PendingRequests/{room_code}")
-def get_pending_requests(room_code: str, db: Session = Depends(get_db)):
+def get_pending_requests(room_code: str, db: Session = Depends(get_db), current_user= Depends(get_current_user)):
   room = db.query(Room).filter(Room.room_code == room_code).first()
   if room is None:
     raise HTTPException(status_code=404, detail="Room not found")
+  ensure_room_admin(room.id, db, current_user.id)
   pending = db.query(JoinRequest, User).join(User, User.id == JoinRequest.user_id).filter(JoinRequest.room_id == room.id).all()
   return [
     {
@@ -57,7 +58,7 @@ def accept_request(
             status_code=404,
             detail="Room not found"
         )
-
+    ensure_room_admin(room.id, db, current_user.id)
     join_request = db.query(JoinRequest).filter(
         JoinRequest.id == id
     ).first()
@@ -108,6 +109,7 @@ def accept_request(
   room = db.query(Room).filter(Room.room_code == room_code).first()
   if room is None:
     raise HTTPException(status_code=404, detail="Room not found")
+  ensure_room_admin(room.id, db, current_user.id)
   join_request = db.query(JoinRequest).filter(JoinRequest.id == id).first()
   if join_request is None:
     raise HTTPException(status_code=404, detail="Join request not found")

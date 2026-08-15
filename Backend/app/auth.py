@@ -5,7 +5,7 @@ from jose import JWTError, jwt
 from pwdlib import PasswordHash
 from sqlalchemy.orm import Session
 from app.database import get_db
-from app.models import User
+from app.models import User, RoomMember
 
 
 SECRET_KEY = "ad3r4567890qwertyuiopasdfghjklzxcvbnm"
@@ -151,3 +151,22 @@ def get_current_user(
         raise credentials_exception
 
     return user
+
+def ensure_room_member(room_id: int, db: Session, user_id: int):
+    member = db.query(RoomMember).filter(
+        RoomMember.room_id == room_id,
+        RoomMember.user_id == user_id
+    ).first()
+    if member is None:
+        raise HTTPException(status_code=403, detail="User is not a member of this room")
+
+def ensure_room_admin(room_id: int, db: Session, user_id: int):
+    member = db.query(RoomMember).filter(
+        RoomMember.room_id == room_id,
+        RoomMember.user_id == user_id
+    ).first()
+    if member is None:
+        raise HTTPException(status_code=403, detail="User is not a member of this room")
+    if (member.role or "").lower() not in ("admin", "owner"):
+        raise HTTPException(status_code=403, detail="User is not an admin of this room")
+    return member

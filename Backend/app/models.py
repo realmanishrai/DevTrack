@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, DateTime, ForeignKey
+from sqlalchemy import Column, Integer, String, DateTime, ForeignKey, Date
 from sqlalchemy.orm import relationship
 from app.database import Base, engine
 from datetime import datetime, timezone
@@ -14,10 +14,12 @@ class Task(Base):
     progress = Column(Integer)
     priority = Column(String(20))
     created_by = Column(Integer, ForeignKey("users.id"))
-    due_date = Column(String(10))
-    completed_at = Column(String(10))
-    created_at = Column(String(10))
-    updated_at = Column(String(10))
+    due_date = Column(Date)
+    created_at = Column(DateTime, 
+                        default=lambda: datetime.now(timezone.utc))
+    updated_at = Column(DateTime, 
+                        default=lambda: datetime.now(timezone.utc), 
+                        onupdate=lambda: datetime.now(timezone.utc))
 
     assignees = relationship(
         "TaskAssignee",
@@ -42,7 +44,8 @@ class TaskAssignee(Base):
     task_id = Column(Integer, ForeignKey("tasks.id"))
     user_id = Column(Integer, ForeignKey("users.id"))
     assigned_by = Column(Integer, ForeignKey("users.id"))
-    assigned_at = Column(String(10))
+    assigned_at = Column(DateTime, 
+                        default=lambda: datetime.now(timezone.utc))
 
     task = relationship("Task", back_populates="assignees")
 
@@ -56,7 +59,9 @@ class TaskUpdate(Base):
     old_status = Column(String(50))
     new_status = Column(String(50))
     comment = Column(String(200))
-    updated_at = Column(String(10))
+    updated_at = Column(DateTime, 
+                        default=lambda: datetime.now(timezone.utc), 
+                        onupdate=lambda: datetime.now(timezone.utc))
 
     task = relationship("Task", back_populates="updates")
 
@@ -70,7 +75,8 @@ class ActivityLog(Base):
     task_id = Column(Integer, ForeignKey("tasks.id"), nullable=True)
     action_type = Column(String(50))
     description = Column(String(200))
-    created_at = Column(String(10))
+    created_at = Column(DateTime, 
+                        default=lambda: datetime.now(timezone.utc))
 
     task = relationship("Task", back_populates="activity_logs")
 
