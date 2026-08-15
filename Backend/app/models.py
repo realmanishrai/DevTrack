@@ -33,7 +33,8 @@ class Task(Base):
     )
     activity_logs = relationship(
         "ActivityLog",
-        back_populates="task"
+        back_populates="task",
+        cascade="all, delete-orphan"
     )
 
 
@@ -109,6 +110,11 @@ class Room(Base):
     room_code=Column(String, unique=True, nullable= False)
     created_by=Column(Integer, ForeignKey("users.id"))
     created_at=Column(DateTime, default=lambda: datetime.now(timezone.utc))
+    members = relationship(
+        "RoomMember",
+        back_populates="room",
+        cascade="all, delete-orphan",
+    )
     creator= relationship("User", back_populates="rooms_created")
     members= relationship("RoomMember", back_populates="room")
 

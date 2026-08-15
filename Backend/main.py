@@ -6,6 +6,7 @@ from app import models
 from app.database import engine
 from app.routers.login import router as login_router
 from app.routers.room_join import router as joinroom_router
+from app.routers.activitylogs import router as activitylog_router
 
 app = FastAPI()
 
@@ -37,4 +38,9 @@ app.include_router(
 app.include_router(
     joinroom_router,
     tags=["Join Room"]
+)
+
+app.include_router(
+    activitylog_router,
+    tags=["Activity Logs"]
 )
