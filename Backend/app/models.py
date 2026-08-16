@@ -95,7 +95,9 @@ class User(Base):
     updated_at = Column(DateTime, 
                         default=lambda: datetime.now(timezone.utc), 
                         onupdate=lambda: datetime.now(timezone.utc) )
-    last_online= Column(DateTime, nullable=True)
+    last_online= Column(DateTime, 
+                        default=lambda: datetime.now(timezone.utc), 
+                        onupdate=lambda: datetime.now(timezone.utc))
     rooms_created= relationship("Room", back_populates="creator")
     room_memberships= relationship("RoomMember", back_populates="user")
     

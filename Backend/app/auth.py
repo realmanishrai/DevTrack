@@ -154,6 +154,10 @@ def get_current_user(
     if user is None:
         raise credentials_exception
 
+    user.last_online = datetime.now(timezone.utc)
+    db.commit()
+    db.refresh(user)
+
     return user
 
 def ensure_room_member(room_id: int, db: Session, user_id: int):

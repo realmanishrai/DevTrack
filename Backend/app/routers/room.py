@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from app.database import get_db
-from app.models import Room, User, RoomMember
+from app.models import Room, User, RoomMember, ActivityLog
 from app.schema import CreateRoom
 from random import randint
 from app.auth import get_current_user
@@ -70,6 +70,14 @@ def leave_room(
       admin_count = db.query(RoomMember).filter(RoomMember.room_id == room.id, RoomMember.role == "admin").count()
       if admin_count <= 1:
         raise HTTPException(status_code=403, detail="Cannot leave room as the sole admin; assign another admin first")
+
+    activity_log = ActivityLog(
+        user_id=current_user.id,
+        action_type="Left Room",
+        room_id=room.id,
+        description=f"User {current_user.username} left the room {room.room_name}"
+
+    )
 
     db.delete(room_member)
     db.commit()
