@@ -9,6 +9,7 @@ import Register from './pages/Register/Register';
 import PageContainer from './components/layout/PageContainer/PageContainer';
 import Dashboard from './pages/Dashboard/Dashboard';
 import Tasks from './pages/Tasks/Tasks';
+import Rooms from './pages/Rooms/Rooms';
 import DtCard from './components/ui/DtCard/DtCard';
 import DtButton from './components/ui/DtButton/DtButton';
 import { mockDashboardData } from './utils/mockDashboardData';
@@ -195,6 +196,15 @@ function Layout({ theme, onToggleTheme }) {
         <Route path="/" element={<LandingPage />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
+        <Route
+          path="/rooms"
+          element={
+            <Rooms
+              theme={theme}
+              onToggleTheme={onToggleTheme}
+            />
+          }
+        />
         <Route
           path="/dashboard"
           element={

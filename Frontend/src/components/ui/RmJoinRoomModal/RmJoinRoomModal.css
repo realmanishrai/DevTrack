@@ -1,0 +1,89 @@
+/* ===================================================
+   RmJoinRoomModal — extends shared rm-modal-* base styles
+   Extra: success confirmation state
+
+   PART 1 FIXES APPLIED:
+   #11 .rm-modal__success-title: add missing line-height var(--text-h3-lh)
+   #12 .rm-modal__success-desc: fix line-height from 1.6 to var(--text-small-lh) = 1.5
+   #13 .rm-modal__success-desc strong: CRITICAL — was var(--text-tiny)=12px inside
+       14px text. Fixed to var(--text-small) at weight 700, matching or exceeding
+       surrounding text size.
+   PART 2: strong element uses monospace, monospace + var(--accent-primary) color
+       matching RoomCodeDisplay.css — replaces 'Courier New' hardcoding.
+   =================================================== */
+
+/* Import the shared modal base */
+@import url('../RmCreateRoomModal/RmCreateRoomModal.css');
+
+/* Success state */
+.rm-modal__success {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: var(--space-8) var(--space-6);
+  gap: var(--space-4);
+  animation: rmSuccessFadeIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes rmSuccessFadeIn {
+  from { opacity: 0; transform: scale(0.9); }
+  to   { opacity: 1; transform: scale(1); }
+}
+
+.rm-modal__success-icon {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background-color: var(--accent-subtle);
+  border: 2px solid rgba(46, 204, 113, 0.25);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: rmSuccessPulse 1.6s ease infinite;
+}
+
+@keyframes rmSuccessPulse {
+  0%, 100% { box-shadow: 0 0 0 0 var(--accent-glow); }
+  50%       { box-shadow: 0 0 0 10px transparent; }
+}
+
+/*
+  FIX #11: add missing line-height var(--text-h3-lh) = 1.3
+*/
+.rm-modal__success-title {
+  font-size: var(--text-h3);          /* 24px */
+  font-weight: var(--text-h3-weight); /* 600 */
+  line-height: var(--text-h3-lh);     /* 1.3 — was missing */
+  color: var(--accent-primary);
+  margin: 0;
+}
+
+/*
+  FIX #12: line-height was 1.6 (matching --text-body-lh) but element uses
+  --text-small (14px), so correct line-height is var(--text-small-lh) = 1.5.
+*/
+.rm-modal__success-desc {
+  font-size: var(--text-small);
+  color: var(--text-secondary);
+  line-height: var(--text-small-lh); /* 1.5 — was 1.6, which is --text-body-lh, wrong token */
+  max-width: 340px;
+  margin: 0;
+}
+
+/*
+  FIX #13 (CRITICAL): was var(--text-tiny) = 12px inside a 14px sentence,
+  making "emphasized" text visually SMALLER than surrounding text.
+  Fixed: font-size matches surrounding text (var(--text-small) = 14px), weight 700 for emphasis.
+
+  PART 2: font-family: monospace, monospace matches RoomCodeDisplay.css .dt-room-code-pill.
+          color: var(--accent-primary) matches .dt-room-code-value.
+          letter-spacing: 1px matches .dt-room-code-value.
+*/
+.rm-modal__success-desc strong {
+  font-size: var(--text-small);       /* 14px — was var(--text-tiny)=12px, critically wrong */
+  font-weight: 700;                   /* emphasis — matches .dt-room-code-value */
+  font-family: monospace, monospace;  /* matches RoomCodeDisplay.css .dt-room-code-pill */
+  color: var(--accent-primary);       /* matches .dt-room-code-value */
+  letter-spacing: 1px;               /* matches .dt-room-code-value */
+}

@@ -1,0 +1,301 @@
+/* ===================================================
+   Shared modal base styles — used by RmCreateRoomModal & RmJoinRoomModal
+
+   PART 1 FIXES APPLIED:
+   #7  .rm-modal__title: --text-h3 (was --text-h4), line-height: var(--text-h3-lh) (was 1)
+   #8  .rm-modal__description: line-height: var(--text-small-lh) (was hardcoded 1.5 — same value now token)
+   #9  .rm-modal__label: add missing line-height: var(--text-small-lh); keep 600 weight as deliberate emphasis
+   #10 .rm-modal__error: add font-weight: var(--text-tiny-weight), line-height: var(--text-tiny-lh)
+   =================================================== */
+
+/* Overlay */
+.rm-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-5);
+  z-index: 500;
+  animation: rmOverlayFadeIn 0.2s ease;
+}
+
+@keyframes rmOverlayFadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+/* Modal panel */
+.rm-modal {
+  background-color: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+  width: 100%;
+  max-width: 480px;
+  animation: rmModalSlideUp 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+  overflow: hidden;
+}
+
+@keyframes rmModalSlideUp {
+  from { opacity: 0; transform: translateY(16px) scale(0.97); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+/* Modal header */
+.rm-modal__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-5) var(--space-5) 0;
+}
+
+.rm-modal__title-group {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.rm-modal__title-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: var(--radius-md);
+  background-color: var(--accent-subtle);
+  border: 1px solid rgba(46, 204, 113, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+/*
+  FIX #7: was var(--text-h4) = 20px — design-system.md §3 specifies
+  --text-h3 (24px / 600 / 1.3) for "card titles, modal headers".
+  Line-height was hardcoded 1 — now uses var(--text-h3-lh) = 1.3.
+*/
+.rm-modal__title {
+  font-size: var(--text-h3);          /* 24px — was var(--text-h4) = 20px */
+  font-weight: var(--text-h3-weight); /* 600 */
+  line-height: var(--text-h3-lh);     /* 1.3 — was hardcoded 1 */
+  color: var(--text-primary);
+  margin: 0;
+}
+
+.rm-modal__close {
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  border: 1px solid transparent;
+  color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  flex-shrink: 0;
+}
+
+.rm-modal__close:hover:not(:disabled) {
+  background-color: var(--surface-hover);
+  border-color: var(--border);
+  color: var(--text-primary);
+}
+
+.rm-modal__close:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/*
+  FIX #8: line-height was hardcoded 1.5 — same value but now token-driven.
+*/
+.rm-modal__description {
+  font-size: var(--text-small);
+  color: var(--text-secondary);
+  line-height: var(--text-small-lh);  /* 1.5 — was hardcoded 1.5, now token */
+  padding: var(--space-3) var(--space-5) 0;
+  margin: 0;
+}
+
+/* Form */
+.rm-modal__form {
+  padding: var(--space-5);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.rm-modal__field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+/*
+  FIX #9: add missing line-height via token.
+  Weight 600 is kept intentionally (deliberate emphasis override
+  of --text-small-weight = 400, appropriate for a form label).
+*/
+.rm-modal__label {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: var(--text-small);
+  font-weight: 600;                   /* deliberate emphasis — overrides --text-small-weight of 400 */
+  line-height: var(--text-small-lh);  /* 1.5 — was missing */
+  color: var(--text-primary);
+}
+
+.rm-modal__optional {
+  font-size: var(--text-tiny);
+  font-weight: 400;
+  color: var(--text-muted);
+}
+
+.rm-modal__input {
+  width: 100%;
+  padding: 12px var(--space-4);
+  background-color: var(--bg-secondary);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  color: var(--text-primary);
+  font-size: var(--text-body);
+  font-family: var(--font-family);
+  transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+  outline: none;
+  box-sizing: border-box;
+}
+
+.rm-modal__input::placeholder {
+  color: var(--text-muted);
+}
+
+.rm-modal__input:focus {
+  border-color: var(--accent-primary);
+  box-shadow: 0 0 0 3px var(--accent-glow);
+}
+
+.rm-modal__input--error {
+  border-color: var(--danger);
+}
+
+.rm-modal__input--error:focus {
+  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.15);
+}
+
+.rm-modal__textarea {
+  width: 100%;
+  padding: 10px var(--space-4);
+  background-color: var(--bg-secondary);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  color: var(--text-primary);
+  font-size: var(--text-body);
+  font-family: var(--font-family);
+  line-height: var(--text-body-lh);
+  transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+  outline: none;
+  resize: vertical;
+  min-height: 72px;
+  box-sizing: border-box;
+}
+
+.rm-modal__textarea::placeholder {
+  color: var(--text-muted);
+}
+
+.rm-modal__textarea:focus {
+  border-color: var(--accent-primary);
+  box-shadow: 0 0 0 3px var(--accent-glow);
+}
+
+.rm-modal__textarea-wrapper {
+  display: flex;
+  flex-direction: column;
+}
+
+.rm-modal__char-counter {
+  align-self: flex-end;
+  font-size: var(--text-tiny);          /* 12px */
+  font-weight: var(--text-tiny-weight); /* 500 */
+  line-height: var(--text-tiny-lh);     /* 1.4 */
+  color: var(--text-muted);
+  margin-top: 4px;
+  transition: color var(--transition-fast);
+  animation: rmCharCountIn 0.2s ease;
+}
+
+.rm-modal__char-counter--warning {
+  color: var(--warning);
+  font-weight: 600;
+}
+
+@keyframes rmCharCountIn {
+  from { opacity: 0; transform: translateY(-2px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/*
+  PART 2: Room code input uses monospace, monospace + accent-primary color
+  matching RoomCodeDisplay.css (.dt-room-code-pill / .dt-room-code-value).
+*/
+.rm-modal__input--code {
+  font-family: monospace, monospace;  /* matches RoomCodeDisplay.css .dt-room-code-pill */
+  color: var(--accent-primary);       /* matches RoomCodeDisplay.css .dt-room-code-value */
+  letter-spacing: 1px;                /* matches RoomCodeDisplay.css .dt-room-code-value */
+}
+
+/*
+  FIX #10: add font-weight var(--text-tiny-weight) = 500 (was inheriting body 400)
+  and line-height var(--text-tiny-lh) = 1.4 (was missing).
+*/
+.rm-modal__error {
+  font-size: var(--text-tiny);
+  font-weight: var(--text-tiny-weight); /* 500 — was missing, inherited 400 */
+  line-height: var(--text-tiny-lh);     /* 1.4 — was missing */
+  color: var(--danger);
+  margin: 0;
+}
+
+/* Inline API error message banner */
+.rm-modal__api-error {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: 10px 14px;
+  background-color: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  border-radius: var(--radius-md);
+  color: var(--danger);
+  font-size: var(--text-small);
+  line-height: var(--text-small-lh);
+  animation: rmModalErrorFade 0.2s ease;
+}
+
+@keyframes rmModalErrorFade {
+  from { opacity: 0; transform: translateY(-4px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Small spinner for button */
+.rm-btn-spinner {
+  width: 14px;
+  height: 14px;
+  border: 2px solid rgba(15, 20, 23, 0.25);
+  border-top-color: #0F1417;
+  border-radius: 50%;
+  animation: rmSpin 0.7s linear infinite;
+  display: inline-block;
+}
+
+/* Footer actions */
+.rm-modal__footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--space-3);
+  border-top: 1px solid var(--border);
+  padding: var(--space-4) var(--space-5);
+}

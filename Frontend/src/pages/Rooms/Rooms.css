@@ -1,0 +1,387 @@
+/* ===================================================
+   Rooms.css — Standalone Rooms page layout styles
+   No Sidebar. Own top bar + main content area.
+
+   PART 1 FIXES APPLIED:
+   #1 .rm-topbar__logo: font-family now var(--font-family) (was hardcoded 'Sora','Poppins',sans-serif)
+                        font-size now var(--text-h3) = 24px (was hardcoded 22px)
+                        — matches Sidebar .dt-sidebar__logo-text exactly
+   #2 .rm-hero__sub: line-height now var(--text-body-lh) = 1.6 (was hardcoded 1.5)
+
+   PART 3: room list changed from grid to vertical row list.
+           rm-grid replaced by rm-room-list (full-width stacked rows).
+   =================================================== */
+
+/* ── Page shell ─────────────────────────────────────────────────────────── */
+
+.rm-page {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  transition:
+    background-color var(--transition-normal),
+    color var(--transition-normal);
+  /* Doodle pattern background — same as .dt-page-main */
+  background-image: var(--doodle-pattern);
+  background-repeat: repeat;
+  background-size: 960px 960px;
+  background-attachment: fixed;
+}
+
+/* ── Top bar ────────────────────────────────────────────────────────────── */
+
+.rm-topbar {
+  height: 70px;
+  padding: 0 var(--space-6);
+  background-color: var(--surface);
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky;
+  top: 0;
+  z-index: 90;
+  box-shadow: var(--shadow-sm);
+  transition: background-color var(--transition-normal);
+  box-sizing: border-box;
+}
+
+.rm-topbar__left {
+  display: flex;
+  align-items: center;
+}
+
+/*
+  FIX #1:
+  - font-family: var(--font-family) — was hardcoded 'Sora', 'Poppins', sans-serif
+  - font-size: var(--text-h3) = 24px — was hardcoded 22px
+  These now exactly match Sidebar's .dt-sidebar__logo-text (24px / 700 / var(--font-family)).
+*/
+.rm-topbar__logo {
+  font-family: var(--font-family);    /* was: 'Sora', 'Poppins', sans-serif */
+  font-size: var(--text-h3);          /* 24px — was: 22px */
+  font-weight: 700;
+  line-height: 1;
+  color: var(--accent-primary);
+  text-decoration: none;
+  letter-spacing: -0.5px;
+  transition: opacity var(--transition-fast);
+  user-select: none;
+}
+
+.rm-topbar__logo:hover {
+  opacity: 0.85;
+}
+
+.rm-topbar__right {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+/* ── Main content ───────────────────────────────────────────────────────── */
+
+.rm-main {
+  flex: 1;
+  padding: var(--space-7) var(--space-6);
+  max-width: 1280px;
+  width: 100%;
+  margin: 0 auto;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+}
+
+/* ── Hero section (heading + CTA row) ─────────────────────────────────── */
+
+.rm-hero {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: var(--space-5);
+  flex-wrap: wrap;
+  animation: rmHeroFadeIn 0.35s ease;
+}
+
+@keyframes rmHeroFadeIn {
+  from { opacity: 0; transform: translateY(-8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.rm-hero__text {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+/* Empty state modifier: centers heading text horizontally across the screen */
+.rm-hero--empty {
+  justify-content: center;
+  text-align: center;
+}
+
+.rm-hero--empty .rm-hero__text {
+  align-items: center;
+  text-align: center;
+  margin: 0 auto;
+}
+
+.rm-hero__heading {
+  font-size: var(--text-h1);
+  font-weight: var(--text-h1-weight);
+  line-height: var(--text-h1-lh);
+  color: var(--text-primary);
+  margin: 0;
+  /* Gradient shimmer */
+  background: linear-gradient(
+    135deg,
+    var(--text-primary) 40%,
+    var(--accent-primary) 100%
+  );
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/*
+  FIX #2: line-height was hardcoded 1.5 — should be var(--text-body-lh) = 1.6.
+*/
+.rm-hero__sub {
+  font-size: var(--text-body);
+  color: var(--text-secondary);
+  margin: 0;
+  line-height: var(--text-body-lh);  /* 1.6 — was hardcoded 1.5 */
+}
+
+.rm-hero__actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  flex-shrink: 0;
+}
+
+/* ── Loading State ──────────────────────────────────────────────────────── */
+
+.rm-loading-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-8) var(--space-5);
+  gap: var(--space-4);
+  text-align: center;
+  background-color: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+  animation: rmLoadingFadeIn 0.3s ease;
+}
+
+@keyframes rmLoadingFadeIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.rm-spinner {
+  width: 36px;
+  height: 36px;
+  border: 3px solid var(--border);
+  border-top-color: var(--accent-primary);
+  border-radius: 50%;
+  animation: rmSpin 0.8s linear infinite;
+}
+
+@keyframes rmSpin {
+  to { transform: rotate(360deg); }
+}
+
+.rm-loading-text {
+  font-size: var(--text-small);
+  color: var(--text-secondary);
+  line-height: var(--text-small-lh);
+  margin: 0;
+}
+
+/* ── Error State ────────────────────────────────────────────────────────── */
+
+.rm-error-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-7) var(--space-5);
+  gap: var(--space-4);
+  text-align: center;
+  background-color: var(--surface);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+  max-width: 520px;
+  margin: 0 auto;
+  width: 100%;
+  animation: rmErrorFadeIn 0.3s ease;
+}
+
+@keyframes rmErrorFadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.rm-error-icon-wrapper {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background-color: rgba(239, 68, 68, 0.1);
+  color: var(--danger);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.rm-error-title {
+  font-size: var(--text-h4);
+  font-weight: var(--text-h4-weight);
+  line-height: var(--text-h4-lh);
+  color: var(--text-primary);
+  margin: 0;
+}
+
+.rm-error-message {
+  font-size: var(--text-small);
+  color: var(--text-secondary);
+  line-height: var(--text-small-lh);
+  margin: 0;
+  max-width: 380px;
+}
+
+/* ── Room row list (PART 3: replaces card grid) ─────────────────────────── */
+/*
+  Rooms are now a vertical list of full-width rows.
+  A single surface-colored container holds all rows with border separators,
+  similar to a table-style list. The container itself gets card treatment
+  (surface / border / shadow) and each row inside has a bottom border divider.
+*/
+
+.rm-room-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0;                                /* No gap — rows share borders */
+  background-color: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+  overflow: hidden;                      /* Clips child border-radius cleanly */
+  animation: rmListFadeIn 0.4s ease;
+}
+
+@keyframes rmListFadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/*
+  Each rm-card inside the list:
+  - No individual border/shadow (container handles that)
+  - Bottom border as divider between rows
+  - No border-radius (container clips corners)
+*/
+.rm-room-list .rm-card {
+  border: none;
+  border-bottom: 1px solid var(--border);
+  border-radius: 0;
+  box-shadow: none;
+}
+
+.rm-room-list .rm-card:last-child {
+  border-bottom: none;
+}
+
+/* Staggered row entry animations */
+.rm-room-list .rm-card {
+  animation: rmRowEntry 0.3s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.rm-room-list .rm-card:nth-child(1) { animation-delay: 0.04s; }
+.rm-room-list .rm-card:nth-child(2) { animation-delay: 0.08s; }
+.rm-room-list .rm-card:nth-child(3) { animation-delay: 0.12s; }
+.rm-room-list .rm-card:nth-child(4) { animation-delay: 0.16s; }
+.rm-room-list .rm-card:nth-child(5) { animation-delay: 0.20s; }
+.rm-room-list .rm-card:nth-child(6) { animation-delay: 0.24s; }
+
+@keyframes rmRowEntry {
+  from { opacity: 0; transform: translateX(-8px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+/* ── Toast notification ─────────────────────────────────────────────────── */
+
+.rm-toast {
+  position: fixed;
+  bottom: 28px;
+  right: 28px;
+  padding: 14px 24px;
+  background-color: var(--accent-primary);
+  color: #0F1417;
+  border-radius: var(--radius-md);
+  font-weight: 600;
+  font-size: var(--text-small);
+  box-shadow: var(--shadow-lg);
+  z-index: 600;
+  animation: rmToastIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  max-width: 320px;
+}
+
+@keyframes rmToastIn {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ── Responsive ─────────────────────────────────────────────────────────── */
+
+@media (max-width: 992px) {
+  .rm-main {
+    padding: var(--space-6) var(--space-5);
+    gap: var(--space-5);
+  }
+
+  .rm-hero__heading {
+    font-size: var(--text-h2);
+  }
+}
+
+@media (max-width: 640px) {
+  .rm-topbar {
+    height: 60px;
+    padding: 0 var(--space-4);
+  }
+
+  .rm-main {
+    padding: var(--space-5) var(--space-4);
+    gap: var(--space-4);
+  }
+
+  .rm-hero {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .rm-hero__actions {
+    width: 100%;
+    flex-wrap: wrap;
+  }
+
+  .rm-hero__actions .dt-button {
+    flex: 1;
+    min-width: 140px;
+  }
+
+  .rm-toast {
+    bottom: 16px;
+    right: 16px;
+    left: 16px;
+    max-width: none;
+  }
+}

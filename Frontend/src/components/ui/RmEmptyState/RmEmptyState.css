@@ -1,0 +1,84 @@
+/* ===================================================
+   RmEmptyState — empty rooms list state
+
+   PART 1 FIXES APPLIED:
+   #14 .rm-empty-state__title: add missing line-height var(--text-h3-lh) = 1.3
+   #15 .rm-empty-state__description: replace hardcoded 1.6 with var(--text-body-lh)
+       (same value, now token-driven for long-term consistency)
+   =================================================== */
+
+.rm-empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: var(--space-9) var(--space-5);
+  gap: var(--space-6);
+  max-width: 480px;
+  margin: 0 auto;
+  animation: rmEmptyFadeIn 0.4s ease;
+}
+
+@keyframes rmEmptyFadeIn {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Illustration circle */
+.rm-empty-state__illustration {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 40% 40%, var(--accent-subtle) 0%, transparent 70%);
+  border: 1px solid rgba(46, 204, 113, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--accent-primary);
+  animation: rmEmptyFloat 3.5s ease-in-out infinite;
+  flex-shrink: 0;
+}
+
+@keyframes rmEmptyFloat {
+  0%, 100% { transform: translateY(0); }
+  50%       { transform: translateY(-8px); }
+}
+
+.rm-empty-state__icon {
+  opacity: 0.85;
+}
+
+.rm-empty-state__content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+/*
+  FIX #14: add missing line-height var(--text-h3-lh) = 1.3
+*/
+.rm-empty-state__title {
+  font-size: var(--text-h3);          /* 24px */
+  font-weight: var(--text-h3-weight); /* 600 */
+  line-height: var(--text-h3-lh);     /* 1.3 — was missing */
+  color: var(--text-primary);
+  margin: 0;
+}
+
+/*
+  FIX #15: hardcoded 1.6 → var(--text-body-lh) — same value, now token-driven.
+*/
+.rm-empty-state__description {
+  font-size: var(--text-body);
+  color: var(--text-secondary);
+  line-height: var(--text-body-lh);  /* was hardcoded 1.6 — same value, now token */
+  margin: 0;
+}
+
+.rm-empty-state__actions {
+  display: flex;
+  gap: var(--space-3);
+  flex-wrap: wrap;
+  justify-content: center;
+}
