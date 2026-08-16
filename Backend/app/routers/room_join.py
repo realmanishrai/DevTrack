@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from app.database import get_db
-from app.models import User, Room, JoinRequest, RoomMember
+from app.models import User, Room, JoinRequest, RoomMember, ActivityLog
 from app.auth import get_current_user, ensure_room_member, ensure_room_admin
 
 router = APIRouter()
@@ -92,6 +92,13 @@ def accept_request(
         role="member"
     )
 
+    activity_log = ActivityLog(
+        user_id=current_user.id,
+        action_type="Join Request Accepted",
+        room_id=room.id,
+        description=f"User {current_user.username} accepted join request for room {room.room_name}"
+    )
+    db.add(activity_log)
     db.add(new_member)
     db.delete(join_request)
     db.commit()
@@ -100,7 +107,7 @@ def accept_request(
 
 
 @router.delete("/PendingRequests/{room_code}/{id}")
-def accept_request(
+def reject_request(
     room_code: str,
     id: int,
     db: Session = Depends(get_db),
@@ -118,6 +125,13 @@ def accept_request(
   current_user_room = db.query(RoomMember).filter(RoomMember.user_id == current_user.id, RoomMember.room_id == room.id).first()
   if current_user_room is None or current_user_room.room_id != room.id or current_user_room.role != "admin":
     raise HTTPException(status_code=403, detail="Unauthorized Access")
+  activity_log = ActivityLog(
+        user_id=current_user.id,
+        action_type="Join Request Rejected",
+        room_id=room.id,
+        description=f"User {current_user.username} rejected join request for room {room.room_name}"
+    )
+  db.add(activity_log)
   db.delete(join_request)
   db.commit()
   return {"message": "Join request rejected"}

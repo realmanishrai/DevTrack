@@ -59,8 +59,8 @@ def delete_task(room_code: str,
   activity = models.ActivityLog(
      room_id= room.id,
      user_id=current_user.id,
-     task_id= None,
-     action_type= "deleted",
+     task_id= id,
+     action_type= "Task Deleted",
      description=f"Task '{task_title}' was deleted"
   )
 
@@ -98,7 +98,7 @@ def create_task(room_code: str,
        room_id= room.id,
        user_id= current_user.id,
        task_id= new_task.id,
-       action_type="created",
+       action_type="Task Created",
        description=f"Task '{new_task.title}' was created"
     )
     db.add(activity)
@@ -157,7 +157,7 @@ def update_task(room_code: str,
       room_id=room.id,
       user_id=current_user.id,
       task_id=existing_task.id,
-      action_type="updated",
+      action_type="Task Updated",
       description=f"Task '{existing_task.title}' was updated"
    )
    db.add(activity)
