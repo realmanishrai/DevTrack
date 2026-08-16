@@ -42,3 +42,35 @@ def delete_room(room_code: str, current_user: User = Depends(get_current_user), 
   db.query(Room).filter(Room.room_code == room_code).delete()
   db.commit()
   return {"Success":"Room Deleted Successfully"}
+
+@router.get("/roomlist")
+def get_user_rooms(
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+    rooms = db.query(Room).join(RoomMember).filter(RoomMember.user_id == current_user.id).all()
+    return rooms
+
+@router.delete("/leaveroom/{room_code}")
+def leave_room(
+    room_code: str,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+    room = db.query(Room).filter(Room.room_code == room_code).first()
+    if not room:
+        raise HTTPException(status_code=404, detail="Room not found")
+    
+    room_member = db.query(RoomMember).filter(RoomMember.room_id == room.id, RoomMember.user_id == current_user.id).first()
+    if not room_member:
+        raise HTTPException(status_code=403, detail="You are not a member of this room")
+    
+    # Prevent the last admin from leaving the room
+    if room_member.role == "admin":
+      admin_count = db.query(RoomMember).filter(RoomMember.room_id == room.id, RoomMember.role == "admin").count()
+      if admin_count <= 1:
+        raise HTTPException(status_code=403, detail="Cannot leave room as the sole admin; assign another admin first")
+
+    db.delete(room_member)
+    db.commit()
+    return {"Success": "Left the room successfully"}
