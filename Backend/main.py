@@ -7,6 +7,8 @@ from app.database import engine
 from app.routers.login import router as login_router
 from app.routers.room_join import router as joinroom_router
 from app.routers.room_members import router as room_members_router
+from app.routers.activitylogs import router as activitylog_router
+from app.routers.profile import router as profile_router
 
 app = FastAPI()
 
@@ -15,7 +17,12 @@ models.Base.metadata.create_all(bind=engine)
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=[
+        "http://localhost:3000",
+        "http://localhost:5173",
+        "http://127.0.0.1:3000",
+        "http://127.0.0.1:5173",
+    ],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -43,4 +50,13 @@ app.include_router(
 app.include_router(
     room_members_router,
     tags=["Room Members"]
+)
+app.include_router(
+    activitylog_router,
+    tags=["Activity Logs"]
+)
+
+app.include_router(
+    profile_router,
+    tags=["Profile"]
 )

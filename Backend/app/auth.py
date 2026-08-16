@@ -1,11 +1,13 @@
 from datetime import datetime, timedelta, timezone
-from fastapi import  Depends, HTTPException, status
+from typing import Optional
+
+from fastapi import  Depends, HTTPException, Request, status
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from jose import JWTError, jwt
 from pwdlib import PasswordHash
 from sqlalchemy.orm import Session
 from app.database import get_db
-from app.models import User
+from app.models import User, RoomMember
 
 
 SECRET_KEY = "ad3r4567890qwertyuiopasdfghjklzxcvbnm"
@@ -83,7 +85,8 @@ def create_refresh_token(user_id: int):
 # ============================================================
 
 oauth2_scheme = OAuth2PasswordBearer(
-    tokenUrl="login"
+    tokenUrl="login",
+    auto_error=False
 )
 
 # ============================================================
@@ -101,19 +104,15 @@ def decode_token(token: str):
         return payload
 
     except JWTError:
-        return HTTPException(
-        status_code=status.HTTP_401_UNAUTHORIZED,
-        detail="Could not validate credentials",
-        headers={
-            "WWW-Authenticate": "Bearer"
-        })
+        return None
     
 # ============================================================
 # GET CURRENT USER
 # ============================================================
 
 def get_current_user(
-    token: str = Depends(oauth2_scheme),
+    request: Request,
+    token: Optional[str] = Depends(oauth2_scheme),
     db: Session = Depends(get_db)
 ):
     credentials_exception = HTTPException(
@@ -123,6 +122,11 @@ def get_current_user(
             "WWW-Authenticate": "Bearer"
         }
     )
+
+    token = token or request.cookies.get("devtrack_access_token")
+
+    if token is None:
+        raise credentials_exception
 
     payload = decode_token(token)
 
@@ -150,4 +154,27 @@ def get_current_user(
     if user is None:
         raise credentials_exception
 
+    user.last_online = datetime.now(timezone.utc)
+    db.commit()
+    db.refresh(user)
+
     return user
+
+def ensure_room_member(room_id: int, db: Session, user_id: int):
+    member = db.query(RoomMember).filter(
+        RoomMember.room_id == room_id,
+        RoomMember.user_id == user_id
+    ).first()
+    if member is None:
+        raise HTTPException(status_code=403, detail="User is not a member of this room")
+
+def ensure_room_admin(room_id: int, db: Session, user_id: int):
+    member = db.query(RoomMember).filter(
+        RoomMember.room_id == room_id,
+        RoomMember.user_id == user_id
+    ).first()
+    if member is None:
+        raise HTTPException(status_code=403, detail="User is not a member of this room")
+    if (member.role or "").lower() not in ("admin", "owner"):
+        raise HTTPException(status_code=403, detail="User is not an admin of this room")
+    return member

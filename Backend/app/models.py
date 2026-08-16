@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, DateTime, ForeignKey
+from sqlalchemy import Column, Integer, String, DateTime, ForeignKey, Date
 from sqlalchemy.orm import relationship
 from app.database import Base, engine
 from datetime import datetime, timezone
@@ -14,10 +14,12 @@ class Task(Base):
     progress = Column(Integer)
     priority = Column(String(20))
     created_by = Column(Integer, ForeignKey("users.id"))
-    due_date = Column(String(10))
-    completed_at = Column(String(10))
-    created_at = Column(String(10))
-    updated_at = Column(String(10))
+    due_date = Column(Date)
+    created_at = Column(DateTime, 
+                        default=lambda: datetime.now(timezone.utc))
+    updated_at = Column(DateTime, 
+                        default=lambda: datetime.now(timezone.utc), 
+                        onupdate=lambda: datetime.now(timezone.utc))
 
     assignees = relationship(
         "TaskAssignee",
@@ -31,7 +33,8 @@ class Task(Base):
     )
     activity_logs = relationship(
         "ActivityLog",
-        back_populates="task"
+        back_populates="task",
+        cascade="all, delete-orphan"
     )
 
 
@@ -42,7 +45,8 @@ class TaskAssignee(Base):
     task_id = Column(Integer, ForeignKey("tasks.id"))
     user_id = Column(Integer, ForeignKey("users.id"))
     assigned_by = Column(Integer, ForeignKey("users.id"))
-    assigned_at = Column(String(10))
+    assigned_at = Column(DateTime, 
+                        default=lambda: datetime.now(timezone.utc))
 
     task = relationship("Task", back_populates="assignees")
 
@@ -56,7 +60,9 @@ class TaskUpdate(Base):
     old_status = Column(String(50))
     new_status = Column(String(50))
     comment = Column(String(200))
-    updated_at = Column(String(10))
+    updated_at = Column(DateTime, 
+                        default=lambda: datetime.now(timezone.utc), 
+                        onupdate=lambda: datetime.now(timezone.utc))
 
     task = relationship("Task", back_populates="updates")
 
@@ -70,7 +76,8 @@ class ActivityLog(Base):
     task_id = Column(Integer, ForeignKey("tasks.id"), nullable=True)
     action_type = Column(String(50))
     description = Column(String(200))
-    created_at = Column(String(10))
+    created_at = Column(DateTime, 
+                        default=lambda: datetime.now(timezone.utc))
 
     task = relationship("Task", back_populates="activity_logs")
 
@@ -80,7 +87,7 @@ class User(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     firstname = Column(String(50), nullable=False)
-    lasttname = Column(String(50), nullable=False)
+    lastname = Column(String(50), nullable=False)
     username = Column(String(50), unique=True, nullable=False)
     email = Column(String(255), unique=True, nullable=False)
     password_hash = Column(String, nullable=False)
@@ -88,7 +95,9 @@ class User(Base):
     updated_at = Column(DateTime, 
                         default=lambda: datetime.now(timezone.utc), 
                         onupdate=lambda: datetime.now(timezone.utc) )
-    last_online= Column(DateTime, nullable=True)
+    last_online= Column(DateTime, 
+                        default=lambda: datetime.now(timezone.utc), 
+                        onupdate=lambda: datetime.now(timezone.utc))
     rooms_created= relationship("Room", back_populates="creator")
     room_memberships= relationship("RoomMember", back_populates="user")
     
@@ -103,6 +112,11 @@ class Room(Base):
     room_code=Column(String, unique=True, nullable= False)
     created_by=Column(Integer, ForeignKey("users.id"))
     created_at=Column(DateTime, default=lambda: datetime.now(timezone.utc))
+    members = relationship(
+        "RoomMember",
+        back_populates="room",
+        cascade="all, delete-orphan",
+    )
     creator= relationship("User", back_populates="rooms_created")
     members= relationship("RoomMember", back_populates="room")
 

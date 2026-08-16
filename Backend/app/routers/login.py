@@ -1,14 +1,50 @@
+import os
+
 from fastapi import APIRouter
-from fastapi import  Depends, HTTPException, status
+from fastapi import  Cookie, Depends, HTTPException, Response, status
 from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
 from app.database import get_db
 from app.models import User
 from app.auth import hash_password, verify_password, create_access_token, get_current_user, create_refresh_token, decode_token
-from app.schema import CreateUser, RefreshRequest
+from app.schema import CreateUser
 
 
 router = APIRouter()
+
+ACCESS_TOKEN_COOKIE = "devtrack_access_token"
+REFRESH_TOKEN_COOKIE = "devtrack_refresh_token"
+COOKIE_SECURE = os.getenv("AUTH_COOKIE_SECURE", "false").lower() == "true"
+COOKIE_SAMESITE = os.getenv("AUTH_COOKIE_SAMESITE", "lax")
+ACCESS_TOKEN_MAX_AGE_SECONDS = 30 * 60
+REFRESH_TOKEN_MAX_AGE_SECONDS = 30 * 24 * 60 * 60
+
+
+def set_auth_cookies(
+    response: Response,
+    access_token: str,
+    refresh_token: str | None = None
+):
+    response.set_cookie(
+        key=ACCESS_TOKEN_COOKIE,
+        value=access_token,
+        max_age=ACCESS_TOKEN_MAX_AGE_SECONDS,
+        httponly=True,
+        secure=COOKIE_SECURE,
+        samesite=COOKIE_SAMESITE,
+        path="/",
+    )
+
+    if refresh_token is not None:
+        response.set_cookie(
+            key=REFRESH_TOKEN_COOKIE,
+            value=refresh_token,
+            max_age=REFRESH_TOKEN_MAX_AGE_SECONDS,
+            httponly=True,
+            secure=COOKIE_SECURE,
+            samesite=COOKIE_SAMESITE,
+            path="/",
+        )
 
 
 # ============================================================
@@ -47,7 +83,7 @@ def register(
     # Create user
     newDBuser = User(
         firstname=new_user.firstname,
-        lasttname=new_user.lasttname,
+        lastname=new_user.lastname,
         username=new_user.username,
         email=new_user.email,
         password_hash=hashed_password
@@ -69,6 +105,7 @@ def register(
 
 @router.post("/login")
 def login(
+    response: Response,
     form_data: OAuth2PasswordRequestForm = Depends(),
     db: Session = Depends(get_db)
 ):
@@ -109,10 +146,15 @@ def login(
         user.id
     )
 
+    set_auth_cookies(
+        response,
+        access_token,
+        refresh_token
+    )
+
     return {
-        "access_token": access_token,
-        "refresh_token": refresh_token,
-        "token_type": "bearer"
+        "message": "Login successful",
+        "token_type": "cookie"
     }
 
 # ============================================================
@@ -121,7 +163,8 @@ def login(
 
 @router.post("/refresh")
 def refresh(
-    data: RefreshRequest,
+    response: Response,
+    refresh_token: str | None = Cookie(default=None, alias=REFRESH_TOKEN_COOKIE),
     db: Session = Depends(get_db)
 ):
     credentials_exception = HTTPException(
@@ -129,7 +172,10 @@ def refresh(
         detail="Invalid refresh token"
     )
 
-    payload = decode_token(data.refresh_token)
+    if refresh_token is None:
+        raise credentials_exception
+
+    payload = decode_token(refresh_token)
 
     if payload is None:
         raise credentials_exception
@@ -161,7 +207,28 @@ def refresh(
         user.id
     )
 
+    set_auth_cookies(
+        response,
+        new_access_token
+    )
+
     return {
-        "access_token": new_access_token,
-        "token_type": "bearer"
+        "message": "Session refreshed",
+        "token_type": "cookie"
+    }
+
+
+@router.post("/logout")
+def logout(response: Response):
+    response.delete_cookie(
+        key=ACCESS_TOKEN_COOKIE,
+        path="/",
+    )
+    response.delete_cookie(
+        key=REFRESH_TOKEN_COOKIE,
+        path="/",
+    )
+
+    return {
+        "message": "Logout successful"
     }
