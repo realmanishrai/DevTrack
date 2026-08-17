@@ -24,9 +24,13 @@ export const TbAddTaskModal = ({
   });
 
   const [errors, setErrors] = useState({});
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [apiError, setApiError] = useState('');
 
   useEffect(() => {
     if (isOpen) {
+      setApiError('');
+      setIsSubmitting(false);
       if (mode === 'edit' && task) {
         setFormData({
           title: task.title || '',
@@ -55,13 +59,13 @@ export const TbAddTaskModal = ({
   // Handle ESC key press
   useEffect(() => {
     const handleKeyDown = (e) => {
-      if (e.key === 'Escape' && isOpen) {
+      if (e.key === 'Escape' && isOpen && !isSubmitting) {
         onClose();
       }
     };
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [isOpen, onClose]);
+  }, [isOpen, onClose, isSubmitting]);
 
   if (!isOpen) return null;
 
@@ -98,7 +102,7 @@ export const TbAddTaskModal = ({
     }
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     const newErrors = {};
 
@@ -111,12 +115,28 @@ export const TbAddTaskModal = ({
       return;
     }
 
-    onSubmit({
-      ...formData,
-      title: formData.title.trim(),
-      description: formData.description.trim()
-    });
-    onClose();
+    setIsSubmitting(true);
+    setApiError('');
+
+    try {
+      const result = await onSubmit({
+        ...formData,
+        title: formData.title.trim(),
+        description: formData.description.trim()
+      });
+
+      if (result && result.success === false) {
+        setApiError(result.error || 'Failed to save task.');
+        setIsSubmitting(false);
+        return;
+      }
+
+      setIsSubmitting(false);
+      onClose();
+    } catch (err) {
+      setApiError(err?.message || 'An unexpected error occurred.');
+      setIsSubmitting(false);
+    }
   };
 
   const memberDropdownOptions = members.map((m) => ({
@@ -169,6 +189,24 @@ export const TbAddTaskModal = ({
         {/* Modal Form Body */}
         <form onSubmit={handleSubmit} className="tb-modal__form">
           <div className="tb-modal__body">
+            {/* API Error Banner */}
+            {apiError && (
+              <div
+                style={{
+                  padding: '10px 14px',
+                  backgroundColor: 'rgba(231, 76, 60, 0.1)',
+                  border: '1px solid var(--danger)',
+                  borderRadius: 'var(--radius-sm)',
+                  color: 'var(--danger)',
+                  fontSize: '13px',
+                  marginBottom: '16px'
+                }}
+                role="alert"
+              >
+                {apiError}
+              </div>
+            )}
+
             {/* Field 1: Task Title */}
             <div className="tb-modal__field">
               <label className="tb-modal__label" htmlFor="tb-form-title">
@@ -285,16 +323,17 @@ export const TbAddTaskModal = ({
 
           {/* Modal Footer Actions */}
           <div className="tb-modal__footer">
-            <DtButton variant="outline" size="md" onClick={onClose}>
+            <DtButton variant="outline" size="md" onClick={onClose} disabled={isSubmitting}>
               Cancel
             </DtButton>
             <DtButton
               type="submit"
               variant="primary"
               size="md"
+              disabled={isSubmitting}
               icon={isEdit ? <EditIcon size={16} /> : <PlusIcon size={16} />}
             >
-              {isEdit ? 'Save Changes' : 'Create Task'}
+              {isSubmitting ? (isEdit ? 'Saving...' : 'Creating...') : isEdit ? 'Save Changes' : 'Create Task'}
             </DtButton>
           </div>
         </form>
