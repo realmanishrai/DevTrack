@@ -1,0 +1,50 @@
+/* ===================================================
+   RmPopover Styles — Portalled popover driven by design tokens
+   =================================================== */
+
+.rm-popover__backdrop {
+  position: fixed;
+  inset: 0;
+  background: transparent;
+  cursor: default;
+}
+
+.rm-popover__content {
+  background-color: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-md);
+  padding: var(--space-3) var(--space-4);
+  max-width: 320px;
+  width: max-content;
+  box-sizing: border-box;
+  overflow-y: auto;
+  pointer-events: auto;
+  animation: rmPopoverFadeDown var(--transition-fast) cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.rm-popover__content--flipped {
+  animation: rmPopoverFadeUp var(--transition-fast) cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes rmPopoverFadeDown {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes rmPopoverFadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

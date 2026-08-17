@@ -1,0 +1,393 @@
+/* ===================================================
+   RmCard — Room row for the Rooms page
+   Visual language: matches DtCard (surface, border, shadow)
+   Part of the horizontal row list layout.
+   =================================================== */
+
+.rm-card {
+  background-color: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+  display: flex;
+  flex-direction: column;
+  transition:
+    box-shadow var(--transition-fast),
+    border-color var(--transition-fast),
+    background-color var(--transition-normal);
+  overflow: hidden;
+}
+
+.rm-card:hover {
+  box-shadow: var(--shadow-md);
+  border-color: rgba(46, 204, 113, 0.35);
+  background-color: var(--surface-hover);
+}
+
+/* ── Row body — left info + right stacked actions ── */
+.rm-card__body {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  padding: var(--space-4) var(--space-5);
+  min-height: 76px;
+}
+
+/* Left grouping: folder icon + name/code/info stacked */
+.rm-card__left {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  flex: 1;
+  min-width: 0;
+}
+
+/* Folder icon box */
+.rm-card__icon-wrapper {
+  flex-shrink: 0;
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-md);
+  background-color: var(--accent-subtle);
+  border: 1px solid rgba(46, 204, 113, 0.18);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--accent-primary);
+  transition: background-color var(--transition-fast);
+}
+
+.rm-card:hover .rm-card__icon-wrapper {
+  background-color: rgba(46, 204, 113, 0.14);
+}
+
+/* ── Left info block: name + code stacked ── */
+.rm-card__info {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.rm-card__name {
+  font-size: var(--text-h4);          /* 20px */
+  font-weight: var(--text-h4-weight); /* 600 */
+  line-height: var(--text-h4-lh);     /* 1.35 */
+  color: var(--text-primary);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  margin: 0;
+}
+
+/* ── Room code inline display: label + code pill + info icon ── */
+.rm-card__code-wrapper {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  flex-wrap: wrap;
+}
+
+/* PART 1 fix #3: use token weight + line-height */
+.rm-card__code-label {
+  font-size: var(--text-tiny);          /* 12px */
+  font-weight: var(--text-tiny-weight); /* 500 — was hardcoded 500, now token */
+  line-height: var(--text-tiny-lh);     /* 1.4 — was missing */
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/*
+  Room code pill containing [copy icon] + code text
+  Matches RoomCodeDisplay.css (.dt-room-code-pill)
+*/
+.rm-card__code-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background-color: var(--bg-secondary);
+  border: 1px solid var(--border);
+  padding: 3px 8px;
+  border-radius: var(--radius-sm);
+  transition: border-color var(--transition-fast), background-color var(--transition-fast);
+}
+
+.rm-card__code-pill:hover {
+  border-color: rgba(46, 204, 113, 0.4);
+}
+
+/* Copy button sitting immediately to the left of the room code */
+.rm-card__copy-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: none;
+  padding: 2px;
+  margin: 0;
+  color: var(--text-muted);
+  cursor: pointer;
+  border-radius: 3px;
+  transition: color var(--transition-fast), transform var(--transition-fast);
+  line-height: 1;
+}
+
+.rm-card__copy-btn:hover {
+  color: var(--accent-primary);
+  transform: scale(1.15);
+}
+
+.rm-card__copy-btn--copied {
+  color: var(--accent-primary);
+}
+
+.rm-card__code {
+  font-family: monospace, monospace; /* matches RoomCodeDisplay.css .dt-room-code-pill */
+  font-size: var(--text-tiny);       /* 12px — compact for list row */
+  font-weight: 700;                  /* matches .dt-room-code-value */
+  color: var(--accent-primary);      /* matches .dt-room-code-value */
+  letter-spacing: 1px;               /* matches .dt-room-code-value */
+  user-select: all;
+}
+
+/* Small animated "Copied!" feedback text */
+.rm-card__copied-badge {
+  font-family: var(--font-family);
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--accent-primary);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  animation: rmCopiedIn 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  padding-left: 2px;
+}
+
+@keyframes rmCopiedIn {
+  from { opacity: 0; transform: translateX(-3px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Info button placed right next to the room code pill */
+.rm-card__info-btn {
+  width: 24px;
+  height: 24px;
+  border-radius: var(--radius-full);
+  background: transparent;
+  border: 1px solid transparent;
+  color: var(--text-muted);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  padding: 0;
+}
+
+.rm-card__info-btn:hover {
+  color: var(--accent-primary);
+  background-color: var(--accent-subtle);
+  border-color: rgba(46, 204, 113, 0.25);
+  transform: scale(1.15);
+}
+
+.rm-card__info-btn--active {
+  color: var(--accent-primary);
+  background-color: var(--accent-subtle);
+  border-color: var(--accent-primary);
+}
+
+/* ── Description Popover Panel ── */
+.rm-card__desc-panel {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  min-width: 220px;
+  max-width: 320px;
+}
+
+.rm-card__desc-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 4px;
+}
+
+.rm-card__desc-title {
+  font-size: var(--text-tiny);          /* 12px */
+  font-weight: 600;
+  line-height: var(--text-tiny-lh);     /* 1.4 */
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.rm-card__desc-body {
+  font-size: var(--text-small);          /* 14px */
+  font-weight: var(--text-small-weight); /* 400 */
+  line-height: var(--text-small-lh);     /* 1.5 */
+  color: var(--text-primary);
+  margin: 0;
+  word-break: break-word;
+  white-space: pre-wrap;
+}
+
+/* ── Right actions block: stacked vertically at right edge ── */
+.rm-card__actions {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: var(--space-3); /* Space between Open Room button and Leave/Delete sub-actions */
+  flex-shrink: 0;
+}
+
+.rm-card__btn-open {
+  align-self: flex-end;
+}
+
+.rm-card__sub-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  justify-content: flex-end;
+}
+
+/* PART 1 fix #5: letter-spacing 0.5px (was 0.4px) */
+.rm-card__icon-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 6px;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  border: none;
+  font-size: 11px;
+  font-weight: 600;
+  font-family: var(--font-family);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  white-space: nowrap;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  line-height: 1.2;
+}
+
+.rm-card__icon-btn--leave {
+  color: var(--text-muted);
+}
+
+.rm-card__icon-btn--leave:hover {
+  color: var(--warning);
+  background-color: rgba(245, 185, 77, 0.1);
+}
+
+.rm-card__icon-btn--delete {
+  color: var(--text-muted);
+}
+
+.rm-card__icon-btn--delete:hover {
+  color: var(--danger);
+  background-color: rgba(239, 68, 68, 0.1);
+}
+
+/* ── Inline confirmation strip ── */
+/* PART 1 fix #6: line-height via token (was hardcoded 1.4) */
+.rm-card__confirm {
+  padding: var(--space-3) var(--space-5) var(--space-4);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  flex-wrap: wrap;
+  border-top: 1px solid var(--border);
+  animation: rmConfirmSlide 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes rmConfirmSlide {
+  from { opacity: 0; transform: translateY(4px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.rm-card__confirm-text {
+  font-size: var(--text-small);      /* 14px */
+  color: var(--text-secondary);
+  line-height: var(--text-small-lh); /* 1.5 — was hardcoded 1.4 */
+  margin: 0;
+  flex: 1;
+  min-width: 160px;
+}
+
+/* Inline error inside the confirmation strip */
+.rm-card__confirm-error {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  color: var(--danger);
+  font-size: var(--text-small);
+  line-height: var(--text-small-lh);
+  font-weight: 500;
+  flex: 1;
+  min-width: 160px;
+  animation: rmConfirmErrorFade 0.2s ease;
+}
+
+@keyframes rmConfirmErrorFade {
+  from { opacity: 0; transform: translateY(-2px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.rm-card__confirm-actions {
+  display: flex;
+  gap: var(--space-2);
+  flex-shrink: 0;
+}
+
+/* ── Mobile responsive (≤ 600px) ── */
+@media (max-width: 600px) {
+  .rm-card__body {
+    flex-direction: column;
+    align-items: stretch;
+    min-height: unset;
+    padding: var(--space-4);
+    gap: var(--space-3);
+  }
+
+  .rm-card__left {
+    max-width: 100%;
+    min-width: unset;
+    width: 100%;
+  }
+
+  .rm-card__actions {
+    width: 100%;
+    border-top: 1px dashed var(--border);
+    padding-top: var(--space-3);
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    gap: var(--space-2);
+  }
+
+  .rm-card__btn-open {
+    align-self: auto;
+  }
+
+  .rm-card__sub-actions {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+  }
+
+  .rm-card__confirm {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-3);
+  }
+
+  .rm-card__confirm-actions {
+    width: 100%;
+  }
+}

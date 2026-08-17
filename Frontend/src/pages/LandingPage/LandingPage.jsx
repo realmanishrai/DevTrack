@@ -3,9 +3,7 @@ import Button from '../../components/ui/Button/Button';
 import Card from '../../components/ui/Card/Card';
 import heroTeamImg from '../../assets/hero-team.png';
 import './LandingPage.css';
-// TODO-REMOVE: temporary DevTrack dashboard shortcut - remove before merge
-import TempDevTrackDashboardButton from '../../components/ui/TempDevTrackDashboardButton';
-// END TODO-REMOVE
+
 
 
 const whyCards = [
@@ -254,9 +252,6 @@ function LandingPage() {
         <a href="#features">Features</a>
         <a href="#statistics">Statistics</a>
         <a href="#how-it-works">How It Works</a>
-        {/* TODO-REMOVE: temporary DevTrack dashboard shortcut - remove before merge */}
-        <TempDevTrackDashboardButton />
-        {/* END TODO-REMOVE */}
       </div>
 
       <div className="footer-column">

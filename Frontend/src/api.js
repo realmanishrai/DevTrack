@@ -101,4 +101,11 @@ export const apiRequest = async ({
   return responseData;
 };
 
+export const getCurrentUser = async () => {
+  return apiRequest({
+    url: '/me',
+    method: 'GET',
+  });
+};
+
 export default apiRequest;
