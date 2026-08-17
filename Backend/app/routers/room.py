@@ -57,8 +57,25 @@ def get_user_rooms(
     current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db)
 ):
-    rooms = db.query(Room).join(RoomMember).filter(RoomMember.user_id == current_user.id).all()
-    return rooms
+  # Return rooms that the current user is a member of, and include the
+  # current user's role for each room so the frontend can render admin
+  # specific controls (e.g. Delete) without additional lookups.
+  rooms = db.query(Room).join(RoomMember).filter(RoomMember.user_id == current_user.id).all()
+
+  result = []
+  for r in rooms:
+    member = db.query(RoomMember).filter(RoomMember.room_id == r.id, RoomMember.user_id == current_user.id).first()
+    result.append({
+      "id": r.id,
+      "room_name": r.room_name,
+      "room_code": r.room_code,
+      "description": r.description,
+      "created_by": r.created_by,
+      "created_at": r.created_at,
+      "current_user_role": member.role if member else None,
+    })
+
+  return result
 
 @router.delete("/leaveroom/{room_code}")
 def leave_room(

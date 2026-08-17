@@ -44,6 +44,8 @@ const RmCard = ({
   const isCreator = Boolean(
     currentUserId && Number(room.createdByUserId) === Number(currentUserId)
   );
+  // Also allow admins to delete rooms (backend provides currentUserRole)
+  const isAdmin = Boolean(room.currentUserRole && String(room.currentUserRole).toLowerCase() === 'admin');
 
   const handleCopyCode = async (e) => {
     e.stopPropagation();
@@ -222,8 +224,8 @@ const RmCard = ({
                 <span>Leave</span>
               </button>
 
-              {/* Delete — creator only */}
-              {isCreator && (
+              {/* Delete — creator or admin */}
+              {(isCreator || isAdmin) && (
                 <button
                   type="button"
                   className="rm-card__icon-btn rm-card__icon-btn--delete"

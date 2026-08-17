@@ -25,6 +25,7 @@ export const mapBackendRoomToUi = (backendRoom) => {
     roomCode: backendRoom.room_code || '',
     description: backendRoom.description || '',
     createdByUserId: backendRoom.created_by,
+    currentUserRole: backendRoom.current_user_role || null,
     createdAt: backendRoom.created_at || null,
   };
 };
