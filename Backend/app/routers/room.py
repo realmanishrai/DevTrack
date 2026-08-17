@@ -38,6 +38,8 @@ def Create_Room(
 def delete_room(room_code: str, current_user: User = Depends(get_current_user), db: Session = Depends(get_db)):
 
   room = db.query(Room).filter(Room.room_code == room_code).first()
+  if not room:
+    raise HTTPException(status_code=404, detail="Room not found")
   current_member = db.query(RoomMember).filter(
         RoomMember.room_id == room.id,
         RoomMember.user_id == current_user.id).first()
