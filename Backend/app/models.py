@@ -116,16 +116,16 @@ class Room(Base):
         "RoomMember",
         back_populates="room",
         cascade="all, delete-orphan",
+        passive_deletes=True,
     )
     creator= relationship("User", back_populates="rooms_created")
-    members= relationship("RoomMember", back_populates="room")
 
 
 #ROOM MEMBER MODEL
 class RoomMember(Base):
     __tablename__="room_members"
     id = Column(Integer, primary_key=True, index=True)
-    room_id= Column(Integer, ForeignKey("rooms.id"))
+    room_id= Column(Integer, ForeignKey("rooms.id", ondelete="CASCADE"))
     user_id= Column(Integer,ForeignKey("users.id"))
     role= Column(String(20), nullable= False)
     joined_at= Column(DateTime, default=lambda: datetime.now(timezone.utc))
