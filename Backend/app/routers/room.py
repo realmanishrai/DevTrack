@@ -36,9 +36,14 @@ def Create_Room(
 
 @router.delete("/room/{room_code}/delete")
 def delete_room(room_code: str, current_user: User = Depends(get_current_user), db: Session = Depends(get_db)):
-  room_member = db.query(RoomMember).filter(RoomMember.user_id == current_user.id).first()
-  if room_member is None or room_member.role != "admin":
-    raise HTTPException(status_code=403, detail="Unauthorized Access")
+
+  room = db.query(Room).filter(Room.room_code == room_code).first()
+  current_member = db.query(RoomMember).filter(
+        RoomMember.room_id == room.id,
+        RoomMember.user_id == current_user.id).first()
+
+  if current_member is None or current_member.role != "admin":
+        raise HTTPException(status_code=403, detail="Unauthorised Access")
   db.query(Room).filter(Room.room_code == room_code).delete()
   db.commit()
   return {"Success":"Room Deleted Successfully"}
