@@ -5,6 +5,7 @@ import Navbar from './components/layout/Navbar/Navbar';
 import LandingPage from './pages/LandingPage/LandingPage';
 import Login from './pages/Login/Login';
 import { logoutUser ,  getCurrentUser } from './api';
+import { clearLpAuthTokens } from './loginAuth/lpAuthStorage';
 import Register from './pages/Register/Register';
 import Profile from './pages/Profile/Profile';
 
@@ -39,10 +40,14 @@ function DashboardLayout({ theme, onToggleTheme }) {
     if (routeId === 'logout') {
       try {
         await logoutUser();
+        clearLpAuthTokens();
+        sessionStorage.setItem('justLoggedOut', 'true');
         showToast('Logged out of DevTrack');
         navigate('/');
       } catch (error) {
           console.error('Logout failed:', error);
+          // Clear tokens even if logout request fails
+          clearLpAuthTokens();
           showToast('Logout failed. Please try again.');
         }
         return;

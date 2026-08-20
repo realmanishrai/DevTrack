@@ -14,4 +14,12 @@ export const getLpRefreshToken = () => {
 
 export const updateLpAccessToken = (_accessToken) => {};
 
-export const clearLpAuthTokens = () => {};
+export const clearLpAuthTokens = () => {
+  // Clear any cached auth data from frontend storage
+  // Note: httponly cookies are cleared by backend via DELETE /logout
+  localStorage.removeItem('devtrack-user');
+  localStorage.removeItem('devtrack-auth-token');
+  sessionStorage.removeItem('devtrack-user');
+  sessionStorage.removeItem('devtrack-auth-token');
+  sessionStorage.removeItem('justLoggedOut');
+};

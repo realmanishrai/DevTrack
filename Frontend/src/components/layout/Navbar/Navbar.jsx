@@ -3,7 +3,8 @@ import { Link, useNavigate } from 'react-router-dom';
 import ThemeToggle from '../../common/ThemeToggle/ThemeToggle';
 import Button from '../../ui/Button/Button';
 import LpProfileFloating from '../lpprofilefloating/lpprofilefloating';
-import { getCurrentUser } from '../../../api';
+import { getCurrentUser, logoutUser } from '../../../api';
+import { clearLpAuthTokens } from '../../../loginAuth/lpAuthStorage';
 import './Navbar.css';
 
 function Navbar({ theme, onToggleTheme }) {
@@ -44,11 +45,32 @@ function Navbar({ theme, onToggleTheme }) {
     };
   }, []);
 
+  // Listen for logout events
+  useEffect(() => {
+    const handleStorageChange = () => {
+      if (sessionStorage.getItem('justLoggedOut')) {
+        setCurrentUser(null);
+        sessionStorage.removeItem('justLoggedOut');
+      }
+    };
+
+    window.addEventListener('storage', handleStorageChange);
+    return () => window.removeEventListener('storage', handleStorageChange);
+  }, []);
+
   const closeMenu = () => setMenuOpen(false);
 
-  const handleLogout = () => {
-    setCurrentUser(null);
-    navigate('/login');
+  const handleLogout = async () => {
+    try {
+      await logoutUser();
+    } catch (error) {
+      console.error('Logout error:', error);
+    } finally {
+      clearLpAuthTokens();
+      sessionStorage.setItem('justLoggedOut', 'true');
+      setCurrentUser(null);
+      navigate('/');
+    }
   };
 
   const scrollTo = (id) => {

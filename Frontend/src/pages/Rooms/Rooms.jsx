@@ -10,7 +10,8 @@ import RmCreateRoomModal from '../../components/ui/RmCreateRoomModal/RmCreateRoo
 import RmJoinRoomModal from '../../components/ui/RmJoinRoomModal/RmJoinRoomModal';
 
 import { mapBackendRoomsListToUi } from '../../utils/roomAdapter';
-import apiRequest, { getCurrentUser } from '../../api';
+import apiRequest, { getCurrentUser, logoutUser } from '../../api';
+import { clearLpAuthTokens } from '../../loginAuth/lpAuthStorage';
 import {
   PlusIcon,
   UserPlusIcon,
@@ -218,10 +219,18 @@ useEffect(() => {
   };
 
   // ── ProfileMenu navigation handler ───────────────────────────────────────
-  const handleProfileNavigate = (routeId) => {
+  const handleProfileNavigate = async (routeId) => {
     if (routeId === 'logout') {
-      showToast('Logged out of DevTrack');
-      // TODO: clear auth state and navigate to /login
+      try {
+        await logoutUser();
+      } catch (error) {
+        console.error('Logout error:', error);
+      } finally {
+        clearLpAuthTokens();
+        sessionStorage.setItem('justLoggedOut', 'true');
+        showToast('Logged out of DevTrack');
+        navigate('/');
+      }
     }
   };
 

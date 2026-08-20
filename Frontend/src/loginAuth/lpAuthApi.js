@@ -26,7 +26,7 @@ export const loginLpUser = async (username, password, _rememberMe = true) => {
   loginData.append('password', password);
 
   return apiRequest({
-    url: '/login/login',
+    url: '/login',
     method: 'POST',
     headers: {
       'Content-Type': 'application/x-www-form-urlencoded',
