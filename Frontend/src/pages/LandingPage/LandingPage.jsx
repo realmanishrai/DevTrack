@@ -320,11 +320,6 @@ function LandingPage() {
               consistent, collaborate efficiently, and ship with confidence.
             </p>
 
-            <Link to="/register">
-              <Button variant="primary" size="lg">
-                Get Started — It&apos;s Free
-              </Button>
-            </Link>
           </div>
         </div>
       </section>
