@@ -1,10 +1,11 @@
-import { Link } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { Link ,  useNavigate } from 'react-router-dom';
 import Button from '../../components/ui/Button/Button';
 import Card from '../../components/ui/Card/Card';
+
+import { getCurrentUser } from '../../api';
 import heroTeamImg from '../../assets/hero-team.png';
 import './LandingPage.css';
-
-
 
 const whyCards = [
   {
@@ -66,7 +67,7 @@ const stats = [
   { value: '10K+', label: 'Developers' },
   { value: '500+', label: 'Development Rooms' },
   { value: '25K+', label: 'Tasks Tracked' },
-  { value: '95%',  label: 'Active Teams' },
+  { value: '95%', label: 'Active Teams' },
 ];
 
 const howSteps = [
@@ -104,6 +105,36 @@ function HeroImage() {
 
 /* ── LandingPage ─────────────────────────────────────────── */
 function LandingPage() {
+  const navigate = useNavigate();
+  const [currentUser, setCurrentUser] = useState(null);
+ 
+
+  useEffect(() => {
+    let isMounted = true;
+
+    const loadCurrentUser = async () => {
+      try {
+        const userData = await getCurrentUser();
+
+        if (!isMounted || !userData) {
+          return;
+        }
+
+        setCurrentUser(userData);
+      } catch (error) {
+        if (isMounted) {
+          setCurrentUser(null);
+        }
+      }
+    };
+
+    loadCurrentUser();
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
   return (
     <main>
       {/* ── HERO ── */}
@@ -112,7 +143,10 @@ function LandingPage() {
           <div className="hero-content">
             <h1 className="hero-headline">
               Turn GitHub activity into
-              <span className="hero-headline-accent"> team momentum.</span>
+              <span className="hero-headline-accent">
+                {' '}
+                team momentum.
+              </span>
             </h1>
 
             <p className="hero-subtext">
@@ -121,15 +155,49 @@ function LandingPage() {
             </p>
 
             <div className="hero-actions">
-              <Link to="/register">
-                <Button variant="primary" size="lg">Create Room</Button>
-              </Link>
-              <Link to="/login">
-                <Button variant="outline" size="lg">Join Room</Button>
-              </Link>
-            </div>
+              {currentUser ? (
+                <>
+                  <Button
+                    variant="primary"
+                    size="lg"
+                    onClick={() =>
+                      navigate('/rooms', {
 
-            
+                        state: { openModal: 'create' },
+                      })
+                    }
+                  >
+                    Create Room
+                  </Button>
+
+                  <Button
+                    variant="outline"
+                    size="lg"
+                    onClick={() =>
+                      navigate('/rooms', {
+                        state: { openModal: 'join' },
+                      })
+                    }
+                  >
+                    Join Room
+                  </Button>
+                </>
+              ) : (
+                <>
+                  <Link to="/register">
+                    <Button variant="primary" size="lg">
+                      Create Room
+                    </Button>
+                  </Link>
+
+                  <Link to="/login">
+                    <Button variant="outline" size="lg">
+                      Join Room
+                    </Button>
+                  </Link>
+                </>
+              )}
+            </div>
           </div>
 
           <div className="hero-visual">
@@ -138,7 +206,6 @@ function LandingPage() {
         </div>
       </section>
 
-    
       {/* ── FEATURES ── */}
       <section
         id="features"
@@ -148,19 +215,26 @@ function LandingPage() {
         <div className="container">
           <div className="section-header">
             <span className="section-tag">Features</span>
+
             <h2 id="features-title" className="section-title">
               Powerful tools built for developers
             </h2>
+
             <p className="section-subtitle">
-              From solo hackers to enterprise teams — DevTrack scales with how you work.
+              From solo hackers to enterprise teams — DevTrack scales with how
+              you work.
             </p>
           </div>
 
           <div className="features-grid">
             {features.map(({ icon, title, body }) => (
               <Card key={title}>
-                <div className="card-icon" aria-hidden="true">{icon}</div>
+                <div className="card-icon" aria-hidden="true">
+                  {icon}
+                </div>
+
                 <h3 className="card-title">{title}</h3>
+
                 <p className="card-body">{body}</p>
               </Card>
             ))}
@@ -177,6 +251,7 @@ function LandingPage() {
         <div className="container">
           <div className="section-header">
             <span className="section-tag">Statistics</span>
+
             <h2 id="stats-title" className="section-title">
               Developers trust DevTrack to deliver
             </h2>
@@ -202,19 +277,26 @@ function LandingPage() {
         <div className="container">
           <div className="section-header">
             <span className="section-tag">How It Works</span>
+
             <h2 id="how-title" className="section-title">
               Up and running in minutes
             </h2>
+
             <p className="section-subtitle">
-              No lengthy setup. No onboarding calls. Just sign up and start building together.
+              No lengthy setup. No onboarding calls. Just sign up and start
+              building together.
             </p>
           </div>
 
           <div className="how-steps">
             {howSteps.map(({ number, title, desc }) => (
               <div key={number} className="how-step">
-                <div className="how-step-number" aria-hidden="true">{number}</div>
+                <div className="how-step-number" aria-hidden="true">
+                  {number}
+                </div>
+
                 <h3 className="how-step-title">{title}</h3>
+
                 <p className="how-step-desc">{desc}</p>
               </div>
             ))}
@@ -223,63 +305,74 @@ function LandingPage() {
       </section>
 
       {/* ── FINAL CTA ── */}
-      <section className="cta-section section" aria-labelledby="cta-title">
+      <section
+        className="cta-section section"
+        aria-labelledby="cta-title"
+      >
         <div className="container">
           <div className="cta-inner">
             <h2 id="cta-title" className="cta-title">
               Ready to build better, together?
             </h2>
+
             <p className="cta-subtitle">
-              Join thousands of developers already using DevTrack to stay consistent,
-              collaborate efficiently, and ship with confidence.
+              Join thousands of developers already using DevTrack to stay
+              consistent, collaborate efficiently, and ship with confidence.
             </p>
+
             <Link to="/register">
-              <Button variant="primary" size="lg">Get Started — It&apos;s Free</Button>
+              <Button variant="primary" size="lg">
+                Get Started — It&apos;s Free
+              </Button>
             </Link>
           </div>
-        </div>  
-        </section>
-        <footer className="site-footer">
-  <div className="footer-container">
-    <div className="footer-brand">
-      <h2>DevTrack</h2>
-      <p>Build together. Track progress. Ship faster.</p>
-    </div>
+        </div>
+      </section>
 
-    <div className="footer-links">
-      <div className="footer-column">
-        <h3>Product</h3>
-        <a href="#features">Features</a>
-        <a href="#statistics">Statistics</a>
-        <a href="#how-it-works">How It Works</a>
-      </div>
+      {/* ── FOOTER ── */}
+      <footer className="site-footer">
+        <div className="footer-container">
+          <div className="footer-brand">
+            <h2>DevTrack</h2>
+            <p>Build together. Track progress. Ship faster.</p>
+          </div>
 
-      <div className="footer-column">
-        <h3>Company</h3>
-        <a href="#">About</a>
-        <a href="#">Contact</a>
-      </div>
+          <div className="footer-links">
+            <div className="footer-column">
+              <h3>Product</h3>
 
-      <div className="footer-column">
-        <h3>Legal</h3>
-        <a href="#">Privacy</a>
-        <a href="#">Policy</a>
-      </div>
-    </div>
-  </div>
+              <a href="#features">Features</a>
+              <a href="#statistics">Statistics</a>
+              <a href="#how-it-works">How It Works</a>
+            </div>
 
-  <div className="footer-bottom">
-    <p>© 2026 DevTrack. All rights reserved.</p>
+            <div className="footer-column">
+              <h3>Company</h3>
 
-    <div className="footer-bottom-links">
-      <a href="#">Privacy Policy</a>
-      <a href="#">Terms of Service</a>
-    </div>
-  </div>
-</footer>
+              <a href="#">About</a>
+              <a href="#">Contact</a>
+            </div>
+
+            <div className="footer-column">
+              <h3>Legal</h3>
+
+              <a href="#">Privacy</a>
+              <a href="#">Policy</a>
+            </div>
+          </div>
+        </div>
+
+        <div className="footer-bottom">
+          <p>© 2026 DevTrack. All rights reserved.</p>
+
+          <div className="footer-bottom-links">
+            <a href="#">Privacy Policy</a>
+            <a href="#">Terms of Service</a>
+          </div>
+        </div>
+      </footer>
+
     </main>
-
-
   );
 }
 

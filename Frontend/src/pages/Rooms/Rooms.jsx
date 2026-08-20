@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate ,  useLocation} from 'react-router-dom';
 
 import ProfileMenu from '../../components/layout/ProfileMenu/ProfileMenu';
 import IconButton from '../../components/ui/IconButton/IconButton';
@@ -29,6 +29,7 @@ import './Rooms.css';
  */
 const Rooms = ({ theme, onToggleTheme }) => {
   const navigate = useNavigate();
+  const location = useLocation();
 
   // Rooms and authenticated user state
   const [rooms, setRooms] = useState([]);
@@ -92,9 +93,27 @@ const Rooms = ({ theme, onToggleTheme }) => {
     }
   }, [navigate]);
 
-  useEffect(() => {
-    fetchRooms();
-  }, [fetchRooms]);
+useEffect(() => {
+  fetchRooms();
+}, [fetchRooms]);
+
+
+useEffect(() => {
+  const modalToOpen = location.state?.openModal;
+
+  if (modalToOpen === 'create') {
+    setShowCreateModal(true);
+  } else if (modalToOpen === 'join') {
+    setShowJoinModal(true);
+  }
+
+  if (modalToOpen) {
+    navigate('/rooms', {
+      replace: true,
+      state: {},
+    });
+  }
+}, [location.state, navigate]);
 
   // ── Handler: Open Room ────────────────────────────────────────────────────
   const handleOpenRoom = (roomCode) => {

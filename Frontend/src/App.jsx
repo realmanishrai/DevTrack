@@ -4,7 +4,9 @@ import { BrowserRouter, Routes, Route, useLocation, useNavigate } from 'react-ro
 import Navbar from './components/layout/Navbar/Navbar';
 import LandingPage from './pages/LandingPage/LandingPage';
 import Login from './pages/Login/Login';
+import { logoutUser ,  getCurrentUser } from './api';
 import Register from './pages/Register/Register';
+import Profile from './pages/Profile/Profile';
 
 import PageContainer from './components/layout/PageContainer/PageContainer';
 import Dashboard from './pages/Dashboard/Dashboard';
@@ -33,10 +35,17 @@ function DashboardLayout({ theme, onToggleTheme }) {
     setTimeout(() => setToastMessage(''), 3000);
   };
 
-  const handleNavigate = (routeId) => {
+  const handleNavigate = async (routeId) => {
     if (routeId === 'logout') {
-      showToast('Logged out of DevTrack');
-      return;
+      try {
+        await logoutUser();
+        showToast('Logged out of DevTrack');
+        navigate('/');
+      } catch (error) {
+          console.error('Logout failed:', error);
+          showToast('Logout failed. Please try again.');
+        }
+        return;
     }
 
     if (routeId === 'landing') {
@@ -196,6 +205,17 @@ function Layout({ theme, onToggleTheme }) {
         <Route path="/" element={<LandingPage />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
+
+        <Route
+        path="/profile"
+        element={
+          <Profile
+          theme={theme}
+          onToggleTheme={onToggleTheme}
+          />
+        }
+        />
+
         <Route
           path="/rooms"
           element={

@@ -1,14 +1,55 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import ThemeToggle from '../../common/ThemeToggle/ThemeToggle';
 import Button from '../../ui/Button/Button';
+import LpProfileFloating from '../lpprofilefloating/lpprofilefloating';
+import { getCurrentUser } from '../../../api';
 import './Navbar.css';
 
 function Navbar({ theme, onToggleTheme }) {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [currentUser, setCurrentUser] = useState(null);
   const navigate = useNavigate();
 
+  useEffect(() => {
+    let isMounted = true;
+
+    const loadCurrentUser = async () => {
+      try {
+        const userData = await getCurrentUser();
+
+        if (!isMounted || !userData) {
+          return;
+        }
+
+        setCurrentUser({
+          id: userData.id,
+          name:
+            `${userData.firstname || ''} ${userData.lastname || ''}`.trim() ||
+            userData.username,
+          username: userData.username,
+          email: userData.email,
+        });
+      } catch (error) {
+        if (isMounted) {
+          setCurrentUser(null);
+        }
+      }
+    };
+
+    loadCurrentUser();
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
   const closeMenu = () => setMenuOpen(false);
+
+  const handleLogout = () => {
+    setCurrentUser(null);
+    navigate('/login');
+  };
 
   const scrollTo = (id) => {
     closeMenu();
@@ -34,7 +75,7 @@ function Navbar({ theme, onToggleTheme }) {
 
         {/* CENTER — Desktop nav links, widely spaced */}
         <div className="navbar-links" aria-label="Site sections">
-          
+
           <button className="navbar-link" onClick={() => scrollTo('features')}>
             Features
           </button>
@@ -46,17 +87,26 @@ function Navbar({ theme, onToggleTheme }) {
           </button>
         </div>
 
-        {/* RIGHT — Theme toggle + Log In (desktop) */}
+        {/* RIGHT — Theme toggle + Log In / Profile */}
         <div className="navbar-actions navbar-desktop-actions">
           <ThemeToggle theme={theme} onToggle={onToggleTheme} />
-          <Link to="/login">
-            <Button variant="primary" size="sm">LOG IN</Button>
-          </Link>
+
+          {currentUser ? (
+            <LpProfileFloating
+              currentUser={currentUser}
+              onLogout={handleLogout}
+            />
+          ) : (
+            <Link to="/login">
+              <Button variant="primary" size="sm">LOG IN</Button>
+            </Link>
+          )}
         </div>
 
         {/* Mobile — theme toggle + hamburger */}
         <div className="navbar-mobile-right">
           <ThemeToggle theme={theme} onToggle={onToggleTheme} />
+
           <button
             className={`navbar-hamburger ${menuOpen ? 'open' : ''}`}
             onClick={() => setMenuOpen((v) => !v)}
@@ -84,10 +134,21 @@ function Navbar({ theme, onToggleTheme }) {
           <button className="navbar-mobile-link" onClick={() => scrollTo('statistics')}>
             Statistics
           </button>
+
           <div className="navbar-mobile-actions">
-            <Link to="/login" onClick={closeMenu} style={{ flex: 1 }}>
-              <Button variant="primary" fullWidth>LOG IN</Button>
-            </Link>
+            {currentUser ? (
+              <button
+                type="button"
+                className="navbar-mobile-link"
+                onClick={() => navigate('/profile')}
+              >
+                Profile
+              </button>
+            ) : (
+              <Link to="/login" onClick={closeMenu} style={{ flex: 1 }}>
+                <Button variant="primary" fullWidth>LOG IN</Button>
+              </Link>
+            )}
           </div>
         </div>
       )}

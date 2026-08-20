@@ -1,4 +1,3 @@
-import { clearLpAuthTokens } from './lpAuthStorage';
 import apiRequest from '../api';
 
 export const registerLpUser = async ({
@@ -27,7 +26,7 @@ export const loginLpUser = async (username, password, _rememberMe = true) => {
   loginData.append('password', password);
 
   return apiRequest({
-    url: '/login',
+    url: '/login/login',
     method: 'POST',
     headers: {
       'Content-Type': 'application/x-www-form-urlencoded',
@@ -39,20 +38,16 @@ export const loginLpUser = async (username, password, _rememberMe = true) => {
 
 export const refreshLpAccessToken = async () => {
   return apiRequest({
-    url: '/refresh',
+    url: '/login/refresh',
     method: 'POST',
     retryOnUnauthorized: false,
   });
 };
 
 export const logoutLpUser = async () => {
-  const responseData = await apiRequest({
+  return apiRequest({
     url: '/logout',
     method: 'POST',
     retryOnUnauthorized: false,
   });
-
-  clearLpAuthTokens();
-
-  return responseData;
 };
