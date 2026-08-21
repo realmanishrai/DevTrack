@@ -1,18 +1,18 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import DtButton from '../../components/ui/DtButton/DtButton';
 import TbTaskStats from '../../components/ui/TbTaskStats/TbTaskStats';
 import TbFilterBar from '../../components/ui/TbFilterBar/TbFilterBar';
 import TbTaskTable from '../../components/ui/TbTaskTable/TbTaskTable';
 import TbAddTaskModal from '../../components/modals/TbAddTaskModal/TbAddTaskModal';
 import TbTaskDetailModal from '../../components/modals/TbTaskDetailModal/TbTaskDetailModal';
-import { PlusIcon } from '../../assets/icons';
+import { PlusIcon, TrashIcon, CloseIcon } from '../../assets/icons';
 import './Tasks.css';
 
 export const Tasks = ({
   data = {},
-  onTaskCreate = () => {},
-  onTaskUpdate = () => {},
-  onTaskDelete = () => {}
+  onTaskCreate = () => { },
+  onTaskUpdate = () => { },
+  onTaskDelete = () => { }
 }) => {
   const {
     room = {},
@@ -25,6 +25,10 @@ export const Tasks = ({
 
   // Local Task Board State
   const [tasksList, setTasksList] = useState(initialTasks);
+
+  useEffect(() => {
+    setTasksList(initialTasks);
+  }, [initialTasks]);
 
   // Search, Filter & Sort State
   const [searchQuery, setSearchQuery] = useState('');
@@ -40,6 +44,11 @@ export const Tasks = ({
 
   const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
   const [selectedTaskForDetail, setSelectedTaskForDetail] = useState(null);
+
+  // Delete Confirmation Modal State
+  const [taskToDelete, setTaskToDelete] = useState(null);
+  const [isDeleting, setIsDeleting] = useState(false);
+  const [deleteError, setDeleteError] = useState('');
 
   // Helper map for member lookup
   const memberMap = useMemo(() => {
@@ -59,7 +68,7 @@ export const Tasks = ({
         const query = searchQuery.toLowerCase().trim();
         const matchesTitle = task.title?.toLowerCase().includes(query);
         const matchesDesc = task.description?.toLowerCase().includes(query);
-        const matchesId = task.id?.toLowerCase().includes(query);
+        const matchesId = String(task.id ?? '').toLowerCase().includes(query);
         if (!matchesTitle && !matchesDesc && !matchesId) return false;
       }
 
@@ -121,110 +130,77 @@ export const Tasks = ({
    * Note: In a production architecture with real endpoints or a global Context,
    * these state operations propagate to Dashboard progress metrics and Activity Log.
    * ========================================================================= */
-  
+
   // 1. Create Task (Leader only trigger)
-  const handleCreateTask = (newTaskData) => {
-    const taskId = `tsk-${String(tasksList.length + 1).padStart(3, '0')}`;
-    const assigneeObj = memberMap[newTaskData.assigneeId] || { name: 'Member' };
-
-    const createdTask = {
-      id: taskId,
-      title: newTaskData.title,
-      description: newTaskData.description,
-      assigneeId: newTaskData.assigneeId,
-      priority: newTaskData.priority || 'medium',
-      status: 'not_started',
-      progress: 0,
-      dueDate: newTaskData.dueDate,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-      activityLog: [
-        {
-          id: `log-${Date.now()}`,
-          user: currentUser.name,
-          action: `created task and assigned to ${assigneeObj.name}`,
-          timestamp: 'Just now'
-        }
-      ]
-    };
-
-    const updatedTasks = [createdTask, ...tasksList];
-    setTasksList(updatedTasks);
-    onTaskCreate(createdTask);
+  const handleCreateTask = async (newTaskData) => {
+    if (onTaskCreate) {
+      return await onTaskCreate(newTaskData);
+    }
   };
 
   // 2. Edit Task
-  const handleEditTaskSubmit = (updatedData) => {
+  const handleEditTaskSubmit = async (updatedData) => {
     if (!selectedTaskForEdit) return;
 
-    const previousTask = tasksList.find((t) => t.id === selectedTaskForEdit.id);
-    const newLog = {
-      id: `log-${Date.now()}`,
-      user: currentUser.name,
-      action: 'updated task details',
-      timestamp: 'Just now'
-    };
+    if (onTaskUpdate) {
+      const result = await onTaskUpdate(selectedTaskForEdit.id, updatedData);
+      if (result && result.success === false) {
+        return result;
+      }
+    }
+    return { success: true };
+  };
 
-    const updatedTask = {
-      ...previousTask,
-      ...updatedData,
-      updatedAt: new Date().toISOString(),
-      activityLog: [newLog, ...(previousTask?.activityLog || [])]
-    };
-
-    const updatedTasks = tasksList.map((t) => (t.id === updatedTask.id ? updatedTask : t));
-    setTasksList(updatedTasks);
-    onTaskUpdate(updatedTask.id, updatedTask);
-
-    if (selectedTaskForDetail?.id === updatedTask.id) {
-      setSelectedTaskForDetail(updatedTask);
+  // 3. Delete Task (Leader only) - Opens confirmation modal
+  const handleDeleteTask = (taskId) => {
+    const task = tasksList.find((t) => String(t.id) === String(taskId));
+    if (task) {
+      if (selectedTaskForDetail?.id === taskId) {
+        setIsDetailModalOpen(false);
+        setSelectedTaskForDetail(null);
+      }
+      setTaskToDelete(task);
+      setDeleteError('');
+      setIsDeleting(false);
     }
   };
 
-  // 3. Delete Task (Leader only)
-  const handleDeleteTask = (taskId) => {
-    const updatedTasks = tasksList.filter((t) => t.id !== taskId);
-    setTasksList(updatedTasks);
-    onTaskDelete(taskId);
-    if (selectedTaskForDetail?.id === taskId) {
-      setIsDetailModalOpen(false);
-      setSelectedTaskForDetail(null);
+  const cancelDelete = () => {
+    if (isDeleting) return;
+    setTaskToDelete(null);
+    setDeleteError('');
+  };
+
+  const confirmDelete = async () => {
+    if (!taskToDelete) return;
+    setIsDeleting(true);
+    setDeleteError('');
+
+    if (onTaskDelete) {
+      const result = await onTaskDelete(taskToDelete.id);
+      if (result && result.success === false) {
+        setDeleteError(result.error || 'Failed to delete task.');
+        setIsDeleting(false);
+        return;
+      }
     }
+
+    setIsDeleting(false);
+    setTaskToDelete(null);
   };
 
   // 4. Update Task (Progress / Status / History)
-  const handleUpdateTask = (taskId, fields) => {
-    const updatedTasks = tasksList.map((t) => {
-      if (t.id === taskId) {
-        const updated = { ...t, ...fields, updatedAt: new Date().toISOString() };
-        if (selectedTaskForDetail?.id === taskId) {
-          setSelectedTaskForDetail(updated);
-        }
-        return updated;
-      }
-      return t;
-    });
-
-    setTasksList(updatedTasks);
-    onTaskUpdate(taskId, fields);
+  const handleUpdateTask = async (taskId, fields) => {
+    if (onTaskUpdate) {
+      return await onTaskUpdate(taskId, fields);
+    }
   };
 
   // 5. Quick Status Change from Row Menu
-  const handleQuickStatusChange = (taskId, newStatus, newProgress) => {
-    const targetTask = tasksList.find((t) => t.id === taskId);
-    if (!targetTask) return;
-
-    const newLog = {
-      id: `log-${Date.now()}`,
-      user: currentUser.name,
-      action: `changed status to ${newStatus.replace('_', ' ')} (${newProgress}%)`,
-      timestamp: 'Just now'
-    };
-
-    handleUpdateTask(taskId, {
+  const handleQuickStatusChange = async (taskId, newStatus, newProgress) => {
+    return await handleUpdateTask(taskId, {
       status: newStatus,
       progress: newProgress,
-      activityLog: [newLog, ...(targetTask.activityLog || [])]
     });
   };
 
@@ -351,6 +327,106 @@ export const Tasks = ({
         onDelete={handleDeleteTask}
         onUpdateTask={handleUpdateTask}
       />
+
+      {/* MODAL 3: Delete Task Confirmation Modal */}
+      {taskToDelete && (
+        <div
+          className="tb-modal-backdrop"
+          onClick={cancelDelete}
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="tb-delete-modal-title"
+        >
+          <div
+            className="tb-modal"
+            style={{ maxWidth: '460px' }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="tb-modal__header">
+              <div className="tb-modal__title-group">
+                <h2
+                  id="tb-delete-modal-title"
+                  className="tb-modal__title"
+                  style={{ color: 'var(--danger)' }}
+                >
+                  Delete Task?
+                </h2>
+              </div>
+              <button
+                type="button"
+                className="tb-modal__close-btn"
+                onClick={cancelDelete}
+                disabled={isDeleting}
+                title="Close modal"
+                aria-label="Close modal"
+              >
+                <CloseIcon size={20} color="var(--text-secondary)" />
+              </button>
+            </div>
+
+            <div className="tb-modal__body" style={{ padding: 'var(--space-5)' }}>
+              {deleteError && (
+                <div
+                  style={{
+                    padding: '10px 14px',
+                    backgroundColor: 'rgba(231, 76, 60, 0.1)',
+                    border: '1px solid var(--danger)',
+                    borderRadius: 'var(--radius-sm)',
+                    color: 'var(--danger)',
+                    fontSize: '13px',
+                    marginBottom: '16px'
+                  }}
+                  role="alert"
+                >
+                  {deleteError}
+                </div>
+              )}
+              <p
+                style={{
+                  color: 'var(--text-primary)',
+                  marginBottom: '8px',
+                  fontSize: '15px',
+                  lineHeight: '1.5'
+                }}
+              >
+                Are you sure you want to delete <strong>"{taskToDelete.title}"</strong>?
+              </p>
+              <p
+                style={{
+                  color: 'var(--text-secondary)',
+                  fontSize: '13px',
+                  margin: 0
+                }}
+              >
+                This action cannot be undone.
+              </p>
+            </div>
+
+            <div
+              className="tb-modal__footer"
+              style={{ display: 'flex', justifyContent: 'flex-end', gap: '8px' }}
+            >
+              <DtButton
+                variant="outline"
+                size="md"
+                onClick={cancelDelete}
+                disabled={isDeleting}
+              >
+                Cancel
+              </DtButton>
+              <DtButton
+                variant="danger"
+                size="md"
+                onClick={confirmDelete}
+                disabled={isDeleting}
+                icon={<TrashIcon size={16} />}
+              >
+                {isDeleting ? 'Deleting...' : 'Delete'}
+              </DtButton>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
