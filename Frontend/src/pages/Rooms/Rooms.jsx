@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate ,  useLocation} from 'react-router-dom';
 
 import ProfileMenu from '../../components/layout/ProfileMenu/ProfileMenu';
 import IconButton from '../../components/ui/IconButton/IconButton';
@@ -10,7 +10,8 @@ import RmCreateRoomModal from '../../components/ui/RmCreateRoomModal/RmCreateRoo
 import RmJoinRoomModal from '../../components/ui/RmJoinRoomModal/RmJoinRoomModal';
 
 import { mapBackendRoomsListToUi } from '../../utils/roomAdapter';
-import apiRequest, { getCurrentUser } from '../../api';
+import apiRequest, { getCurrentUser, logoutUser } from '../../api';
+import { clearLpAuthTokens } from '../../loginAuth/lpAuthStorage';
 import {
   PlusIcon,
   UserPlusIcon,
@@ -29,6 +30,7 @@ import './Rooms.css';
  */
 const Rooms = ({ theme, onToggleTheme }) => {
   const navigate = useNavigate();
+  const location = useLocation();
 
   // Rooms and authenticated user state
   const [rooms, setRooms] = useState([]);
@@ -92,9 +94,27 @@ const Rooms = ({ theme, onToggleTheme }) => {
     }
   }, [navigate]);
 
-  useEffect(() => {
-    fetchRooms();
-  }, [fetchRooms]);
+useEffect(() => {
+  fetchRooms();
+}, [fetchRooms]);
+
+
+useEffect(() => {
+  const modalToOpen = location.state?.openModal;
+
+  if (modalToOpen === 'create') {
+    setShowCreateModal(true);
+  } else if (modalToOpen === 'join') {
+    setShowJoinModal(true);
+  }
+
+  if (modalToOpen) {
+    navigate('/rooms', {
+      replace: true,
+      state: {},
+    });
+  }
+}, [location.state, navigate]);
 
   // ── Handler: Open Room ────────────────────────────────────────────────────
   const handleOpenRoom = (roomCode) => {
@@ -197,10 +217,18 @@ const Rooms = ({ theme, onToggleTheme }) => {
   };
 
   // ── ProfileMenu navigation handler ───────────────────────────────────────
-  const handleProfileNavigate = (routeId) => {
+  const handleProfileNavigate = async (routeId) => {
     if (routeId === 'logout') {
-      showToast('Logged out of DevTrack');
-      // TODO: clear auth state and navigate to /login
+      try {
+        await logoutUser();
+      } catch (error) {
+        console.error('Logout error:', error);
+      } finally {
+        clearLpAuthTokens();
+        sessionStorage.setItem('justLoggedOut', 'true');
+        showToast('Logged out of DevTrack');
+        navigate('/');
+      }
     }
   };
 

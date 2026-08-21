@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import Input from '../../components/ui/Input/Input';
 import Button from '../../components/ui/Button/Button';
@@ -24,6 +24,17 @@ function Login() {
   const [errors, setErrors] = useState({});
   const [loginError, setLoginError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+
+  // Clear form when user is redirected after logout
+  useEffect(() => {
+    if (sessionStorage.getItem('justLoggedOut')) {
+      setForm({ username: '', password: '' });
+      setRemember(false);
+      setErrors({});
+      setLoginError('');
+      sessionStorage.removeItem('justLoggedOut');
+    }
+  }, []);
 
   const handleChange = (field) => (e) => {
     setForm((prev) => ({
@@ -78,13 +89,15 @@ function Login() {
         form.password
       );
 
-      navigate('/dashboard');
+      navigate('/rooms');
     } catch (error) {
       setLoginError(
         error?.message || 'Login failed. Please try again.'
       );
     } finally {
       setIsLoading(false);
+      // Clear form fields after login attempt (success or failure)
+      setForm({ username: '', password: '' });
     }
   };
 

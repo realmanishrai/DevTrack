@@ -108,6 +108,14 @@ export const getCurrentUser = async () => {
   });
 };
 
+export const logoutUser = async () => {
+  return apiRequest({
+    url: '/logout',
+    method: 'POST',
+    retryOnUnauthorized: false,
+      });
+};
+
 export const getRoomTasks = async (roomCode) => {
   return apiRequest({
     url: `/dashboard/${roomCode}/tasks`,

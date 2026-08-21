@@ -4,7 +4,10 @@ import { BrowserRouter, Routes, Route, useLocation, useNavigate, useParams } fro
 import Navbar from './components/layout/Navbar/Navbar';
 import LandingPage from './pages/LandingPage/LandingPage';
 import Login from './pages/Login/Login';
+import { logoutUser ,  getCurrentUser } from './api';
+import { clearLpAuthTokens } from './loginAuth/lpAuthStorage';
 import Register from './pages/Register/Register';
+import Profile from './pages/Profile/Profile';
 
 import PageContainer from './components/layout/PageContainer/PageContainer';
 import Dashboard from './pages/Dashboard/Dashboard';
@@ -218,10 +221,21 @@ function DashboardLayout({ theme, onToggleTheme }) {
     }
   };
 
-  const handleNavigate = (routeId) => {
+  const handleNavigate = async (routeId) => {
     if (routeId === 'logout') {
-      showToast('Logged out of DevTrack');
-      return;
+      try {
+        await logoutUser();
+        clearLpAuthTokens();
+        sessionStorage.setItem('justLoggedOut', 'true');
+        showToast('Logged out of DevTrack');
+        navigate('/');
+      } catch (error) {
+          console.error('Logout failed:', error);
+          // Clear tokens even if logout request fails
+          clearLpAuthTokens();
+          showToast('Logout failed. Please try again.');
+        }
+        return;
     }
 
     if (routeId === 'landing') {
@@ -381,6 +395,17 @@ function Layout({ theme, onToggleTheme }) {
         <Route path="/" element={<LandingPage />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
+
+        <Route
+        path="/profile"
+        element={
+          <Profile
+          theme={theme}
+          onToggleTheme={onToggleTheme}
+          />
+        }
+        />
+
         <Route
           path="/rooms"
           element={
