@@ -115,6 +115,7 @@ export const logoutUser = async () => {
     retryOnUnauthorized: false,
     });
 };
+
 export const getRoomTasks = async (roomCode) => {
   return apiRequest({
     url: `/dashboard/${roomCode}/tasks`,
