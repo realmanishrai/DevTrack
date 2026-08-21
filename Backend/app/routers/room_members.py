@@ -4,31 +4,44 @@ from sqlalchemy.orm import Session
 from app.database import get_db
 from app.models import Room, RoomMember, User
 from app.auth import get_current_user
+from app.schema import ReturnMemberData
 
 router= APIRouter()
 
-@router.get("/room/{room_code}/members")
+@router.get(
+    "/room/{room_code}/members",
+    response_model=list[ReturnMemberData]
+)
 def get_room_members(
     room_code: str,
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user)
-
 ):
-    room = db.query(Room).filter(Room.room_code== room_code).first()
+    room = db.query(Room).filter(
+        Room.room_code == room_code
+    ).first()
 
     if room is None:
-        raise HTTPException(status_code= 404, detail= "Room not found") 
+        raise HTTPException(
+            status_code=404,
+            detail="Room not found"
+        )
 
-    current_member= db.query(RoomMember).filter(
-        RoomMember.room_id == room.id, 
+    current_member = db.query(RoomMember).filter(
+        RoomMember.room_id == room.id,
         RoomMember.user_id == current_user.id
-        ).first()
-    if current_member is None:
-        raise HTTPException(status_code=403, detail="You are not a member of this room")
+    ).first()
 
-    members= db.query(RoomMember).filter(
+    if current_member is None:
+        raise HTTPException(
+            status_code=403,
+            detail="You are not a member of this room"
+        )
+
+    members = db.query(RoomMember).filter(
         RoomMember.room_id == room.id
     ).all()
+
     return members
     
 @router.put("/room/{room_code}/members/{user_id}")

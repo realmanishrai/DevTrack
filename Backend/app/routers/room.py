@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from app.database import get_db
-from app.models import Room, User, RoomMember, ActivityLog
+from app.models import Room, User, RoomMember, ActivityLog, Task, JoinRequest
 from app.schema import CreateRoom
 from random import randint
 from app.auth import get_current_user
@@ -47,6 +47,8 @@ def delete_room(room_code: str, current_user: User = Depends(get_current_user), 
   if current_member is None or current_member.role != "admin":
         raise HTTPException(status_code=403, detail="Unauthorised Access")
 
+  db.query(Task).filter(Task.room_id == room.id).delete(synchronize_session=False)
+  db.query(JoinRequest).filter(JoinRequest.room_id == room.id).delete(synchronize_session=False)
   db.query(RoomMember).filter(RoomMember.room_id == room.id).delete(synchronize_session=False)
   db.delete(room)
   db.commit()

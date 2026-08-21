@@ -77,3 +77,20 @@ class UpdateUser(BaseModel):
     username: Optional[str] = None
 
     model_config = {"from_attributes": True}
+
+class UserData(BaseModel):
+    firstname: str
+    lastname: str
+    username: str
+    email: str
+    created_at: datetime
+    last_online: datetime
+
+    model_config = {"from_attributes": True}
+
+
+class ReturnMemberData(BaseModel):
+    role: str
+    user: UserData
+
+    model_config = {"from_attributes": True}
