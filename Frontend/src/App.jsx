@@ -33,7 +33,15 @@ import './index.css';
 
 function DashboardLayout({ theme, onToggleTheme }) {
   const { roomCode } = useParams();
-  const [activeRoute, setActiveRoute] = useState('dashboard');
+  const location = useLocation();
+  const [activeRoute, setActiveRoute] = useState(location.state?.activeRoute || 'dashboard');
+  
+  useEffect(() => {
+    if (location.state?.activeRoute) {
+      setActiveRoute(location.state.activeRoute);
+    }
+  }, [location.state]);
+  
   const [currentRoom, setCurrentRoom] = useState(null);
   const [tasks, setTasks] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -244,7 +252,7 @@ function DashboardLayout({ theme, onToggleTheme }) {
     }
 
     if (routeId === 'members') {
-      navigate('/members');
+      navigate(`/members?roomCode=${roomCode}`);
       return;
     }
 
@@ -381,6 +389,60 @@ function DashboardLayout({ theme, onToggleTheme }) {
   );
 }
 
+function MembersRoute({ theme, onToggleTheme }) {
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  const searchParams = new URLSearchParams(location.search);
+  const roomCode = searchParams.get('roomCode');
+
+  const handleNavigate = async (routeId) => {
+    if (routeId === 'members') return;
+
+    if (routeId === 'logout') {
+      try {
+        await logoutUser();
+        clearLpAuthTokens();
+        sessionStorage.setItem('justLoggedOut', 'true');
+        navigate('/');
+      } catch (error) {
+        console.error('Logout failed:', error);
+        clearLpAuthTokens();
+        navigate('/');
+      }
+      return;
+    }
+
+    if (routeId === 'landing') {
+      navigate('/');
+      return;
+    }
+
+    if (!roomCode) {
+      console.error('Members navigation failed: roomCode is missing.');
+      navigate('/rooms');
+      return;
+    }
+
+    navigate(`/rooms/${roomCode}/dashboard`, {
+      state: { activeRoute: routeId },
+    });
+  };
+
+  return (
+    <PageContainer
+      activeRoute="members"
+      onNavigate={handleNavigate}
+      pageTitle="Team Members"
+      currentUser={mockDashboardData.currentUser}
+      theme={theme}
+      onToggleTheme={onToggleTheme}
+    >
+      <Members />
+    </PageContainer>
+  );
+}
+
 function Layout({ theme, onToggleTheme }) {
   const { pathname } = useLocation();
   const navigate = useNavigate();
@@ -416,30 +478,16 @@ function Layout({ theme, onToggleTheme }) {
           }
         />
 
-      <Route
-  path="/members"
-  element={
-    <PageContainer
-      activeRoute="members"
-      onNavigate={(routeId) => {
-        if (routeId === 'members') return;
+        <Route
+          path="/members"
+          element={
+            <MembersRoute
+            theme={theme}
+            onToggleTheme={onToggleTheme}
+            />
+          }
+        />
 
-        if (routeId === 'landing') {
-          navigate('/');
-          return;
-        }
-
-        navigate('/dashboard');
-      }}
-      pageTitle="Team Members"
-      currentUser={mockDashboardData.currentUser}
-      theme={theme}
-      onToggleTheme={onToggleTheme}
-    >
-      <Members />
-    </PageContainer>
-  }
-/>
         <Route
           path="/rooms/:roomCode/dashboard"
           element={

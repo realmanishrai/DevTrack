@@ -26,7 +26,6 @@ export const PageContainer = ({
 
   return (
     <div className={containerClassNames} data-theme={theme}>
-      {/* Persistent Left Sidebar */}
       <Sidebar
         activeRoute={activeRoute}
         onNavigate={onNavigate}
@@ -36,9 +35,7 @@ export const PageContainer = ({
         onCloseMobile={() => setIsMobileSidebarOpen(false)}
       />
 
-      {/* Main Workspace Area */}
       <div className="dt-page-main">
-        {/* Top Header Bar */}
         <header className="dt-page-header">
           <div className="dt-page-header__left">
             <div className="dt-page-header__mobile-menu">
@@ -50,22 +47,25 @@ export const PageContainer = ({
                 size="md"
               />
             </div>
+
             <div className="dt-page-header__title-group">
               <h1 className="dt-page-header__title">{pageTitle}</h1>
             </div>
           </div>
 
           <div className="dt-page-header__right">
-            {/* Dark / Light Theme Toggle Button */}
             <IconButton
-              icon={theme === 'dark' ? <SunIcon size={20} color="var(--warning)" /> : <MoonIcon size={20} color="var(--info)" />}
+              icon={
+                theme === 'dark'
+                  ? <SunIcon size={20} color="var(--warning)" />
+                  : <MoonIcon size={20} color="var(--info)" />
+              }
               onClick={onToggleTheme}
               title={`Switch to ${theme === 'dark' ? 'Light' : 'Dark'} Mode`}
               variant="outline"
               size="md"
             />
 
-            {/* Profile Avatar & Dropdown Menu */}
             <ProfileMenu
               currentUser={currentUser}
               onNavigate={onNavigate}
@@ -73,7 +73,6 @@ export const PageContainer = ({
           </div>
         </header>
 
-        {/* Dynamic Page Content */}
         <main className="dt-page-content">
           {children}
         </main>

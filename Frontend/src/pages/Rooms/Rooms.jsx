@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate ,  useLocation} from 'react-router-dom';
 
-import ProfileMenu from '../../components/layout/ProfileMenu/ProfileMenu';
+import LpProfileFloating from '../../components/layout/lpprofilefloating/lpprofilefloating';
 import IconButton from '../../components/ui/IconButton/IconButton';
 import DtButton from '../../components/ui/DtButton/DtButton';
 import RmCard from '../../components/ui/RmCard/RmCard';
@@ -70,16 +70,18 @@ const Rooms = ({ theme, onToggleTheme }) => {
 
       const adaptedRooms = mapBackendRoomsListToUi(roomsData);
       setRooms(adaptedRooms);
-
+     
       if (userData && userData.id) {
         setCurrentUser({
           id: userData.id,
-          name: `${userData.firstname || ''} ${userData.lastname || ''}`.trim() || userData.username,
+          name:
+          `${userData.firstname || ''} ${userData.lastname || ''}`.trim() ||
+          userData.username,
           username: userData.username,
           email: userData.email,
-          role: 'admin',
         });
       }
+
     } catch (err) {
       if (err?.status === 401) {
         // Unrecoverable unauthorized — redirect to login
@@ -255,9 +257,9 @@ useEffect(() => {
             variant="outline"
             size="md"
           />
-          <ProfileMenu
+          <LpProfileFloating
             currentUser={currentUser}
-            onNavigate={handleProfileNavigate}
+            onLogout={handleProfileNavigate}
           />
         </div>
       </header>
