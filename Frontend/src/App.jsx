@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { BrowserRouter, Routes, Route, useLocation, useNavigate } from 'react-router-dom';
-
+import Members from './pages/Members/Members';
 import Navbar from './components/layout/Navbar/Navbar';
 import LandingPage from './pages/LandingPage/LandingPage';
 import Login from './pages/Login/Login';
@@ -55,6 +55,11 @@ function DashboardLayout({ theme, onToggleTheme }) {
 
     if (routeId === 'landing') {
       navigate('/');
+      return;
+    }
+
+    if (routeId === 'members') {
+      navigate('/members');
       return;
     }
 
@@ -173,13 +178,7 @@ function DashboardLayout({ theme, onToggleTheme }) {
         />
       )}
 
-      {activeRoute === 'members' &&
-        renderPlaceholderView(
-          'Team Members Roster',
-          <MembersIcon size={32} color="var(--accent-primary)" />,
-          'Manage room invitations, roles, permissions, and workload allocation across team members.'
-        )}
-
+    
       {activeRoute === 'activity' &&
         renderPlaceholderView(
           'Full Activity Log',
@@ -199,6 +198,7 @@ function DashboardLayout({ theme, onToggleTheme }) {
 
 function Layout({ theme, onToggleTheme }) {
   const { pathname } = useLocation();
+  const navigate = useNavigate();
 
   const showNavbar = pathname === '/';
 
@@ -230,6 +230,31 @@ function Layout({ theme, onToggleTheme }) {
             />
           }
         />
+
+      <Route
+  path="/members"
+  element={
+    <PageContainer
+      activeRoute="members"
+      onNavigate={(routeId) => {
+        if (routeId === 'members') return;
+
+        if (routeId === 'landing') {
+          navigate('/');
+          return;
+        }
+
+        navigate('/dashboard');
+      }}
+      pageTitle="Team Members"
+      currentUser={mockDashboardData.currentUser}
+      theme={theme}
+      onToggleTheme={onToggleTheme}
+    >
+      <Members />
+    </PageContainer>
+  }
+/>
         <Route
           path="/dashboard"
           element={
