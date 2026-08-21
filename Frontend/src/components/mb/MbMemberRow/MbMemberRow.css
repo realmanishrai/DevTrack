@@ -1,0 +1,74 @@
+.mb-member-row {
+  border-bottom: 1px solid var(--border);
+  transition: background-color var(--transition-fast);
+}
+
+.mb-member-row:hover {
+  background-color: var(--surface-hover);
+}
+
+.mb-member-row__cell {
+  padding: var(--space-3) var(--space-4);
+  vertical-align: middle;
+  font-size: var(--text-small);
+  color: var(--text-primary);
+}
+
+.mb-member-row__user-info {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.mb-member-row__details {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.mb-member-row__name {
+  font-size: var(--text-body);
+  font-weight: 600;
+  color: var(--text-primary);
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.mb-member-row__you-badge {
+  font-size: var(--text-tiny);
+  font-weight: 500;
+  color: var(--text-secondary);
+}
+
+.mb-member-row__username {
+  font-size: var(--text-small);
+  color: var(--text-secondary);
+}
+
+.mb-member-row__status-indicator {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.mb-member-row__status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: var(--radius-full);
+}
+
+.mb-member-row__status-dot--active {
+  background-color: var(--success);
+  box-shadow: 0 0 6px rgba(46, 204, 113, 0.4);
+}
+
+.mb-member-row__status-text {
+  font-size: var(--text-small);
+  color: var(--text-primary);
+}
+
+.mb-member-row__actions-wrapper {
+  position: relative;
+  display: inline-block;
+}

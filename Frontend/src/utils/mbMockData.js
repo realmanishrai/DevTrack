@@ -14,14 +14,14 @@ export const ROLE_OPTIONS = [
 
 export const mockCurrentUser = {
   id: 'usr-101',
-  username: 'surbhi.manna',
-  name: 'Surbhi Manna',
+  username: 'sakshi.verma',
+  name: 'Sakshi Verma',
   role: 'Project Admin',
   isAdmin: true,
 };
 
 export const mockMembers = [
-  { id: 'usr-101', name: 'Surbhi Manna', username: 'surbhi.manna', avatar: null, role: 'Project Admin', joinedOn: '2024-05-12', status: 'active' },
+  { id: 'usr-101', name: 'Sakshi Verma', username: 'sakshi.verma', avatar: null, role: 'Project Admin', joinedOn: '2024-05-12', status: 'active' },
   { id: 'usr-102', name: 'Rahul Sharma', username: 'rahul.sharma', avatar: null, role: 'Frontend Developer', joinedOn: '2024-05-14', status: 'active' },
   { id: 'usr-103', name: 'Ananya Singh', username: 'ananya.singh', avatar: null, role: 'Backend Developer', joinedOn: '2024-05-15', status: 'active' },
   { id: 'usr-104', name: 'Vikram Patel', username: 'vikram.patel', avatar: null, role: 'Full Stack Developer', joinedOn: '2024-05-16', status: 'active' },

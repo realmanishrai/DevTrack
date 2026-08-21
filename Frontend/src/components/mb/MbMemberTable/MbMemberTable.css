@@ -1,0 +1,131 @@
+.mb-member-table-container {
+  width: 100%;
+}
+
+.mb-member-table__header-section {
+  margin-bottom: var(--space-4);
+}
+
+.mb-member-table__title {
+  font-size: var(--text-h3);
+  font-weight: var(--text-h3-weight);
+  line-height: var(--text-h3-lh);
+  color: var(--text-primary);
+  margin: 0 0 var(--space-1) 0;
+}
+
+.mb-member-table__subtitle {
+  font-size: var(--text-small);
+  color: var(--text-secondary);
+  margin: 0;
+}
+
+.mb-member-table__controls {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  margin-bottom: var(--space-5);
+  flex-wrap: wrap;
+}
+
+.mb-member-table__filters {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  flex: 1;
+  min-width: 280px;
+  flex-wrap: wrap;
+}
+
+.mb-member-table__search {
+  flex: 1;
+  min-width: 200px;
+}
+
+.mb-member-table__dropdown {
+  min-width: 160px;
+}
+
+.mb-member-table__invite-btn {
+  flex-shrink: 0;
+}
+
+.mb-member-table__wrapper {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.mb-member-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+}
+
+.mb-member-table__head {
+  border-bottom: 1px solid var(--border);
+  background-color: var(--surface);
+}
+
+.mb-member-table__th {
+  padding: var(--space-3) var(--space-4);
+  font-size: var(--text-tiny);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--text-secondary);
+}
+
+.mb-member-table__th--actions {
+  text-align: right;
+  width: 80px;
+}
+
+.mb-member-table__empty {
+  padding: var(--space-6);
+  text-align: center;
+  color: var(--text-secondary);
+  font-size: var(--text-small);
+}
+
+/* Stacked card layout below 768px */
+@media (max-width: 768px) {
+  .mb-member-table,
+  .mb-member-table__head,
+  .mb-member-table__body,
+  .mb-member-table__th,
+  .mb-member-table__head tr {
+    display: block;
+  }
+
+  .mb-member-table__head {
+    display: none;
+  }
+
+  .mb-member-table__body tr {
+    display: flex;
+    flex-direction: column;
+    padding: var(--space-4);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    margin-bottom: var(--space-3);
+    background-color: var(--surface);
+    gap: var(--space-2);
+  }
+
+  .mb-member-table__cell {
+    padding: var(--space-1) 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .mb-member-table__cell--member {
+    padding-bottom: var(--space-2);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .mb-member-table__cell--actions {
+    justify-content: flex-end;
+  }
+}

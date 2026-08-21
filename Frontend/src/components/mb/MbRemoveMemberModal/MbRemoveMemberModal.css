@@ -1,0 +1,14 @@
+.mb-remove-member-modal {
+  max-width: 440px;
+}
+
+.mb-remove-member-modal__title {
+  color: var(--danger);
+}
+
+.mb-remove-member-modal__body-text {
+  font-size: var(--text-body);
+  line-height: var(--text-body-lh);
+  color: var(--text-primary);
+  margin: 0;
+}
