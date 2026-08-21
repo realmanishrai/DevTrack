@@ -1,6 +1,6 @@
-import { useState, useEffect } from 'react';
-import { BrowserRouter, Routes, Route, useLocation, useNavigate } from 'react-router-dom';
 import Members from './pages/Members/Members';
+import { useState, useEffect, useMemo, useCallback } from 'react';
+import { BrowserRouter, Routes, Route, useLocation, useNavigate, useParams } from 'react-router-dom';
 import Navbar from './components/layout/Navbar/Navbar';
 import LandingPage from './pages/LandingPage/LandingPage';
 import Login from './pages/Login/Login';
@@ -16,6 +16,12 @@ import Rooms from './pages/Rooms/Rooms';
 import DtCard from './components/ui/DtCard/DtCard';
 import DtButton from './components/ui/DtButton/DtButton';
 import { mockDashboardData } from './utils/mockDashboardData';
+import apiRequest, { getRoomTasks, createTask, updateTask, deleteTask } from './api';
+import { mapBackendRoomsListToUi } from './utils/roomAdapter';
+import {
+  mapBackendTasksListToUi,
+  computeDashboardStatsFromTasks,
+} from './utils/taskAdapter';
 import {
   TasksIcon,
   MembersIcon,
@@ -26,14 +32,193 @@ import {
 import './index.css';
 
 function DashboardLayout({ theme, onToggleTheme }) {
+  const { roomCode } = useParams();
   const [activeRoute, setActiveRoute] = useState('dashboard');
-  const [dashboardData] = useState(mockDashboardData);
+  const [currentRoom, setCurrentRoom] = useState(null);
+  const [tasks, setTasks] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [dashboardError, setDashboardError] = useState(null);
   const [toastMessage, setToastMessage] = useState('');
   const navigate = useNavigate();
 
   const showToast = (msg) => {
     setToastMessage(msg);
     setTimeout(() => setToastMessage(''), 3000);
+  };
+
+  const fetchDashboardData = useCallback(async () => {
+    if (!roomCode) return;
+    setIsLoading(true);
+    setDashboardError(null);
+
+    try {
+      const [rawTasks, rawRooms] = await Promise.all([
+        getRoomTasks(roomCode),
+        apiRequest({
+          url: '/roomlist',
+          method: 'GET',
+        }),
+      ]);
+
+      const adaptedTasks = mapBackendTasksListToUi(rawTasks);
+      setTasks(adaptedTasks);
+
+      const adaptedRooms = mapBackendRoomsListToUi(rawRooms);
+      const matchedRoom = adaptedRooms.find(
+        (r) => r.roomCode === roomCode
+      );
+      setCurrentRoom(matchedRoom || null);
+    } catch (err) {
+      if (err?.status === 401) {
+        navigate('/login');
+        return;
+      }
+      setDashboardError(
+        err?.data?.detail || err?.message || 'Failed to load room data.'
+      );
+    } finally {
+      setIsLoading(false);
+    }
+  }, [roomCode, navigate]);
+
+  useEffect(() => {
+    fetchDashboardData();
+  }, [fetchDashboardData]);
+
+  const dashboardData = useMemo(() => {
+    const computedStats = computeDashboardStatsFromTasks(
+      tasks,
+      mockDashboardData.members
+    );
+
+    return {
+      ...mockDashboardData,
+      room: {
+        ...mockDashboardData.room,
+        id: currentRoom?.id ?? mockDashboardData.room.id,
+        name: currentRoom?.name || (isLoading ? 'Loading...' : `Room ${roomCode}`),
+        description: currentRoom?.description !== undefined
+          ? currentRoom.description
+          : (isLoading ? '' : ''),
+        code: roomCode || mockDashboardData.room.code,
+        roomCode: roomCode || mockDashboardData.room.code,
+      },
+      tasks,
+      progressStats: computedStats.progressStats,
+      statCards: computedStats.statCards,
+      statusSummary: computedStats.statusSummary,
+    };
+  }, [tasks, currentRoom, roomCode, isLoading]);
+
+  const handleTaskCreate = async (taskFormData) => {
+    try {
+      const assigneeIds = [];
+      if (taskFormData.assigneeId) {
+        const parsedId = parseInt(taskFormData.assigneeId, 10);
+        if (!isNaN(parsedId) && String(parsedId) === String(taskFormData.assigneeId)) {
+          assigneeIds.push(parsedId);
+        }
+      }
+
+      const payload = {
+        title: taskFormData.title.trim(),
+        description: taskFormData.description ? taskFormData.description.trim() : '',
+        status: taskFormData.status || 'not_started',
+        progress: typeof taskFormData.progress === 'number' ? taskFormData.progress : 0,
+        priority: taskFormData.priority || 'medium',
+        due_date: taskFormData.dueDate || new Date().toISOString().split('T')[0],
+        assignee_ids: assigneeIds,
+      };
+
+      await createTask(roomCode, payload);
+      showToast(`Task '${payload.title}' created successfully!`);
+      await fetchDashboardData();
+      return { success: true };
+    } catch (err) {
+      if (err?.status === 401) {
+        navigate('/login');
+        return { success: false, error: 'Session expired. Please log in again.' };
+      }
+      const detail = err?.data?.detail || err?.message || 'Failed to create task.';
+      showToast(`Error: ${detail}`);
+      return { success: false, error: detail };
+    }
+  };
+
+  const handleTaskUpdate = async (taskId, updatedFields) => {
+    try {
+      const payload = {};
+
+      if (updatedFields.title !== undefined) {
+        payload.title = updatedFields.title.trim();
+      }
+      if (updatedFields.description !== undefined) {
+        payload.description = updatedFields.description ? updatedFields.description.trim() : '';
+      }
+      if (updatedFields.status !== undefined) {
+        payload.status = updatedFields.status;
+      }
+      if (updatedFields.progress !== undefined) {
+        payload.progress = typeof updatedFields.progress === 'number'
+          ? updatedFields.progress
+          : parseInt(updatedFields.progress, 10) || 0;
+      }
+      if (updatedFields.priority !== undefined) {
+        payload.priority = updatedFields.priority;
+      }
+      if (updatedFields.dueDate !== undefined) {
+        payload.due_date = updatedFields.dueDate || null;
+      } else if (updatedFields.due_date !== undefined) {
+        payload.due_date = updatedFields.due_date || null;
+      }
+
+      if (updatedFields.assigneeIds !== undefined) {
+        payload.assignee_ids = Array.isArray(updatedFields.assigneeIds)
+          ? updatedFields.assigneeIds.map(Number).filter((n) => !isNaN(n))
+          : [];
+      } else if (updatedFields.assignee_ids !== undefined) {
+        payload.assignee_ids = Array.isArray(updatedFields.assignee_ids)
+          ? updatedFields.assignee_ids.map(Number).filter((n) => !isNaN(n))
+          : [];
+      } else if (updatedFields.assigneeId !== undefined) {
+        const parsedId = parseInt(updatedFields.assigneeId, 10);
+        if (!isNaN(parsedId) && String(parsedId) === String(updatedFields.assigneeId)) {
+          payload.assignee_ids = [parsedId];
+        }
+      }
+
+      const numericTaskId = parseInt(taskId, 10);
+      await updateTask(roomCode, isNaN(numericTaskId) ? taskId : numericTaskId, payload);
+      showToast('Task updated successfully!');
+      await fetchDashboardData();
+      return { success: true };
+    } catch (err) {
+      if (err?.status === 401) {
+        navigate('/login');
+        return { success: false, error: 'Session expired. Please log in again.' };
+      }
+      const detail = err?.data?.detail || err?.message || 'Failed to update task.';
+      showToast(`Error: ${detail}`);
+      return { success: false, error: detail };
+    }
+  };
+
+  const handleTaskDelete = async (taskId) => {
+    try {
+      const numericTaskId = parseInt(taskId, 10);
+      await deleteTask(roomCode, isNaN(numericTaskId) ? taskId : numericTaskId);
+      showToast('Task deleted successfully!');
+      await fetchDashboardData();
+      return { success: true };
+    } catch (err) {
+      if (err?.status === 401) {
+        navigate('/login');
+        return { success: false, error: 'Session expired. Please log in again.' };
+      }
+      const detail = err?.data?.detail || err?.message || 'Failed to delete task.';
+      showToast(`Error: ${detail}`);
+      return { success: false, error: detail };
+    }
   };
 
   const handleNavigate = async (routeId) => {
@@ -172,9 +357,9 @@ function DashboardLayout({ theme, onToggleTheme }) {
       {activeRoute === 'tasks' && (
         <Tasks
           data={dashboardData}
-          onTaskCreate={(newTask) => showToast(`Task '${newTask.title}' created successfully!`)}
-          onTaskUpdate={(taskId, fields) => showToast('Task updated successfully!')}
-          onTaskDelete={(taskId) => showToast('Task deleted successfully!')}
+          onTaskCreate={handleTaskCreate}
+          onTaskUpdate={handleTaskUpdate}
+          onTaskDelete={handleTaskDelete}
         />
       )}
 
@@ -256,7 +441,7 @@ function Layout({ theme, onToggleTheme }) {
   }
 />
         <Route
-          path="/dashboard"
+          path="/rooms/:roomCode/dashboard"
           element={
             <DashboardLayout
               theme={theme}

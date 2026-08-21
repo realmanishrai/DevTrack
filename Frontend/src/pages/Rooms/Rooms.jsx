@@ -118,9 +118,7 @@ useEffect(() => {
 
   // ── Handler: Open Room ────────────────────────────────────────────────────
   const handleOpenRoom = (roomCode) => {
-    // TODO (route restructuring): navigate(`/room/${roomCode}/dashboard`) once
-    // the nested /room/:roomCode/ route pattern is set up in a future session.
-    navigate('/dashboard');
+    navigate(`/rooms/${roomCode}/dashboard`);
   };
 
   // ── Handler: Create Room Success ──────────────────────────────────────────

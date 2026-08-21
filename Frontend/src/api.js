@@ -113,6 +113,35 @@ export const logoutUser = async () => {
     url: '/logout',
     method: 'POST',
     retryOnUnauthorized: false,
+    });
+};
+export const getRoomTasks = async (roomCode) => {
+  return apiRequest({
+    url: `/dashboard/${roomCode}/tasks`,
+    method: 'GET',
+  });
+};
+
+export const createTask = async (roomCode, taskData) => {
+  return apiRequest({
+    url: `/dashboard/${roomCode}/tasks`,
+    method: 'POST',
+    body: taskData,
+  });
+};
+
+export const updateTask = async (roomCode, taskId, taskData) => {
+  return apiRequest({
+    url: `/dashboard/${roomCode}/tasks/${taskId}`,
+    method: 'PUT',
+    body: taskData,
+  });
+};
+
+export const deleteTask = async (roomCode, taskId) => {
+  return apiRequest({
+    url: `/dashboard/${roomCode}/tasks/${taskId}`,
+    method: 'DELETE',
   });
 };
 
