@@ -62,13 +62,13 @@
   margin: 0 0 3px;
   font-size: var(--text-small);
   font-weight: 500;
-  color: var(--text-secondary);
+  color: #22c55e;
 }
 
 .dt-profile-menu__name {
   margin: 0;
-  font-size: var(--text-base);
-  font-weight: 600;
+  font-size: 1.25rem;
+  font-weight: 700;
   color: var(--text-primary);
 }
 
